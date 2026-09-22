@@ -46,7 +46,6 @@
     <eorules.version>0.0.1</eorules.version>
     <archunit.version>1.5.0</archunit.version>
     <jacoco.version>0.8.15</jacoco.version>
-    <youshallnotpass.version>0.6.0</youshallnotpass.version>
     <jtcop.version>1.4.4</jtcop.version>
     <pitest.version>1.30.0</pitest.version>
     <pitest.junit5.plugin.version>1.2.3</pitest.junit5.plugin.version>

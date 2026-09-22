@@ -31,13 +31,6 @@ to generate PlantUML class diagrams.
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=RoRoche_class-diagram-maven-plugin&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=RoRoche_class-diagram-maven-plugin)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=RoRoche_class-diagram-maven-plugin&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=RoRoche_class-diagram-maven-plugin)
 
-![nullfree status](https://youshallnotpass.dev/nullfree/RoRoche/class-diagram-maven-plugin)
-![staticfree status](https://youshallnotpass.dev/staticfree/RoRoche/class-diagram-maven-plugin)
-![allfinal status](https://youshallnotpass.dev/allfinal/RoRoche/class-diagram-maven-plugin)
-![allpublic status](https://youshallnotpass.dev/allpublic/RoRoche/class-diagram-maven-plugin)
-![setterfree status](https://youshallnotpass.dev/setterfree/RoRoche/class-diagram-maven-plugin)
-![nomultiplereturn status](https://youshallnotpass.dev/nomultiplereturn/RoRoche/class-diagram-maven-plugin)
-
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.roroche/class-diagram-maven-plugin.svg?label=Maven%20Central)](https://search.maven.org/artifact/com.github.roroche/class-diagram-maven-plugin)
 [![Javadoc](https://javadoc.io/badge2/com.github.roroche/class-diagram-maven-plugin/javadoc.svg)](https://javadoc.io/doc/com.github.roroche/class-diagram-maven-plugin)
 
