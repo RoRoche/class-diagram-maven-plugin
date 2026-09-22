@@ -23,32 +23,52 @@
  */
 package com.github.roroche.classdiagram;
 
-import java.util.Optional;
-import org.cactoos.text.TextEnvelope;
-import org.cactoos.text.TextOf;
+import ch.ifocusit.plantuml.classdiagram.ClassDiagramBuilder;
+import java.util.List;
 
 /**
- * Represents a diagram file name.
+ * PlantUML class diagram backed by plantuml-builder.
  *
  * @since 0.0.1
  */
-public class FileName extends TextEnvelope {
+public final class PlantUmlDiagram implements Diagram {
+
+    /** Classes. */
+    private final Classes classes;
+
+    /** Fail on no classes. */
+    private final boolean fail;
+
+    /** Diagram name for diagnostics. */
+    private final String name;
 
     /**
-     * Ctor.
+     * New diagram.
      *
-     * @param config The diagram configuration
-     * @param name The diagram name
+     * @param name Name
+     * @param classes Classes
+     * @param fail Fail on empty
      */
-    public FileName(final DiagramConfiguration config, final String name) {
-        super(
-            new TextOf(
-                Optional.ofNullable(
-                    config.getFileName()
-                ).map(String::valueOf).orElseGet(
-                    () -> String.format("%s.puml", name)
-                )
-            )
-        );
+    public PlantUmlDiagram(
+        final String name,
+        final Classes classes,
+        final boolean fail
+    ) {
+        this.name = name;
+        this.classes = classes;
+        this.fail = fail;
+    }
+
+    @Override
+    public String value() throws Exception {
+        final List<Class<?>> found = this.classes.value();
+        if (this.fail && found.isEmpty()) {
+            throw new IllegalStateException(
+                String.format("No classes found for diagram '%s'", this.name)
+            );
+        }
+        return new ClassDiagramBuilder()
+            .addClasses(found.toArray(Class<?>[]::new))
+            .build();
     }
 }

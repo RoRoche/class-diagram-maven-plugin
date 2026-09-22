@@ -21,7 +21,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/**
- * This package contains the unit tests for the class diagram generator.
- */
 package com.github.roroche.classdiagram;
+
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+/**
+ * Diagram written to a file.
+ *
+ * @since 0.0.1
+ */
+public final class GeneratedDiagram {
+
+    /** Diagram. */
+    private final Diagram diagram;
+
+    /** Destination. */
+    private final Path output;
+
+    /**
+     * New generated diagram.
+     *
+     * @param diagram Diagram
+     * @param output Destination
+     */
+    public GeneratedDiagram(final Diagram diagram, final Path output) {
+        this.diagram = diagram;
+        this.output = output;
+    }
+
+    /**
+     * Generate the file.
+     *
+     * @return Output path
+     * @throws Exception When generation fails.
+     */
+    public Path generate() throws Exception {
+        final Path parent = this.output.toAbsolutePath().getParent();
+        if (parent != null) {
+            Files.createDirectories(parent);
+        }
+        Files.writeString(
+            this.output,
+            this.diagram.value(),
+            StandardCharsets.UTF_8
+        );
+        return this.output;
+    }
+}

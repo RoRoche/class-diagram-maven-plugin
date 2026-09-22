@@ -21,7 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/**
- * This package contains the unit tests for the class diagram generator.
- */
 package com.github.roroche.classdiagram;
+
+/**
+ * Textual diagram.
+ *
+ * @since 0.0.1
+ */
+@FunctionalInterface
+public interface Diagram {
+
+    /**
+     * Render it.
+     *
+     * @return PlantUML text
+     * @throws Exception When rendering fails.
+     */
+    String value() throws Exception;
+}

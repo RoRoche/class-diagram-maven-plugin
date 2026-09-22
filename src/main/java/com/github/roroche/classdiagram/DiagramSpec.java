@@ -21,7 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/**
- * This package contains the unit tests for the class diagram generator.
- */
 package com.github.roroche.classdiagram;
+
+import java.nio.file.Path;
+import java.util.List;
+
+/**
+ * Immutable description of a diagram to generate.
+ *
+ * @param name Diagram name.
+ * @param packages Accepted packages.
+ * @param excludedPackages Rejected packages.
+ * @param excludedClasses Rejected class patterns.
+ * @param output Output file.
+ *
+ * @since 0.0.1
+ */
+public record DiagramSpec(
+    String name,
+    List<String> packages,
+    List<String> excludedPackages,
+    List<String> excludedClasses,
+    Path output
+) {
+    /**
+     * Ctor.
+     *
+     * @param name Diagram name
+     * @param packages Accepted packages
+     * @param excludedPackages Rejected packages
+     * @param excludedClasses Rejected class patterns
+     * @param output Output file
+     */
+    public DiagramSpec {
+        packages = List.copyOf(packages);
+        excludedPackages = List.copyOf(excludedPackages);
+        excludedClasses = List.copyOf(excludedClasses);
+    }
+}

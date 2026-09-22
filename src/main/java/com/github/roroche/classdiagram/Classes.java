@@ -21,7 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/**
- * This package contains the unit tests for the class diagram generator.
- */
 package com.github.roroche.classdiagram;
+
+import java.util.List;
+
+/**
+ * Classes participating in a diagram.
+ *
+ * @since 0.0.1
+ */
+@FunctionalInterface
+public interface Classes {
+
+    /**
+     * Obtain classes.
+     *
+     * @return Classes
+     * @throws Exception When discovery fails.
+     */
+    List<Class<?>> value() throws Exception;
+}
