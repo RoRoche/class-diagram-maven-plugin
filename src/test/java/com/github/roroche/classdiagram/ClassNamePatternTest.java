@@ -21,7 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/**
- * This package contains the unit tests for the class diagram generator.
- */
 package com.github.roroche.classdiagram;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+/**
+ * Tests for class-name patterns.
+ *
+ * @since 0.0.1
+ */
+final class ClassNamePatternTest {
+
+    @Test
+    void matchesDoubleWildcard() {
+        Assertions.assertTrue(
+            new ClassNamePattern("**.*Test")
+                .matches("com.github.roroche.domain.CustomerTest"),
+            "Pattern '**.*Test' should match 'com.github.roroche.domain.CustomerTest'"
+        );
+    }
+
+    @Test
+    void matchesPackageWildcard() {
+        Assertions.assertTrue(
+            new ClassNamePattern("com.github.roroche.internal.**")
+                .matches("com.github.roroche.internal.deep.Secret"),
+            "Pattern 'com.github.roroche.internal.**' should match 'com.github.roroche.internal.deep.Secret'"
+        );
+    }
+
+    @Test
+    void rejectsDifferentClass() {
+        Assertions.assertFalse(
+            new ClassNamePattern("**.*Test")
+                .matches("com.github.roroche.domain.Customer"),
+            "Pattern '**.*Test' should not match 'com.github.roroche.domain.Customer'"
+        );
+    }
+}
