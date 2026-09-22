@@ -24,66 +24,245 @@
 package com.github.roroche.classdiagram;
 
 import java.io.File;
-import org.cactoos.list.ListOf;
-import org.junit.jupiter.api.Assertions;
+import java.lang.reflect.Field;
+import java.nio.file.Path;
+import java.util.List;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for diagram specifications.
+ * Tests for {@link DiagramSpecs}.
  *
  * @since 0.0.1
  */
+// @checkstyle LineLengthCheck (250 lines)
+@SuppressWarnings("PMD.AvoidAccessibilityAlteration")
 final class DiagramSpecsTest {
 
     @Test
-    void createsAggregateDiagram() {
-        Assertions.assertEquals(
-            "class-diagram",
-            new DiagramSpecs(
-                new ListOf<>("com.acme"),
-                new ListOf<>(),
-                new ListOf<>(),
-                new ListOf<>(),
-                new File("target/diagrams"),
-                "architecture.puml",
-                false
-            ).value().get(0).name(),
-            "The diagram name should be 'class-diagram'"
+    void createsAggregateName() {
+        MatcherAssert.assertThat(
+            "Aggregate name should use default",
+            aggregate().name(),
+            Matchers.is("class-diagram")
         );
     }
 
     @Test
-    void createsSpecificDiagram() {
-        Assertions.assertTrue(
-            new DiagramSpecs(
-                new ListOf<>("com.acme"),
-                new ListOf<>(),
-                new ListOf<>(),
-                new ListOf<>(),
-                new File("target/diagrams"),
-                "architecture.puml",
-                false
-            ).value().get(0).output().endsWith(
-                "target/diagrams/architecture.puml"
-            ),
-            "The output file should be 'target/diagrams/architecture.puml'"
+    void createsAggregatePackages() {
+        MatcherAssert.assertThat(
+            "Aggregate should retain packages",
+            aggregate().packages(),
+            Matchers.contains("com.acme")
         );
     }
 
     @Test
-    void createsOneDiagramPerPackage() {
-        Assertions.assertEquals(
-            2,
-            new DiagramSpecs(
-                new ListOf<>("com.github.roroche.domain", "com.github.roroche.app"),
-                new ListOf<>(),
-                new ListOf<>(),
-                new ListOf<>(),
-                new File("target/diagrams"),
-                "ignored.puml",
-                true
-            ).value().size(),
-            "There should be 2 diagrams, one for each package"
+    void createsAggregateExcludedPackages() {
+        MatcherAssert.assertThat(
+            "Aggregate should retain excluded packages",
+            aggregate().excludedPackages(),
+            Matchers.contains("com.acme.internal")
         );
+    }
+
+    @Test
+    void createsAggregateExcludedClasses() {
+        MatcherAssert.assertThat(
+            "Aggregate should retain excluded classes",
+            aggregate().excludedClasses(),
+            Matchers.contains("**.*Test")
+        );
+    }
+
+    @Test
+    void createsAggregateOutput() {
+        MatcherAssert.assertThat(
+            "Aggregate should resolve configured output",
+            aggregate().output(),
+            Matchers.is(Path.of("target/diagrams/architecture.puml"))
+        );
+    }
+
+    @Test
+    void createsPerPackageCount() {
+        MatcherAssert.assertThat(
+            "Per-package mode should create one spec per package",
+            perPackage(),
+            Matchers.hasSize(2)
+        );
+    }
+
+    @Test
+    void createsPerPackageName() {
+        MatcherAssert.assertThat(
+            "Per-package name should equal package",
+            perPackage().get(0).name(),
+            Matchers.is("com.acme.one")
+        );
+    }
+
+    @Test
+    void createsPerPackagePackages() {
+        MatcherAssert.assertThat(
+            "Per-package spec should contain its package",
+            perPackage().get(0).packages(),
+            Matchers.contains("com.acme.one")
+        );
+    }
+
+    @Test
+    void createsPerPackageOutput() {
+        MatcherAssert.assertThat(
+            "Per-package output should use package name",
+            perPackage().get(0).output(),
+            Matchers.is(Path.of("target/diagrams/com.acme.one.puml"))
+        );
+    }
+
+    @Test
+    void createsNamedName() throws Exception {
+        MatcherAssert.assertThat(
+            "Named spec should use configured name",
+            named().name(),
+            Matchers.is("domain")
+        );
+    }
+
+    @Test
+    void createsNamedDefaultName() throws Exception {
+        MatcherAssert.assertThat(
+            "Unnamed spec should use default name",
+            named(null, null, null).name(),
+            Matchers.is("class-diagram")
+        );
+    }
+
+    @Test
+    void createsNamedDefaultFile() throws Exception {
+        MatcherAssert.assertThat(
+            "Named spec should derive file from name",
+            named("domain", null, null).output(),
+            Matchers.is(Path.of("target/diagrams/domain.puml"))
+        );
+    }
+
+    @Test
+    void createsNamedConfiguredFile() throws Exception {
+        MatcherAssert.assertThat(
+            "Named spec should use configured file",
+            named("domain", "custom.puml", null).output(),
+            Matchers.is(Path.of("target/diagrams/custom.puml"))
+        );
+    }
+
+    @Test
+    void createsNamedConfiguredDirectory() throws Exception {
+        MatcherAssert.assertThat(
+            "Named spec should use configured directory",
+            named("domain", null, new File("target/custom")).output(),
+            Matchers.is(Path.of("target/custom/domain.puml"))
+        );
+    }
+
+    @Test
+    void createsNamedPackages() throws Exception {
+        MatcherAssert.assertThat(
+            "Named spec should use named packages",
+            named().packages(),
+            Matchers.contains("com.acme.domain")
+        );
+    }
+
+    @Test
+    void createsNamedExcludedPackages() throws Exception {
+        MatcherAssert.assertThat(
+            "Named spec should use named excluded packages",
+            named().excludedPackages(),
+            Matchers.contains("com.acme.domain.internal")
+        );
+    }
+
+    @Test
+    void createsNamedExcludedClasses() throws Exception {
+        MatcherAssert.assertThat(
+            "Named spec should use named excluded classes",
+            named().excludedClasses(),
+            Matchers.contains("**.*Factory")
+        );
+    }
+
+    private static DiagramSpec aggregate() {
+        return new DiagramSpecs(
+            List.of("com.acme"),
+            List.of("com.acme.internal"),
+            List.of("**.*Test"),
+            List.of(),
+            new File("target/diagrams"),
+            "architecture.puml",
+            false
+        ).value().get(0);
+    }
+
+    private static List<DiagramSpec> perPackage() {
+        return new DiagramSpecs(
+            List.of("com.acme.one", "com.acme.two"),
+            List.of("x"),
+            List.of("y"),
+            List.of(),
+            new File("target/diagrams"),
+            "ignored",
+            true
+        ).value();
+    }
+
+    private static DiagramSpec named() throws Exception {
+        final DiagramConfiguration cfg = config("domain", null, null);
+        list(cfg, "packages").add("com.acme.domain");
+        list(cfg, "excludePackages").add("com.acme.domain.internal");
+        list(cfg, "excludeClasses").add("**.*Factory");
+        return specs(cfg);
+    }
+
+    private static DiagramSpec named(final String name, final String file, final File dir) throws Exception {
+        return specs(config(name, file, dir));
+    }
+
+    private static DiagramSpec specs(final DiagramConfiguration cfg) {
+        return new DiagramSpecs(
+            List.of("ignored"),
+            List.of(),
+            List.of(),
+            List.of(cfg),
+            new File("target/diagrams"),
+            "ignored.puml",
+            false
+        ).value().get(0);
+    }
+
+    private static DiagramConfiguration config(final String name, final String file, final File dir) throws Exception {
+        final DiagramConfiguration cfg = new DiagramConfiguration();
+        set(cfg, "name", name);
+        set(cfg, "fileName", file);
+        set(cfg, "outputDirectory", dir);
+        return cfg;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<String> list(final DiagramConfiguration cfg, final String name) throws Exception {
+        final Field fld = DiagramConfiguration.class.getDeclaredField(name);
+        fld.setAccessible(true);
+        return (List<String>) fld.get(cfg);
+    }
+
+    private static void set(
+        final DiagramConfiguration cfg,
+        final String name,
+        final Object value
+    ) throws Exception {
+        final Field fld = DiagramConfiguration.class.getDeclaredField(name);
+        fld.setAccessible(true);
+        fld.set(cfg, value);
     }
 }

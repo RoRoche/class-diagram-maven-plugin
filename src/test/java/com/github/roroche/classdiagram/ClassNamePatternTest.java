@@ -23,11 +23,13 @@
  */
 package com.github.roroche.classdiagram;
 
-import org.junit.jupiter.api.Assertions;
+import java.util.regex.Pattern;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for class-name patterns.
+ * Tests for {@link ClassNamePattern}.
  *
  * @since 0.0.1
  */
@@ -35,28 +37,73 @@ final class ClassNamePatternTest {
 
     @Test
     void matchesDoubleWildcard() {
-        Assertions.assertTrue(
-            new ClassNamePattern("**.*Test")
-                .matches("com.github.roroche.domain.CustomerTest"),
-            "Pattern '**.*Test' should match 'com.github.roroche.domain.CustomerTest'"
+        MatcherAssert.assertThat(
+            "Double wildcard should cross package boundaries",
+            new ClassNamePattern("**.*Test").matches("com.acme.deep.CustomerTest"),
+            Matchers.is(true)
         );
     }
 
     @Test
-    void matchesPackageWildcard() {
-        Assertions.assertTrue(
-            new ClassNamePattern("com.github.roroche.internal.**")
-                .matches("com.github.roroche.internal.deep.Secret"),
-            "Pattern 'com.github.roroche.internal.**' should match 'com.github.roroche.internal.deep.Secret'"
+    void matchesSingleWildcard() {
+        MatcherAssert.assertThat(
+            "Single wildcard should match inside one package segment",
+            new ClassNamePattern("com.acme.*Factory").matches("com.acme.UserFactory"),
+            Matchers.is(true)
         );
     }
 
     @Test
-    void rejectsDifferentClass() {
-        Assertions.assertFalse(
-            new ClassNamePattern("**.*Test")
-                .matches("com.github.roroche.domain.Customer"),
-            "Pattern '**.*Test' should not match 'com.github.roroche.domain.Customer'"
+    void matchesTrailingSingleWildcard() {
+        MatcherAssert.assertThat(
+            "Trailing single wildcard should match the rest of one segment",
+            new ClassNamePattern("com.acme.*").matches("com.acme.User"),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void rejectsSingleWildcardAcrossDot() {
+        MatcherAssert.assertThat(
+            "Single wildcard should not cross a package boundary",
+            new ClassNamePattern("com.acme.*Factory").matches("com.acme.deep.UserFactory"),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void escapesRegexCharacters() {
+        MatcherAssert.assertThat(
+            "Glob metacharacters should be treated literally",
+            new ClassNamePattern("a.b+$Thing").matches("a.b+$Thing"),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void escapesLeadingBackslash() {
+        MatcherAssert.assertThat(
+            "Leading backslash should be treated literally",
+            new ClassNamePattern("\\Name").matches("\\Name"),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void rejectsDifferentName() {
+        MatcherAssert.assertThat(
+            "Different class name should not match",
+            new ClassNamePattern("**.*Test").matches("com.acme.Customer"),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void usesCompiledPattern() {
+        MatcherAssert.assertThat(
+            "Compiled constructor should delegate matching to the supplied pattern",
+            new ClassNamePattern(Pattern.compile("^Exact$")).matches("Exact"),
+            Matchers.is(true)
         );
     }
 }

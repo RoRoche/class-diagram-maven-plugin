@@ -87,6 +87,12 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+      <version>${maven.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
       <version>${maven-plugin-tools.version}</version>
@@ -207,7 +213,7 @@
                 <rule>
                   <limits>
                     <limit>
-                      <minimum>0.80</minimum>
+                      <minimum>1.00</minimum>
                     </limit>
                   </limits>
                 </rule>
@@ -254,8 +260,8 @@
           <targetTests>
             <param>com.github.roroche.classdiagram.*</param>
           </targetTests>
-          <mutationThreshold>85</mutationThreshold>
-          <coverageThreshold>90</coverageThreshold>
+          <mutationThreshold>100</mutationThreshold>
+          <coverageThreshold>100</coverageThreshold>
           <mutators>
             <mutator>DEFAULTS</mutator>
           </mutators>
