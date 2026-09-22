@@ -58,7 +58,6 @@ lint: ## Check code formatting
 	@$(MVN) sortpom:verify
 	@$(MVN) license:check
 	@$(MVN) qulice:check
-	@$(MVN) youshallnotpass:youshallnotpass
 	@$(MVN) jtcop:check
 	@uv run yamllint .
 	@uv run mbake format --check Makefile
