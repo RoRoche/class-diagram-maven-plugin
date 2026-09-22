@@ -23,6 +23,7 @@
  */
 package com.github.roroche.classdiagram;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -55,9 +56,8 @@ public final class GeneratedDiagram {
      * Generate the file.
      *
      * @return Output path
-     * @throws Exception When generation fails.
      */
-    public Path generate() throws Exception {
+    public Path generate() throws IOException {
         final Path parent = this.output.toAbsolutePath().getParent();
         if (parent != null) {
             Files.createDirectories(parent);

@@ -46,7 +46,7 @@ public final class ClassNamePattern {
     public ClassNamePattern(final String glob) {
         this(
             new Unchecked<>(
-                () -> Pattern.compile(ClassNamePattern.regex(glob))
+                new ClassNameRegex(glob)
             ).value()
         );
     }
@@ -68,53 +68,5 @@ public final class ClassNamePattern {
      */
     public boolean matches(final String name) {
         return this.pattern.matcher(name).matches();
-    }
-
-    private static String regex(final String glob) {
-        final StringBuilder regex = new StringBuilder("^");
-        int idx = 0;
-        while (idx < glob.length()) {
-            idx += ClassNamePattern.append(glob, idx, regex);
-        }
-        return regex.append('$').toString();
-    }
-
-    private static int append(
-        final String glob,
-        final int idx,
-        final StringBuilder regex
-    ) {
-        final int step;
-        final char chr = glob.charAt(idx);
-        if (chr == '*') {
-            step = ClassNamePattern.appendWildcard(glob, idx, regex);
-        } else {
-            ClassNamePattern.appendLiteral(chr, regex);
-            step = 1;
-        }
-        return step;
-    }
-
-    private static int appendWildcard(
-        final String glob,
-        final int idx,
-        final StringBuilder regex
-    ) {
-        final int step;
-        if (idx + 1 < glob.length() && glob.charAt(idx + 1) == '*') {
-            regex.append(".*");
-            step = 2;
-        } else {
-            regex.append("[^.]*");
-            step = 1;
-        }
-        return step;
-    }
-
-    private static void appendLiteral(final char chr, final StringBuilder regex) {
-        if ("\\.^$|?+()[]{}".indexOf(chr) >= 0) {
-            regex.append('\\');
-        }
-        regex.append(chr);
     }
 }

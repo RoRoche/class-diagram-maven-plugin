@@ -138,7 +138,7 @@ public final class GenerateMojo extends AbstractMojo {
     }
 
     private List<String> classpath() throws DependencyResolutionRequiredException {
-        final Set<String> elements = new LinkedHashSet<>(0);
+        final Set<String> elements = LinkedHashSet.newLinkedHashSet(0);
         elements.addAll(this.project.getCompileClasspathElements());
         elements.addAll(this.project.getRuntimeClasspathElements());
         return List.copyOf(elements);

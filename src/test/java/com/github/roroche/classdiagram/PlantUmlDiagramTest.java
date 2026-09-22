@@ -43,7 +43,7 @@ import org.junit.jupiter.api.Test;
 final class PlantUmlDiagramTest {
 
     @Test
-    void rendersClass() throws Exception {
+    void rendersClass() {
         MatcherAssert.assertThat(
             "Rendered diagram should contain class name",
             new PlantUmlDiagram(
@@ -56,7 +56,7 @@ final class PlantUmlDiagramTest {
     }
 
     @Test
-    void rendersEmptyWhenAllowed() throws Exception {
+    void rendersEmptyWhenAllowed() {
         MatcherAssert.assertThat(
             "Allowed empty diagram should still render PlantUML",
             new PlantUmlDiagram("empty", List::of, false).value(),
