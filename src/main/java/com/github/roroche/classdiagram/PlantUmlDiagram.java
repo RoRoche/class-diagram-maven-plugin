@@ -60,7 +60,7 @@ public final class PlantUmlDiagram implements Diagram {
     }
 
     @Override
-    public String value() throws Exception {
+    public String value() {
         final List<Class<?>> found = this.classes.value();
         if (this.fail && found.isEmpty()) {
             throw new IllegalStateException(

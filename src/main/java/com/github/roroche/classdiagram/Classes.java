@@ -37,7 +37,6 @@ public interface Classes {
      * Obtain classes.
      *
      * @return Classes
-     * @throws Exception When discovery fails.
      */
-    List<Class<?>> value() throws Exception;
+    List<Class<?>> value();
 }

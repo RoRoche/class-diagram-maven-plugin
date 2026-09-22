@@ -35,7 +35,6 @@ public interface Diagram {
      * Render it.
      *
      * @return PlantUML text
-     * @throws Exception When rendering fails.
      */
-    String value() throws Exception;
+    String value();
 }
