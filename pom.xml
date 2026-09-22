@@ -132,6 +132,16 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>com.github.roroche</groupId>
+        <artifactId>class-diagram-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <configuration>
+          <packages>
+            <package>com.github.roroche.classdiagram</package>
+          </packages>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven.compiler.plugin.version}</version>
