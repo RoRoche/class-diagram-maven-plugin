@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 /**
- * This package contains the main classes of the library.
+ * This package contains the unit tests for the class diagram generator.
  */
-package com.github.roroche.javalib;
+package com.github.roroche.classdiagram;

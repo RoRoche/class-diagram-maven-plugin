@@ -21,42 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.javalib;
-
 /**
- * Sum of two integers.
- *
- * @since 0.0.1
+ * This package contains the unit tests for the class diagram generator.
  */
-public final class Sum {
-
-    /**
-     * The first integer.
-     */
-    private final int first;
-
-    /**
-     * The second integer.
-     */
-    private final int second;
-
-    /**
-     * Constructor.
-     *
-     * @param first The first integer
-     * @param second The second integer
-     */
-    public Sum(final int first, final int second) {
-        this.first = first;
-        this.second = second;
-    }
-
-    /**
-     * Result of the sum.
-     *
-     * @return The result of the sum
-     */
-    public int result() {
-        return this.first + this.second;
-    }
-}
+package com.github.roroche.classdiagram;

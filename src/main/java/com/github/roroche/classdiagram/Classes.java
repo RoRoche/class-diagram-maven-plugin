@@ -21,26 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.javalib;
+package com.github.roroche.classdiagram;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.IsEqual;
-import org.junit.jupiter.api.Test;
+import java.util.List;
 
 /**
- * Test for {@link Sum}.
+ * Classes participating in a diagram.
  *
  * @since 0.0.1
  */
-@SuppressWarnings("allpublic")
-final class SumTest {
+@FunctionalInterface
+public interface Classes {
 
-    @Test
-    void isOk() {
-        MatcherAssert.assertThat(
-            "result is correct",
-            new Sum(1, 2).result(),
-            new IsEqual<>(3)
-        );
-    }
+    /**
+     * Obtain classes.
+     *
+     * @return Classes
+     */
+    List<Class<?>> value();
 }
