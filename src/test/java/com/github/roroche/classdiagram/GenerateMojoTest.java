@@ -124,7 +124,7 @@ final class GenerateMojoTest {
     void generatesConfiguredDiagram(@TempDir final Path temp) throws Exception {
         final GenerateMojo mojo = GenerateMojoTest.mojo(
             temp,
-            new RuntimeProject()
+            new CompileProject()
         );
         final RecordingLog log = new RecordingLog();
         mojo.setLog(log);
@@ -180,18 +180,29 @@ final class GenerateMojoTest {
 
     private static final class BrokenProject extends MavenProject {
         @Override
+        public List<String> getCompileClasspathElements()
+            throws DependencyResolutionRequiredException {
+            throw new DependencyResolutionRequiredException(null);
+        }
+
+        @Override
         public List<String> getRuntimeClasspathElements()
             throws DependencyResolutionRequiredException {
             throw new DependencyResolutionRequiredException(null);
         }
     }
 
-    private static final class RuntimeProject extends MavenProject {
+    private static final class CompileProject extends MavenProject {
         @Override
-        public List<String> getRuntimeClasspathElements() {
+        public List<String> getCompileClasspathElements() {
             return List.of(
                 System.getProperty("java.class.path").split(File.pathSeparator)
             );
+        }
+
+        @Override
+        public List<String> getRuntimeClasspathElements() {
+            return List.of();
         }
     }
 

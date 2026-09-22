@@ -26,7 +26,9 @@ package com.github.roroche.classdiagram;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -116,7 +118,7 @@ public final class GenerateMojo extends AbstractMojo {
                     "Configure at least one package to analyze"
                 );
             }
-            final List<String> classpath = this.project.getRuntimeClasspathElements();
+            final List<String> classpath = this.classpath();
             for (final DiagramSpec spec : specs) {
                 final Path output = new GeneratedDiagram(
                     new PlantUmlDiagram(
@@ -133,5 +135,12 @@ public final class GenerateMojo extends AbstractMojo {
         } catch (final Exception err) {
             throw new MojoExecutionException("Cannot generate class diagram", err);
         }
+    }
+
+    private List<String> classpath() throws DependencyResolutionRequiredException {
+        final Set<String> elements = new LinkedHashSet<>(0);
+        elements.addAll(this.project.getCompileClasspathElements());
+        elements.addAll(this.project.getRuntimeClasspathElements());
+        return List.copyOf(elements);
     }
 }
