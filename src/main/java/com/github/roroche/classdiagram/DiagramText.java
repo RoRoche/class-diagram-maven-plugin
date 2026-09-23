@@ -29,7 +29,7 @@ package com.github.roroche.classdiagram;
  * @since 0.0.1
  */
 @FunctionalInterface
-public interface Diagram {
+public interface DiagramText {
 
     /**
      * Render it.
