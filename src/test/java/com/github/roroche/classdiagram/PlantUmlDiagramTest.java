@@ -75,7 +75,7 @@ final class PlantUmlDiagramTest {
         );
     }
 
-    private static Exception failure(final Diagram diagram) {
+    private static Exception failure(final PlantUmlDiagram diagram) {
         try {
             diagram.value();
             return new IllegalStateException("No exception");

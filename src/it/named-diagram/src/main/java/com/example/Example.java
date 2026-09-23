@@ -21,52 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
+package com.example;
 
 /**
- * Diagram written to a file.
+ * Example class discovered by the integration test.
  *
- * @since 0.0.1
+ * @since 1.0
  */
-public final class GeneratedDiagram {
-
-    /** Diagram. */
-    private final DiagramText diagram;
-
-    /** Destination. */
-    private final Path output;
-
-    /**
-     * New generated diagram.
-     *
-     * @param diagram Diagram
-     * @param output Destination
-     */
-    public GeneratedDiagram(final DiagramText diagram, final Path output) {
-        this.diagram = diagram;
-        this.output = output;
-    }
-
-    /**
-     * Generate the file.
-     *
-     * @return Output path
-     */
-    public Path generate() throws IOException {
-        final Path parent = this.output.toAbsolutePath().getParent();
-        if (parent != null) {
-            Files.createDirectories(parent);
-        }
-        Files.writeString(
-            this.output,
-            this.diagram.value(),
-            StandardCharsets.UTF_8
-        );
-        return this.output;
-    }
+public final class Example {
 }

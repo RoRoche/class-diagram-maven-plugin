@@ -31,7 +31,7 @@ import java.util.List;
  *
  * @since 0.0.1
  */
-public final class PlantUmlDiagram implements Diagram {
+public final class PlantUmlDiagram implements DiagramText {
 
     /** Classes. */
     private final Classes classes;

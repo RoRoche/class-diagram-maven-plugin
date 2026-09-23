@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example</groupId>
+  <artifactId>named-diagram-it</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <properties>
+    <maven.compiler.release>21</maven.compiler.release>
+  </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.github.roroche</groupId>
+        <artifactId>class-diagram-maven-plugin</artifactId>
+        <version>@project.version@</version>
+        <configuration>
+          <diagrams>
+            <diagram>
+              <name>example</name>
+              <packages>
+                <package>com.example</package>
+              </packages>
+            </diagram>
+          </diagrams>
+        </configuration>
+        <executions>
+          <execution>
+            <id>generate-class-diagrams</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
