@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.roroche</groupId>
   <artifactId>class-diagram-maven-plugin</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2</version>
   <packaging>maven-plugin</packaging>
   <name>class-diagram-maven-plugin</name>
   <description>Maven plugin to generate configurable PlantUML class diagrams from Java projects using ClassGraph</description>
