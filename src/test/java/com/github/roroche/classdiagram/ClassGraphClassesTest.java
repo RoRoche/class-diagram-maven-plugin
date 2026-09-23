@@ -23,6 +23,7 @@
  */
 package com.github.roroche.classdiagram;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import org.hamcrest.MatcherAssert;
@@ -34,9 +35,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.0.1
  */
-// @checkstyle LineLengthCheck (100 lines)
 // @checkstyle ParameterNameCheck (100 lines)
-// @checkstyle FullyQualifiedTypeCheck (100 lines)
 final class ClassGraphClassesTest {
 
     @Test
@@ -84,7 +83,10 @@ final class ClassGraphClassesTest {
         );
     }
 
-    private static List<Class<?>> classes(final List<String> excludedPackages, final List<String> excludedClasses) {
+    private static List<Class<?>> classes(
+        final List<String> excludedPackages,
+        final List<String> excludedClasses
+    ) {
         return new ClassGraphClasses(
             new DiagramSpec(
                 "test",
@@ -94,7 +96,7 @@ final class ClassGraphClassesTest {
                 Path.of("x")
             ),
             List.of(
-                System.getProperty("java.class.path").split(java.io.File.pathSeparator)
+                System.getProperty("java.class.path").split(File.pathSeparator)
             )
         ).value();
     }

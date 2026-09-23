@@ -23,15 +23,20 @@
  */
 package com.github.roroche.classdiagram;
 
+import com.github.roroche.classdiagram.matchers.MojoExecutionHasCause;
+import com.github.roroche.classdiagram.matchers.MojoExecutionHasMessage;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -42,17 +47,10 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.0.1
  */
-// @checkstyle EmptyLineBeforeFirstMemberCheck (300 lines)
-// @checkstyle EmptyLinesCheck (300 lines)
-// @checkstyle FullyQualifiedTypeCheck (300 lines)
-// @checkstyle JavadocVariableCheck (300 lines)
-// @checkstyle MethodsOrderCheck (300 lines)
-// @checkstyle QualifyInnerClassCheck (300 lines)
-// @checkstyle ReturnCountCheck (300 lines)
+// @checkstyle ReturnCountCheck (400 lines)
 @SuppressWarnings({
     "PMD.AvoidAccessibilityAlteration",
     "PMD.OnlyOneReturn",
-    "PMD.UnitTestContainsTooManyAsserts",
     "PMD.UnnecessaryLocalRule"
 })
 final class GenerateMojoTest {
@@ -62,61 +60,78 @@ final class GenerateMojoTest {
         final GenerateMojo mojo = GenerateMojoTest.mojo(temp, new MavenProject());
         MatcherAssert.assertThat(
             "Missing packages should fail generation",
-            GenerateMojoTest.failure(mojo).getMessage(),
-            Matchers.is("Cannot generate class diagram")
+            GenerateMojoTest.failure(mojo),
+            new MojoExecutionHasMessage(
+                Matchers.is("Cannot generate class diagram")
+            )
         );
     }
 
     @Test
     void rejectsEmptyPerPackageConfiguration(@TempDir final Path temp) throws Exception {
-        final GenerateMojo mojo = GenerateMojoTest.mojo(temp, new BrokenProject());
+        final GenerateMojo mojo = GenerateMojoTest.mojo(
+            temp,
+            new GenerateMojoTest.BrokenProject()
+        );
         GenerateMojoTest.set(mojo, "perPackage", true);
         final MojoExecutionException failure = GenerateMojoTest.failure(mojo);
         MatcherAssert.assertThat(
             "Empty per-package configuration should fail generation",
-            failure.getMessage(),
-            Matchers.is("Cannot generate class diagram")
-        );
-        MatcherAssert.assertThat(
-            "Validation should fail before resolving classpath",
-            failure.getCause(),
-            Matchers.hasProperty(
-                "message",
-                Matchers.is("Configure at least one package to analyze")
+            failure,
+            Matchers.allOf(
+                new MojoExecutionHasMessage(
+                    Matchers.is("Cannot generate class diagram")
+                ),
+                new MojoExecutionHasCause(
+                    Matchers.hasProperty(
+                        "message",
+                        Matchers.is("Configure at least one package to analyze")
+                    )
+                )
             )
         );
     }
 
     @Test
     void rejectsNamedDiagramWithoutPackages(@TempDir final Path temp) throws Exception {
-        final GenerateMojo mojo = GenerateMojoTest.mojo(temp, new BrokenProject());
+        final GenerateMojo mojo = GenerateMojoTest.mojo(
+            temp,
+            new GenerateMojoTest.BrokenProject()
+        );
         GenerateMojoTest.<DiagramConfiguration>list(mojo, "diagrams").add(
             new DiagramConfiguration()
         );
         final MojoExecutionException failure = GenerateMojoTest.failure(mojo);
         MatcherAssert.assertThat(
             "Named diagram without packages should fail generation",
-            failure.getMessage(),
-            Matchers.is("Cannot generate class diagram")
-        );
-        MatcherAssert.assertThat(
-            "Named diagram validation should fail before resolving classpath",
-            failure.getCause(),
-            Matchers.hasProperty(
-                "message",
-                Matchers.is("Configure at least one package to analyze")
+            failure,
+            Matchers.allOf(
+                new MojoExecutionHasMessage(
+                    Matchers.is("Cannot generate class diagram")
+                ),
+                new MojoExecutionHasCause(
+                    Matchers.hasProperty(
+                        "message",
+                        Matchers.is("Configure at least one package to analyze")
+                    )
+                )
             )
         );
     }
 
     @Test
     void reportsClasspathResolutionFailure(@TempDir final Path temp) throws Exception {
-        final GenerateMojo mojo = GenerateMojoTest.mojo(temp, new BrokenProject());
+        final GenerateMojo mojo = GenerateMojoTest.mojo(
+            temp,
+            new GenerateMojoTest.BrokenProject()
+        );
         GenerateMojoTest.list(mojo, "packages").add("com.github.roroche.classdiagram");
         MatcherAssert.assertThat(
             "Classpath resolution failure should have a dedicated message",
-            GenerateMojoTest.failure(mojo).getMessage(),
-            Matchers.is("Cannot resolve project classpath")
+            GenerateMojoTest.failure(mojo),
+            new MojoExecutionHasMessage(
+                Matchers.is("Cannot resolve project classpath")
+            )
         );
     }
 
@@ -124,25 +139,32 @@ final class GenerateMojoTest {
     void generatesConfiguredDiagram(@TempDir final Path temp) throws Exception {
         final GenerateMojo mojo = GenerateMojoTest.mojo(
             temp,
-            new CompileProject()
+            new GenerateMojoTest.CompileProject()
         );
-        final RecordingLog log = new RecordingLog();
+        final GenerateMojoTest.RecordingLog log = new GenerateMojoTest.RecordingLog();
         mojo.setLog(log);
         GenerateMojoTest.list(mojo, "packages").add("com.github.roroche.classdiagram");
         GenerateMojoTest.set(mojo, "failOnEmpty", false);
         mojo.execute();
         MatcherAssert.assertThat(
-            "Mojo should generate the default diagram",
-
-            Files.exists(temp.resolve("class-diagram.puml")),
-
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            "Mojo should log the generated output",
-            log.infos(),
-            Matchers.contains(
-                Matchers.containsString(temp.resolve("class-diagram.puml").toString())
+            "Mojo should generate and log the default diagram",
+            new MapOf<String, Object>(
+                new MapEntry<>("generated", Files.exists(temp.resolve("class-diagram.puml"))),
+                new MapEntry<>("infos", log.infos())
+            ),
+            Matchers.is(
+                new MapOf<String, Object>(
+                    new MapEntry<>("generated", true),
+                    new MapEntry<>(
+                        "infos",
+                        List.of(
+                            String.format(
+                                "Generated %s",
+                                temp.resolve("class-diagram.puml")
+                            )
+                        )
+                    )
+                )
             )
         );
     }
@@ -179,6 +201,7 @@ final class GenerateMojoTest {
     }
 
     private static final class BrokenProject extends MavenProject {
+
         @Override
         public List<String> getCompileClasspathElements()
             throws DependencyResolutionRequiredException {
@@ -193,6 +216,7 @@ final class GenerateMojoTest {
     }
 
     private static final class CompileProject extends MavenProject {
+
         @Override
         public List<String> getCompileClasspathElements() {
             return List.of(
@@ -207,11 +231,11 @@ final class GenerateMojoTest {
     }
 
     private static final class RecordingLog implements Log {
-        private final List<String> infos = new java.util.ArrayList<>(0);
 
-        List<String> infos() {
-            return List.copyOf(this.infos);
-        }
+        /**
+         * Recorded info messages.
+         */
+        private final List<String> infos = new ArrayList<>(0);
 
         @Override
         public boolean isDebugEnabled() {
@@ -291,6 +315,10 @@ final class GenerateMojoTest {
         @Override
         public void error(final Throwable error) {
             // Not used in these tests.
+        }
+
+        List<String> infos() {
+            return List.copyOf(this.infos);
         }
     }
 }

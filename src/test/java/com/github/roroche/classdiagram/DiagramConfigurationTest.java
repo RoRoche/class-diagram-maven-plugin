@@ -35,7 +35,6 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.0.1
  */
-// @checkstyle LineLengthCheck (150 lines)
 @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
 final class DiagramConfigurationTest {
 
@@ -161,13 +160,20 @@ final class DiagramConfigurationTest {
     }
 
     @SuppressWarnings("unchecked")
-    private static List<String> list(final DiagramConfiguration cfg, final String name) throws Exception {
+    private static List<String> list(
+        final DiagramConfiguration cfg,
+        final String name
+    ) throws Exception {
         final Field fld = DiagramConfiguration.class.getDeclaredField(name);
         fld.setAccessible(true);
         return (List<String>) fld.get(cfg);
     }
 
-    private static void set(final DiagramConfiguration cfg, final String name, final Object value) throws Exception {
+    private static void set(
+        final DiagramConfiguration cfg,
+        final String name,
+        final Object value
+    ) throws Exception {
         final Field fld = DiagramConfiguration.class.getDeclaredField(name);
         fld.setAccessible(true);
         fld.set(cfg, value);

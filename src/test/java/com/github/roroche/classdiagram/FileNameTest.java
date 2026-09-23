@@ -33,7 +33,6 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.0.1
  */
-// @checkstyle AvoidInlineConditionalsCheck (100 lines)
 @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
 final class FileNameTest {
 
@@ -54,7 +53,7 @@ final class FileNameTest {
         fld.set(cfg, "custom.puml");
         MatcherAssert.assertThat(
             "Configured file name should override default",
-            cfg == null ? "" : new FileName(cfg, "domain").toString(),
+            new FileName(cfg, "domain").toString(),
             Matchers.is("custom.puml")
         );
     }

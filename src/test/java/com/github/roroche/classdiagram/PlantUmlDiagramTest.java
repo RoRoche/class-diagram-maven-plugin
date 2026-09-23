@@ -35,7 +35,6 @@ import org.junit.jupiter.api.Test;
  */
 // @checkstyle IllegalCatchCheck (100 lines)
 // @checkstyle ReturnCountCheck (100 lines)
-// @checkstyle WhitespaceAroundCheck (100 lines)
 @SuppressWarnings({
     "PMD.AvoidCatchingGenericException",
     "PMD.OnlyOneReturn"
@@ -85,5 +84,8 @@ final class PlantUmlDiagramTest {
         }
     }
 
-    static final class Sample {}
+    static final class Sample {
+
+        // empty class for testing purposes
+    }
 }

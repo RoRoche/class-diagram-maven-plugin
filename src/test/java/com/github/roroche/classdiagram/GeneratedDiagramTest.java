@@ -23,15 +23,20 @@
  */
 package com.github.roroche.classdiagram;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.core.AllOf;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -41,14 +46,12 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.0.1
  */
 // @checkstyle BracketsStructureCheck (120 lines)
-// @checkstyle FullyQualifiedTypeCheck (120 lines)
 // @checkstyle IllegalCatchCheck (120 lines)
 // @checkstyle ReturnCountCheck (120 lines)
 @SuppressWarnings({
     "PMD.AvoidCatchingGenericException",
     "PMD.CloseResource",
     "PMD.OnlyOneReturn",
-    "PMD.UnitTestContainsTooManyAsserts",
     "PMD.UnnecessaryLocalRule"
 })
 final class GeneratedDiagramTest {
@@ -93,7 +96,7 @@ final class GeneratedDiagramTest {
         MatcherAssert.assertThat(
             "Root output cannot be written as a diagram file",
             failure(new GeneratedDiagram(() -> "diagram", Path.of("/"))),
-            Matchers.instanceOf(java.io.IOException.class)
+            Matchers.instanceOf(IOException.class)
         );
     }
 
@@ -115,14 +118,15 @@ final class GeneratedDiagramTest {
                 }
             }).toList();
             MatcherAssert.assertThat(
-                "Concurrent generation should return both destinations",
-                generated,
-                Matchers.contains(out, out)
-            );
-            MatcherAssert.assertThat(
-                "Concurrent generation should leave an output file",
-                Files.exists(out),
-                Matchers.is(true)
+                "Concurrent generation should return destinations and create output",
+                new MapOf<String, Object>(
+                    new MapEntry<>("generated", generated),
+                    new MapEntry<>("exists", Files.exists(out))
+                ),
+                new AllOf<Map<String, Object>>(
+                    Matchers.hasEntry("generated", List.of(out, out)),
+                    Matchers.hasEntry("exists", true)
+                )
             );
         } finally {
             service.shutdownNow();

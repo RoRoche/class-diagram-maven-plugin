@@ -35,18 +35,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.0.1
  */
-// @checkstyle EmptyLineBeforeFirstMemberCheck (100 lines)
-// @checkstyle MethodsOrderCheck (150 lines)
 final class DiagramSpecTest {
-    private static DiagramSpec spec() {
-        return new DiagramSpec(
-            "domain",
-            List.of("a"),
-            List.of("b"),
-            List.of("c"),
-            Path.of("x.puml")
-        );
-    }
 
     @Test
     void returnsName() {
@@ -126,6 +115,16 @@ final class DiagramSpecTest {
             "Excluded classes should be defensively copied",
             item.excludedClasses(),
             Matchers.contains("a")
+        );
+    }
+
+    private static DiagramSpec spec() {
+        return new DiagramSpec(
+            "domain",
+            List.of("a"),
+            List.of("b"),
+            List.of("c"),
+            Path.of("x.puml")
         );
     }
 }

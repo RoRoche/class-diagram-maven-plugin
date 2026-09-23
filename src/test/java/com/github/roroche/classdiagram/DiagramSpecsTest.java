@@ -36,7 +36,6 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.0.1
  */
-// @checkstyle LineLengthCheck (250 lines)
 @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
 final class DiagramSpecsTest {
 
@@ -161,7 +160,11 @@ final class DiagramSpecsTest {
     void createsNamedConfiguredDirectory() throws Exception {
         MatcherAssert.assertThat(
             "Named spec should use configured directory",
-            named("domain", null, new File("target/custom")).output(),
+            named(
+                "domain",
+                null,
+                new File("target/custom")
+            ).output(),
             Matchers.is(Path.of("target/custom/domain.puml"))
         );
     }
@@ -218,14 +221,22 @@ final class DiagramSpecsTest {
     }
 
     private static DiagramSpec named() throws Exception {
-        final DiagramConfiguration cfg = config("domain", null, null);
+        final DiagramConfiguration cfg = config(
+            "domain",
+            null,
+            null
+        );
         list(cfg, "packages").add("com.acme.domain");
         list(cfg, "excludePackages").add("com.acme.domain.internal");
         list(cfg, "excludeClasses").add("**.*Factory");
         return specs(cfg);
     }
 
-    private static DiagramSpec named(final String name, final String file, final File dir) throws Exception {
+    private static DiagramSpec named(
+        final String name,
+        final String file,
+        final File dir
+    ) throws Exception {
         return specs(config(name, file, dir));
     }
 
@@ -241,7 +252,11 @@ final class DiagramSpecsTest {
         ).value().get(0);
     }
 
-    private static DiagramConfiguration config(final String name, final String file, final File dir) throws Exception {
+    private static DiagramConfiguration config(
+        final String name,
+        final String file,
+        final File dir
+    ) throws Exception {
         final DiagramConfiguration cfg = new DiagramConfiguration();
         set(cfg, "name", name);
         set(cfg, "fileName", file);
@@ -250,7 +265,10 @@ final class DiagramSpecsTest {
     }
 
     @SuppressWarnings("unchecked")
-    private static List<String> list(final DiagramConfiguration cfg, final String name) throws Exception {
+    private static List<String> list(
+        final DiagramConfiguration cfg,
+        final String name
+    ) throws Exception {
         final Field fld = DiagramConfiguration.class.getDeclaredField(name);
         fld.setAccessible(true);
         return (List<String>) fld.get(cfg);
