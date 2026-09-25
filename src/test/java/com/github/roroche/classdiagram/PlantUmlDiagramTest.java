@@ -24,6 +24,8 @@
 package com.github.roroche.classdiagram;
 
 import java.util.List;
+import org.cactoos.Scalar;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -47,7 +49,7 @@ final class PlantUmlDiagramTest {
             "Rendered diagram should contain class name",
             new PlantUmlDiagram(
                 "sample",
-                () -> List.of(Sample.class),
+                () -> new ListOf<>(Sample.class),
                 true
             ).value(),
             Matchers.containsString("Sample")
@@ -67,7 +69,9 @@ final class PlantUmlDiagramTest {
     void rejectsEmptyWhenRequired() {
         MatcherAssert.assertThat(
             "Required non-empty diagram should report its name",
-            failure(new PlantUmlDiagram("empty", List::of, true)),
+            new PlantUmlDiagramTest.Failure(
+                new PlantUmlDiagram("empty", List::of, true)
+            ).value(),
             Matchers.hasProperty(
                 "message",
                 Matchers.is("No classes found for diagram 'empty'")
@@ -75,17 +79,40 @@ final class PlantUmlDiagramTest {
         );
     }
 
-    private static Exception failure(final PlantUmlDiagram diagram) {
-        try {
-            diagram.value();
-            return new IllegalStateException("No exception");
-        } catch (final Exception err) {
-            return err;
-        }
-    }
-
     static final class Sample {
 
         // empty class for testing purposes
+    }
+
+    /**
+     * Failure from PlantUML diagram.
+     *
+     * @since 0.0.3
+     */
+    private static final class Failure implements Scalar<Exception> {
+
+        /**
+         * PlantUML diagram.
+         */
+        private final PlantUmlDiagram diagram;
+
+        /**
+         * New failure.
+         *
+         * @param diagram PlantUML diagram
+         */
+        Failure(final PlantUmlDiagram diagram) {
+            this.diagram = diagram;
+        }
+
+        @Override
+        public Exception value() {
+            try {
+                this.diagram.value();
+                return new IllegalStateException("No exception");
+            } catch (final Exception err) {
+                return err;
+            }
+        }
     }
 }

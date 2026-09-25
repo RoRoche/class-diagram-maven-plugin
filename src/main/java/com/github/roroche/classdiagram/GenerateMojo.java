@@ -26,9 +26,7 @@ package com.github.roroche.classdiagram;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -53,42 +51,60 @@ import org.apache.maven.project.MavenProject;
 // @checkstyle MemberNameCheck (500 lines)
 public final class GenerateMojo extends AbstractMojo {
 
-    /** Maven project. */
+    /**
+     * Maven project.
+     */
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
-    /** Packages for simple configuration. */
+    /**
+     * Packages for simple configuration.
+     */
     @Parameter(property = "classDiagram.packages")
     private final List<String> packages = new ArrayList<>(0);
 
-    /** Excluded packages for simple configuration. */
+    /**
+     * Excluded packages for simple configuration.
+     */
     @Parameter
     private final List<String> excludePackages = new ArrayList<>(0);
 
-    /** Excluded class-name patterns for simple configuration. */
+    /**
+     * Excluded class-name patterns for simple configuration.
+     */
     @Parameter
     private final List<String> excludeClasses = new ArrayList<>(0);
 
-    /** Explicit named diagrams. */
+    /**
+     * Explicit named diagrams.
+     */
     @Parameter
     private final List<DiagramConfiguration> diagrams = new ArrayList<>(0);
 
-    /** Default output directory. */
+    /**
+     * Default output directory.
+     */
     @Parameter(
         defaultValue = "${project.build.directory}/class-diagrams",
         required = true
     )
     private File outputDirectory;
 
-    /** Default aggregate output file. */
+    /**
+     * Default aggregate output file.
+     */
     @Parameter(defaultValue = "class-diagram.puml", required = true)
     private String fileName;
 
-    /** Generate one file per configured package. */
+    /**
+     * Generate one file per configured package.
+     */
     @Parameter(defaultValue = "false")
     private boolean perPackage;
 
-    /** Fail when no class matches a diagram. */
+    /**
+     * Fail when no class matches a diagram.
+     */
     @Parameter(defaultValue = "true")
     private boolean failOnEmpty;
 
@@ -118,7 +134,7 @@ public final class GenerateMojo extends AbstractMojo {
                     "Configure at least one package to analyze"
                 );
             }
-            final List<String> classpath = this.classpath();
+            final List<String> classpath = new Classpath(this.project);
             for (final DiagramSpec spec : specs) {
                 final Path output = new GeneratedDiagram(
                     new PlantUmlDiagram(
@@ -135,12 +151,5 @@ public final class GenerateMojo extends AbstractMojo {
         } catch (final Exception err) {
             throw new MojoExecutionException("Cannot generate class diagram", err);
         }
-    }
-
-    private List<String> classpath() throws DependencyResolutionRequiredException {
-        final Set<String> elements = LinkedHashSet.newLinkedHashSet(0);
-        elements.addAll(this.project.getCompileClasspathElements());
-        elements.addAll(this.project.getRuntimeClasspathElements());
-        return List.copyOf(elements);
     }
 }

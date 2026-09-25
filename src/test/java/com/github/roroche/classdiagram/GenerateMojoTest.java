@@ -35,6 +35,7 @@ import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
+import org.cactoos.list.ListOf;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
@@ -157,7 +158,7 @@ final class GenerateMojoTest {
                     new MapEntry<>("generated", true),
                     new MapEntry<>(
                         "infos",
-                        List.of(
+                        new ListOf<>(
                             String.format(
                                 "Generated %s",
                                 temp.resolve("class-diagram.puml")
@@ -219,14 +220,14 @@ final class GenerateMojoTest {
 
         @Override
         public List<String> getCompileClasspathElements() {
-            return List.of(
+            return new ListOf<>(
                 System.getProperty("java.class.path").split(File.pathSeparator)
             );
         }
 
         @Override
         public List<String> getRuntimeClasspathElements() {
-            return List.of();
+            return new ListOf<>();
         }
     }
 

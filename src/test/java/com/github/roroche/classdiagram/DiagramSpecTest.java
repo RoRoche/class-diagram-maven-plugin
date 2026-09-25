@@ -26,6 +26,8 @@ package com.github.roroche.classdiagram;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import org.cactoos.Scalar;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -41,7 +43,7 @@ final class DiagramSpecTest {
     void returnsName() {
         MatcherAssert.assertThat(
             "Name should be retained",
-            spec().name(),
+            new DiagramSpecTest.Spec().value().name(),
             Matchers.is("domain")
         );
     }
@@ -50,7 +52,7 @@ final class DiagramSpecTest {
     void returnsPackages() {
         MatcherAssert.assertThat(
             "Packages should be retained",
-            spec().packages(),
+            new DiagramSpecTest.Spec().value().packages(),
             Matchers.contains("a")
         );
     }
@@ -59,7 +61,7 @@ final class DiagramSpecTest {
     void returnsExcludedPackages() {
         MatcherAssert.assertThat(
             "Excluded packages should be retained",
-            spec().excludedPackages(),
+            new DiagramSpecTest.Spec().value().excludedPackages(),
             Matchers.contains("b")
         );
     }
@@ -68,7 +70,7 @@ final class DiagramSpecTest {
     void returnsExcludedClasses() {
         MatcherAssert.assertThat(
             "Excluded classes should be retained",
-            spec().excludedClasses(),
+            new DiagramSpecTest.Spec().value().excludedClasses(),
             Matchers.contains("c")
         );
     }
@@ -77,15 +79,21 @@ final class DiagramSpecTest {
     void returnsOutput() {
         MatcherAssert.assertThat(
             "Output should be retained",
-            spec().output(),
+            new DiagramSpecTest.Spec().value().output(),
             Matchers.is(Path.of("x.puml"))
         );
     }
 
     @Test
     void copiesPackages() {
-        final List<String> values = new ArrayList<>(List.of("a"));
-        final DiagramSpec item = new DiagramSpec("x", values, List.of(), List.of(), Path.of("x"));
+        final List<String> values = new ArrayList<>(new ListOf<>("a"));
+        final DiagramSpec item = new DiagramSpec(
+            "x",
+            values,
+            new ListOf<>(),
+            new ListOf<>(),
+            Path.of("x")
+        );
         values.add("b");
         MatcherAssert.assertThat(
             "Packages should be defensively copied",
@@ -96,8 +104,14 @@ final class DiagramSpecTest {
 
     @Test
     void copiesExcludedPackages() {
-        final List<String> values = new ArrayList<>(List.of("a"));
-        final DiagramSpec item = new DiagramSpec("x", List.of(), values, List.of(), Path.of("x"));
+        final List<String> values = new ArrayList<>(new ListOf<>("a"));
+        final DiagramSpec item = new DiagramSpec(
+            "x",
+            new ListOf<>(),
+            values,
+            new ListOf<>(),
+            Path.of("x")
+        );
         values.add("b");
         MatcherAssert.assertThat(
             "Excluded packages should be defensively copied",
@@ -108,8 +122,14 @@ final class DiagramSpecTest {
 
     @Test
     void copiesExcludedClasses() {
-        final List<String> values = new ArrayList<>(List.of("a"));
-        final DiagramSpec item = new DiagramSpec("x", List.of(), List.of(), values, Path.of("x"));
+        final List<String> values = new ArrayList<>(new ListOf<>("a"));
+        final DiagramSpec item = new DiagramSpec(
+            "x",
+            new ListOf<>(),
+            new ListOf<>(),
+            values,
+            Path.of("x")
+        );
         values.add("b");
         MatcherAssert.assertThat(
             "Excluded classes should be defensively copied",
@@ -118,13 +138,22 @@ final class DiagramSpecTest {
         );
     }
 
-    private static DiagramSpec spec() {
-        return new DiagramSpec(
-            "domain",
-            List.of("a"),
-            List.of("b"),
-            List.of("c"),
-            Path.of("x.puml")
-        );
+    /**
+     * Fake diagram specification.
+     *
+     * @since 0.0.3
+     */
+    private static final class Spec implements Scalar<DiagramSpec> {
+
+        @Override
+        public DiagramSpec value() {
+            return new DiagramSpec(
+                "domain",
+                new ListOf<>("a"),
+                new ListOf<>("b"),
+                new ListOf<>("c"),
+                Path.of("x.puml")
+            );
+        }
     }
 }

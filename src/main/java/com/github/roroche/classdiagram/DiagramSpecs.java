@@ -26,13 +26,13 @@ package com.github.roroche.classdiagram;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import org.cactoos.list.ListOf;
 
 /**
  * Converts Maven configuration into immutable diagram specifications.
  *
  * @since 0.0.1
  */
+// @checkstyle ParameterNameCheck (500 lines)
 // @checkstyle MemberNameCheck (500 lines)
 public final class DiagramSpecs {
 
@@ -111,9 +111,18 @@ public final class DiagramSpecs {
     public List<DiagramSpec> value() {
         final List<DiagramSpec> specs = new ArrayList<>(0);
         if (!this.diagrams.isEmpty()) {
-            this.diagrams.stream().map(this::named).forEach(specs::add);
+            this.diagrams.stream().map(
+                config -> new Named(this.directory, config).value()
+            ).forEach(specs::add);
         } else if (this.perPackage) {
-            this.packages.stream().map(this::single).forEach(specs::add);
+            this.packages.stream().map(
+                pkg -> new Single(
+                    pkg,
+                    this.excludedPackages,
+                    this.excludedClasses,
+                    this.directory
+                ).value()
+            ).forEach(specs::add);
         } else {
             specs.add(
                 new DiagramSpec(
@@ -126,33 +135,5 @@ public final class DiagramSpecs {
             );
         }
         return List.copyOf(specs);
-    }
-
-    // @checkstyle AvoidInlineConditionalsCheck (16 lines)
-    private DiagramSpec named(final DiagramConfiguration config) {
-        final String name = config.getName() == null
-            ? "class-diagram" : config.getName();
-        return new DiagramSpec(
-            name,
-            config.getPackages(),
-            config.getExcludePackages(),
-            config.getExcludeClasses(),
-            new Target(
-                this.directory,
-                config
-            ).value().toPath().resolve(
-                new FileName(config, name).toString()
-            )
-        );
-    }
-
-    private DiagramSpec single(final String pkg) {
-        return new DiagramSpec(
-            pkg,
-            new ListOf<>(pkg),
-            this.excludedPackages,
-            this.excludedClasses,
-            this.directory.toPath().resolve(String.format("%s.puml", pkg))
-        );
     }
 }

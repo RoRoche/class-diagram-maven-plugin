@@ -76,18 +76,11 @@ public final class ClassGraphClasses implements Classes {
         final List<Class<?>> classes = new ArrayList<>(0);
         try (ScanResult scan = graph.scan()) {
             scan.getAllClasses().stream()
-                .filter(info -> !ClassGraphClasses.rejected(info, rejected))
+                .filter(info -> !new Rejected(info, rejected).value())
                 .sorted(Comparator.comparing(ClassInfo::getName))
                 .map(ClassInfo::loadClass)
                 .forEach(classes::add);
         }
         return List.copyOf(classes);
-    }
-
-    private static boolean rejected(
-        final ClassInfo info,
-        final List<ClassNamePattern> patterns
-    ) {
-        return patterns.stream().anyMatch(pattern -> pattern.matches(info.getName()));
     }
 }

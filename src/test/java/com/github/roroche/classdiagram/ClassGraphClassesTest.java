@@ -23,9 +23,8 @@
  */
 package com.github.roroche.classdiagram;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.util.List;
+import org.cactoos.iterable.Sorted;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -35,14 +34,13 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.0.1
  */
-// @checkstyle ParameterNameCheck (100 lines)
 final class ClassGraphClassesTest {
 
     @Test
     void discoversClasses() {
         MatcherAssert.assertThat(
             "ClassGraph should discover classes from accepted package",
-            classes(List.of(), List.of()),
+            new FakeClasses(new ListOf<>(), new ListOf<>()),
             Matchers.hasItem(ClassGraphClasses.class)
         );
     }
@@ -51,7 +49,7 @@ final class ClassGraphClassesTest {
     void excludesClass() {
         MatcherAssert.assertThat(
             "Class pattern should exclude matching class",
-            classes(List.of(), List.of("**.ClassGraphClasses")),
+            new FakeClasses(new ListOf<>(), new ListOf<>("**.ClassGraphClasses")),
             Matchers.not(Matchers.hasItem(ClassGraphClasses.class))
         );
     }
@@ -60,7 +58,7 @@ final class ClassGraphClassesTest {
     void keepsClassesNotMatchingExcludedClass() {
         MatcherAssert.assertThat(
             "Class pattern should only exclude matching classes",
-            classes(List.of(), List.of("**.ClassGraphClasses")),
+            new FakeClasses(new ListOf<>(), new ListOf<>("**.ClassGraphClasses")),
             Matchers.hasItem(DiagramSpec.class)
         );
     }
@@ -69,7 +67,7 @@ final class ClassGraphClassesTest {
     void excludesPackage() {
         MatcherAssert.assertThat(
             "Rejected package should remove discovered classes",
-            classes(List.of("com.github.roroche.classdiagram"), List.of()),
+            new FakeClasses(new ListOf<>("com.github.roroche.classdiagram"), new ListOf<>()),
             Matchers.empty()
         );
     }
@@ -78,34 +76,16 @@ final class ClassGraphClassesTest {
     void sortsClasses() {
         MatcherAssert.assertThat(
             "Discovered classes should be sorted by name",
-            names(classes(List.of(), List.of())),
-            Matchers.is(sorted(names(classes(List.of(), List.of()))))
-        );
-    }
-
-    private static List<Class<?>> classes(
-        final List<String> excludedPackages,
-        final List<String> excludedClasses
-    ) {
-        return new ClassGraphClasses(
-            new DiagramSpec(
-                "test",
-                List.of("com.github.roroche.classdiagram"),
-                excludedPackages,
-                excludedClasses,
-                Path.of("x")
-            ),
-            List.of(
-                System.getProperty("java.class.path").split(File.pathSeparator)
+            new ClassNames(new FakeClasses(new ListOf<>(), new ListOf<>())),
+            Matchers.is(
+                new ListOf<>(
+                    new Sorted<>(
+                        new ClassNames(
+                            new FakeClasses(new ListOf<>(), new ListOf<>())
+                        )
+                    )
+                )
             )
-        ).value();
-    }
-
-    private static List<String> names(final List<Class<?>> values) {
-        return values.stream().map(Class::getName).toList();
-    }
-
-    private static List<String> sorted(final List<String> values) {
-        return values.stream().sorted().toList();
+        );
     }
 }

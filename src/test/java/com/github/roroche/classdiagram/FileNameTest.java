@@ -23,7 +23,6 @@
  */
 package com.github.roroche.classdiagram;
 
-import java.lang.reflect.Field;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -33,7 +32,6 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.0.1
  */
-@SuppressWarnings("PMD.AvoidAccessibilityAlteration")
 final class FileNameTest {
 
     @Test
@@ -47,13 +45,12 @@ final class FileNameTest {
 
     @Test
     void createsConfiguredFileName() throws Exception {
-        final DiagramConfiguration cfg = new DiagramConfiguration();
-        final Field fld = DiagramConfiguration.class.getDeclaredField("fileName");
-        fld.setAccessible(true);
-        fld.set(cfg, "custom.puml");
         MatcherAssert.assertThat(
             "Configured file name should override default",
-            new FileName(cfg, "domain").toString(),
+            new FileName(
+                new DiagramConfigurationWithField("fileName", "custom.puml").value(),
+                "domain"
+            ).toString(),
             Matchers.is("custom.puml")
         );
     }

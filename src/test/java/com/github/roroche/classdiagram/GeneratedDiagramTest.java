@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.cactoos.Scalar;
+import org.cactoos.list.ListOf;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
@@ -47,7 +49,6 @@ import org.junit.jupiter.api.io.TempDir;
  */
 // @checkstyle BracketsStructureCheck (120 lines)
 // @checkstyle IllegalCatchCheck (120 lines)
-// @checkstyle ReturnCountCheck (120 lines)
 @SuppressWarnings({
     "PMD.AvoidCatchingGenericException",
     "PMD.CloseResource",
@@ -95,7 +96,12 @@ final class GeneratedDiagramTest {
     void rejectsRootOutput() {
         MatcherAssert.assertThat(
             "Root output cannot be written as a diagram file",
-            failure(new GeneratedDiagram(() -> "diagram", Path.of("/"))),
+            new GeneratedDiagramTest.Failure(
+                new GeneratedDiagram(
+                    () -> "diagram",
+                    Path.of("/")
+                )
+            ).value(),
             Matchers.instanceOf(IOException.class)
         );
     }
@@ -106,9 +112,9 @@ final class GeneratedDiagramTest {
         final ExecutorService service = Executors.newFixedThreadPool(2);
         try {
             final List<Path> generated = service.invokeAll(
-                List.of(
-                    task(out, "first"),
-                    task(out, "second")
+                new ListOf<>(
+                    new GeneratedDiagramTest.Task(out, "first"),
+                    new GeneratedDiagramTest.Task(out, "second")
                 )
             ).stream().map(future -> {
                 try {
@@ -124,7 +130,7 @@ final class GeneratedDiagramTest {
                     new MapEntry<>("exists", Files.exists(out))
                 ),
                 new AllOf<Map<String, Object>>(
-                    Matchers.hasEntry("generated", List.of(out, out)),
+                    Matchers.hasEntry("generated", new ListOf<>(out, out)),
                     Matchers.hasEntry("exists", true)
                 )
             );
@@ -133,16 +139,71 @@ final class GeneratedDiagramTest {
         }
     }
 
-    private static Callable<Path> task(final Path out, final String value) {
-        return () -> new GeneratedDiagram(() -> value, out).generate();
+    /**
+     * Generated diagram task.
+     *
+     * @since 0.0.3
+     */
+    private static final class Task implements Callable<Path> {
+
+        /**
+         * Output path.
+         */
+        private final Path out;
+
+        /**
+         * Diagram text.
+         */
+        private final String value;
+
+        /**
+         * New generated diagram task.
+         *
+         * @param out Output path
+         * @param value Diagram text
+         */
+        Task(final Path out, final String value) {
+            this.out = out;
+            this.value = value;
+        }
+
+        @Override
+        public Path call() throws Exception {
+            return new GeneratedDiagram(() -> this.value, this.out).generate();
+        }
     }
 
-    private static Exception failure(final GeneratedDiagram diagram) {
-        try {
-            diagram.generate();
-            return new IllegalStateException("No exception");
-        } catch (final Exception err) {
-            return err;
+    /**
+     * Failure from generated diagram.
+     *
+     * @since 0.0.3
+     */
+    // @checkstyle ReturnCountCheck (50 lines)
+    // @checkstyle IllegalCatchCheck (50 lines)
+    private static final class Failure implements Scalar<Exception> {
+
+        /**
+         * Generated diagram.
+         */
+        private final GeneratedDiagram diagram;
+
+        /**
+         * New failure.
+         *
+         * @param diagram Generated diagram
+         */
+        Failure(final GeneratedDiagram diagram) {
+            this.diagram = diagram;
+        }
+
+        @Override
+        public Exception value() {
+            try {
+                this.diagram.generate();
+                return new IllegalStateException("No exception");
+            } catch (final Exception err) {
+                return err;
+            }
         }
     }
 }

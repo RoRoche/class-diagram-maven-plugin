@@ -31,12 +31,7 @@ import org.cactoos.Scalar;
  *
  * @since 0.0.1
  */
-final class ClassNameRegex implements Scalar<Pattern> {
-
-    /**
-     * Regex metacharacters to escape.
-     */
-    private final String special;
+public final class ClassNameRegex implements Scalar<Pattern> {
 
     /**
      * Glob expression.
@@ -48,53 +43,12 @@ final class ClassNameRegex implements Scalar<Pattern> {
      *
      * @param glob Glob expression
      */
-    ClassNameRegex(final String glob) {
-        this.special = "\\.^$|?+()[]{}";
+    public ClassNameRegex(final String glob) {
         this.glob = glob;
     }
 
     @Override
     public Pattern value() {
-        return Pattern.compile(this.regex());
-    }
-
-    private String regex() {
-        final StringBuilder regex = new StringBuilder("^");
-        int idx = 0;
-        while (idx < this.glob.length()) {
-            idx += this.append(idx, regex);
-        }
-        return regex.append('$').toString();
-    }
-
-    private int append(final int idx, final StringBuilder regex) {
-        final int step;
-        final char chr = this.glob.charAt(idx);
-        if (chr == '*') {
-            step = this.appendWildcard(idx, regex);
-        } else {
-            this.appendLiteral(chr, regex);
-            step = 1;
-        }
-        return step;
-    }
-
-    private int appendWildcard(final int idx, final StringBuilder regex) {
-        final int step;
-        if (idx + 1 < this.glob.length() && this.glob.charAt(idx + 1) == '*') {
-            regex.append(".*");
-            step = 2;
-        } else {
-            regex.append("[^.]*");
-            step = 1;
-        }
-        return step;
-    }
-
-    private void appendLiteral(final char chr, final StringBuilder regex) {
-        if (this.special.indexOf(chr) >= 0) {
-            regex.append('\\');
-        }
-        regex.append(chr);
+        return Pattern.compile(new Regex(this.glob).value());
     }
 }

@@ -24,7 +24,6 @@
 package com.github.roroche.classdiagram;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -34,7 +33,6 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.0.1
  */
-@SuppressWarnings("PMD.AvoidAccessibilityAlteration")
 final class TargetTest {
 
     @Test
@@ -49,14 +47,13 @@ final class TargetTest {
 
     @Test
     void returnsConfiguredDirectory() throws Exception {
-        final DiagramConfiguration cfg = new DiagramConfiguration();
         final File dir = new File("target/custom");
-        final Field fld = DiagramConfiguration.class.getDeclaredField("outputDirectory");
-        fld.setAccessible(true);
-        fld.set(cfg, dir);
         MatcherAssert.assertThat(
             "Configured directory should override default",
-            new Target(new File("target/default"), cfg).value(),
+            new Target(
+                new File("target/default"),
+                new DiagramConfigurationWithField("outputDirectory", dir).value()
+            ).value(),
             Matchers.is(dir)
         );
     }

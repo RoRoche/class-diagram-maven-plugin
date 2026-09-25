@@ -24,8 +24,6 @@
 package com.github.roroche.classdiagram;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -35,7 +33,6 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.0.1
  */
-@SuppressWarnings("PMD.AvoidAccessibilityAlteration")
 final class DiagramConfigurationTest {
 
     @Test
@@ -94,11 +91,12 @@ final class DiagramConfigurationTest {
 
     @Test
     void returnsConfiguredName() throws Exception {
-        final DiagramConfiguration cfg = new DiagramConfiguration();
-        set(cfg, "name", "domain");
         MatcherAssert.assertThat(
             "Configured name should be returned",
-            cfg.getName(),
+            new DiagramConfigurationWithField(
+                "name",
+                "domain"
+            ).value().getName(),
             Matchers.is("domain")
         );
     }
@@ -106,7 +104,7 @@ final class DiagramConfigurationTest {
     @Test
     void returnsConfiguredPackages() throws Exception {
         final DiagramConfiguration cfg = new DiagramConfiguration();
-        list(cfg, "packages").add("com.acme");
+        new FieldAsList(cfg, "packages").add("com.acme");
         MatcherAssert.assertThat(
             "Configured packages should be returned",
             cfg.getPackages(),
@@ -117,7 +115,7 @@ final class DiagramConfigurationTest {
     @Test
     void returnsConfiguredExcludedPackages() throws Exception {
         final DiagramConfiguration cfg = new DiagramConfiguration();
-        list(cfg, "excludePackages").add("com.acme.internal");
+        new FieldAsList(cfg, "excludePackages").add("com.acme.internal");
         MatcherAssert.assertThat(
             "Configured excluded packages should be returned",
             cfg.getExcludePackages(),
@@ -128,7 +126,7 @@ final class DiagramConfigurationTest {
     @Test
     void returnsConfiguredExcludedClasses() throws Exception {
         final DiagramConfiguration cfg = new DiagramConfiguration();
-        list(cfg, "excludeClasses").add("**.*Test");
+        new FieldAsList(cfg, "excludeClasses").add("**.*Test");
         MatcherAssert.assertThat(
             "Configured excluded classes should be returned",
             cfg.getExcludeClasses(),
@@ -138,44 +136,26 @@ final class DiagramConfigurationTest {
 
     @Test
     void returnsConfiguredDirectory() throws Exception {
-        final DiagramConfiguration cfg = new DiagramConfiguration();
         final File dir = new File("target/custom");
-        set(cfg, "outputDirectory", dir);
         MatcherAssert.assertThat(
             "Configured directory should be returned",
-            cfg.getOutputDirectory(),
+            new DiagramConfigurationWithField(
+                "outputDirectory",
+                dir
+            ).value().getOutputDirectory(),
             Matchers.is(dir)
         );
     }
 
     @Test
     void returnsConfiguredFile() throws Exception {
-        final DiagramConfiguration cfg = new DiagramConfiguration();
-        set(cfg, "fileName", "domain.puml");
         MatcherAssert.assertThat(
             "Configured file should be returned",
-            cfg.getFileName(),
+            new DiagramConfigurationWithField(
+                "fileName",
+                "domain.puml"
+            ).value().getFileName(),
             Matchers.is("domain.puml")
         );
-    }
-
-    @SuppressWarnings("unchecked")
-    private static List<String> list(
-        final DiagramConfiguration cfg,
-        final String name
-    ) throws Exception {
-        final Field fld = DiagramConfiguration.class.getDeclaredField(name);
-        fld.setAccessible(true);
-        return (List<String>) fld.get(cfg);
-    }
-
-    private static void set(
-        final DiagramConfiguration cfg,
-        final String name,
-        final Object value
-    ) throws Exception {
-        final Field fld = DiagramConfiguration.class.getDeclaredField(name);
-        fld.setAccessible(true);
-        fld.set(cfg, value);
     }
 }

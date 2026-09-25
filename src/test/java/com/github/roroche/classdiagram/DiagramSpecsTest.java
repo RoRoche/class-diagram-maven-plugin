@@ -24,9 +24,7 @@
 package com.github.roroche.classdiagram;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.nio.file.Path;
-import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -36,14 +34,13 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.0.1
  */
-@SuppressWarnings("PMD.AvoidAccessibilityAlteration")
 final class DiagramSpecsTest {
 
     @Test
     void createsAggregateName() {
         MatcherAssert.assertThat(
             "Aggregate name should use default",
-            aggregate().name(),
+            new Aggregate().value().name(),
             Matchers.is("class-diagram")
         );
     }
@@ -52,7 +49,7 @@ final class DiagramSpecsTest {
     void createsAggregatePackages() {
         MatcherAssert.assertThat(
             "Aggregate should retain packages",
-            aggregate().packages(),
+            new Aggregate().value().packages(),
             Matchers.contains("com.acme")
         );
     }
@@ -61,7 +58,7 @@ final class DiagramSpecsTest {
     void createsAggregateExcludedPackages() {
         MatcherAssert.assertThat(
             "Aggregate should retain excluded packages",
-            aggregate().excludedPackages(),
+            new Aggregate().value().excludedPackages(),
             Matchers.contains("com.acme.internal")
         );
     }
@@ -70,7 +67,7 @@ final class DiagramSpecsTest {
     void createsAggregateExcludedClasses() {
         MatcherAssert.assertThat(
             "Aggregate should retain excluded classes",
-            aggregate().excludedClasses(),
+            new Aggregate().value().excludedClasses(),
             Matchers.contains("**.*Test")
         );
     }
@@ -79,7 +76,7 @@ final class DiagramSpecsTest {
     void createsAggregateOutput() {
         MatcherAssert.assertThat(
             "Aggregate should resolve configured output",
-            aggregate().output(),
+            new Aggregate().value().output(),
             Matchers.is(Path.of("target/diagrams/architecture.puml"))
         );
     }
@@ -88,7 +85,7 @@ final class DiagramSpecsTest {
     void createsPerPackageCount() {
         MatcherAssert.assertThat(
             "Per-package mode should create one spec per package",
-            perPackage(),
+            new PerPackage(),
             Matchers.hasSize(2)
         );
     }
@@ -97,7 +94,7 @@ final class DiagramSpecsTest {
     void createsPerPackageName() {
         MatcherAssert.assertThat(
             "Per-package name should equal package",
-            perPackage().get(0).name(),
+            new PerPackage().get(0).name(),
             Matchers.is("com.acme.one")
         );
     }
@@ -106,7 +103,7 @@ final class DiagramSpecsTest {
     void createsPerPackagePackages() {
         MatcherAssert.assertThat(
             "Per-package spec should contain its package",
-            perPackage().get(0).packages(),
+            new PerPackage().get(0).packages(),
             Matchers.contains("com.acme.one")
         );
     }
@@ -115,7 +112,7 @@ final class DiagramSpecsTest {
     void createsPerPackageOutput() {
         MatcherAssert.assertThat(
             "Per-package output should use package name",
-            perPackage().get(0).output(),
+            new PerPackage().get(0).output(),
             Matchers.is(Path.of("target/diagrams/com.acme.one.puml"))
         );
     }
@@ -124,7 +121,7 @@ final class DiagramSpecsTest {
     void createsNamedName() throws Exception {
         MatcherAssert.assertThat(
             "Named spec should use configured name",
-            named().name(),
+            new Spec(new FakeConfig("domain", null, null).value()).value().name(),
             Matchers.is("domain")
         );
     }
@@ -133,7 +130,7 @@ final class DiagramSpecsTest {
     void createsNamedDefaultName() throws Exception {
         MatcherAssert.assertThat(
             "Unnamed spec should use default name",
-            named(null, null, null).name(),
+            new Spec(new FakeConfig(null, null, null).value()).value().name(),
             Matchers.is("class-diagram")
         );
     }
@@ -142,7 +139,7 @@ final class DiagramSpecsTest {
     void createsNamedDefaultFile() throws Exception {
         MatcherAssert.assertThat(
             "Named spec should derive file from name",
-            named("domain", null, null).output(),
+            new Spec(new FakeConfig("domain", null, null).value()).value().output(),
             Matchers.is(Path.of("target/diagrams/domain.puml"))
         );
     }
@@ -151,7 +148,7 @@ final class DiagramSpecsTest {
     void createsNamedConfiguredFile() throws Exception {
         MatcherAssert.assertThat(
             "Named spec should use configured file",
-            named("domain", "custom.puml", null).output(),
+            new Spec(new FakeConfig("domain", "custom.puml", null).value()).value().output(),
             Matchers.is(Path.of("target/diagrams/custom.puml"))
         );
     }
@@ -160,127 +157,47 @@ final class DiagramSpecsTest {
     void createsNamedConfiguredDirectory() throws Exception {
         MatcherAssert.assertThat(
             "Named spec should use configured directory",
-            named(
-                "domain",
-                null,
-                new File("target/custom")
-            ).output(),
+            new Spec(
+                new FakeConfig(
+                    "domain",
+                    null,
+                    new File("target/custom")
+                ).value()
+            ).value().output(),
             Matchers.is(Path.of("target/custom/domain.puml"))
         );
     }
 
     @Test
     void createsNamedPackages() throws Exception {
+        final DiagramConfiguration cfg = new FakeConfig("domain", null, null).value();
+        new FieldAsList(cfg, "packages").add("com.acme.domain");
         MatcherAssert.assertThat(
             "Named spec should use named packages",
-            named().packages(),
+            new Spec(cfg).value().packages(),
             Matchers.contains("com.acme.domain")
         );
     }
 
     @Test
     void createsNamedExcludedPackages() throws Exception {
+        final DiagramConfiguration cfg = new FakeConfig("domain", null, null).value();
+        new FieldAsList(cfg, "excludePackages").add("com.acme.domain.internal");
         MatcherAssert.assertThat(
             "Named spec should use named excluded packages",
-            named().excludedPackages(),
+            new Spec(cfg).value().excludedPackages(),
             Matchers.contains("com.acme.domain.internal")
         );
     }
 
     @Test
     void createsNamedExcludedClasses() throws Exception {
+        final DiagramConfiguration cfg = new FakeConfig("domain", null, null).value();
+        new FieldAsList(cfg, "excludeClasses").add("**.*Factory");
         MatcherAssert.assertThat(
             "Named spec should use named excluded classes",
-            named().excludedClasses(),
+            new Spec(cfg).value().excludedClasses(),
             Matchers.contains("**.*Factory")
         );
-    }
-
-    private static DiagramSpec aggregate() {
-        return new DiagramSpecs(
-            List.of("com.acme"),
-            List.of("com.acme.internal"),
-            List.of("**.*Test"),
-            List.of(),
-            new File("target/diagrams"),
-            "architecture.puml",
-            false
-        ).value().get(0);
-    }
-
-    private static List<DiagramSpec> perPackage() {
-        return new DiagramSpecs(
-            List.of("com.acme.one", "com.acme.two"),
-            List.of("x"),
-            List.of("y"),
-            List.of(),
-            new File("target/diagrams"),
-            "ignored",
-            true
-        ).value();
-    }
-
-    private static DiagramSpec named() throws Exception {
-        final DiagramConfiguration cfg = config(
-            "domain",
-            null,
-            null
-        );
-        list(cfg, "packages").add("com.acme.domain");
-        list(cfg, "excludePackages").add("com.acme.domain.internal");
-        list(cfg, "excludeClasses").add("**.*Factory");
-        return specs(cfg);
-    }
-
-    private static DiagramSpec named(
-        final String name,
-        final String file,
-        final File dir
-    ) throws Exception {
-        return specs(config(name, file, dir));
-    }
-
-    private static DiagramSpec specs(final DiagramConfiguration cfg) {
-        return new DiagramSpecs(
-            List.of("ignored"),
-            List.of(),
-            List.of(),
-            List.of(cfg),
-            new File("target/diagrams"),
-            "ignored.puml",
-            false
-        ).value().get(0);
-    }
-
-    private static DiagramConfiguration config(
-        final String name,
-        final String file,
-        final File dir
-    ) throws Exception {
-        final DiagramConfiguration cfg = new DiagramConfiguration();
-        set(cfg, "name", name);
-        set(cfg, "fileName", file);
-        set(cfg, "outputDirectory", dir);
-        return cfg;
-    }
-
-    @SuppressWarnings("unchecked")
-    private static List<String> list(
-        final DiagramConfiguration cfg,
-        final String name
-    ) throws Exception {
-        final Field fld = DiagramConfiguration.class.getDeclaredField(name);
-        fld.setAccessible(true);
-        return (List<String>) fld.get(cfg);
-    }
-
-    private static void set(
-        final DiagramConfiguration cfg,
-        final String name,
-        final Object value
-    ) throws Exception {
-        final Field fld = DiagramConfiguration.class.getDeclaredField(name);
-        fld.setAccessible(true);
-        fld.set(cfg, value);
     }
 }
