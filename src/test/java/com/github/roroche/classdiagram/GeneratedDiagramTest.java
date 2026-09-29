@@ -32,7 +32,9 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import org.cactoos.Scalar;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
@@ -47,7 +49,6 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.0.1
  */
-// @checkstyle BracketsStructureCheck (120 lines)
 // @checkstyle IllegalCatchCheck (120 lines)
 @SuppressWarnings({
     "PMD.AvoidCatchingGenericException",
@@ -111,22 +112,28 @@ final class GeneratedDiagramTest {
         final Path out = temp.resolve("race/diagram.puml");
         final ExecutorService service = Executors.newFixedThreadPool(2);
         try {
-            final List<Path> generated = service.invokeAll(
+            final List<Future<Path>> generated = service.invokeAll(
                 new ListOf<>(
                     new GeneratedDiagramTest.Task(out, "first"),
                     new GeneratedDiagramTest.Task(out, "second")
                 )
-            ).stream().map(future -> {
-                try {
-                    return future.get();
-                } catch (final Exception err) {
-                    throw new IllegalStateException(err);
-                }
-            }).toList();
+            );
+            final List<Path> paths = new ListOf<>(
+                new Mapped<>(
+                    future -> {
+                        try {
+                            return future.get();
+                        } catch (final Exception err) {
+                            throw new IllegalStateException(err);
+                        }
+                    },
+                    generated
+                )
+            );
             MatcherAssert.assertThat(
                 "Concurrent generation should return destinations and create output",
                 new MapOf<String, Object>(
-                    new MapEntry<>("generated", generated),
+                    new MapEntry<>("generated", paths),
                     new MapEntry<>("exists", Files.exists(out))
                 ),
                 new AllOf<Map<String, Object>>(

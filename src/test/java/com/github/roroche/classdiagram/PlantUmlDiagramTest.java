@@ -35,12 +35,6 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.0.1
  */
-// @checkstyle IllegalCatchCheck (100 lines)
-// @checkstyle ReturnCountCheck (100 lines)
-@SuppressWarnings({
-    "PMD.AvoidCatchingGenericException",
-    "PMD.OnlyOneReturn"
-})
 final class PlantUmlDiagramTest {
 
     @Test
@@ -53,6 +47,38 @@ final class PlantUmlDiagramTest {
                 true
             ).value(),
             Matchers.containsString("Sample")
+        );
+    }
+
+    @Test
+    void rendersConstructorWhenConfigured() {
+        MatcherAssert.assertThat(
+            "Constructor option should render constructor signature",
+            new PlantUmlDiagram(
+                "sample",
+                () -> new ListOf<>(Sample.class),
+                true,
+                new MemberOptions(true, true, true)
+            ).value(),
+            Matchers.containsString("Sample(String)")
+        );
+    }
+
+    @Test
+    void hidesMembersWhenConfigured() {
+        MatcherAssert.assertThat(
+            "Disabled members should leave a bare class declaration",
+            new PlantUmlDiagram(
+                "sample",
+                () -> new ListOf<>(Sample.class),
+                true,
+                new MemberOptions(false, false, false)
+            ).value(),
+            Matchers.allOf(
+                Matchers.containsString("class \"Sample\""),
+                Matchers.not(Matchers.containsString("value : String")),
+                Matchers.not(Matchers.containsString("value()"))
+            )
         );
     }
 
@@ -81,7 +107,35 @@ final class PlantUmlDiagramTest {
 
     static final class Sample {
 
-        // empty class for testing purposes
+        /**
+         * Value.
+         */
+        private final String value;
+
+        /**
+         * New sample.
+         */
+        Sample() {
+            this("");
+        }
+
+        /**
+         * New sample.
+         *
+         * @param value Value
+         */
+        Sample(final String value) {
+            this.value = value;
+        }
+
+        /**
+         * Value.
+         *
+         * @return Value
+         */
+        String value() {
+            return this.value;
+        }
     }
 
     /**
@@ -107,12 +161,14 @@ final class PlantUmlDiagramTest {
 
         @Override
         public Exception value() {
+            Exception failure;
             try {
                 this.diagram.value();
-                return new IllegalStateException("No exception");
-            } catch (final Exception err) {
-                return err;
+                failure = new IllegalStateException("No exception");
+            } catch (final IllegalStateException err) {
+                failure = err;
             }
+            return failure;
         }
     }
 }

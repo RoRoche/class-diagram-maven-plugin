@@ -26,9 +26,12 @@ package com.github.roroche.classdiagram;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.iterable.Sorted;
+import org.cactoos.list.ListOf;
 
 /**
  * Classes discovered with ClassGraph.
@@ -69,17 +72,23 @@ public final class ClassGraphClasses implements Classes {
                 this.spec.excludedPackages().toArray(String[]::new)
             );
         }
-        final List<ClassNamePattern> rejected = this.spec.excludedClasses()
-            .stream()
-            .map(ClassNamePattern::new)
-            .toList();
-        final List<Class<?>> classes = new ArrayList<>(0);
+        final List<ClassNamePattern> rejected = new ListOf<>(
+            new Mapped<>(ClassNamePattern::new, this.spec.excludedClasses())
+        );
+        final List<Class<?>> classes;
         try (ScanResult scan = graph.scan()) {
-            scan.getAllClasses().stream()
-                .filter(info -> !new Rejected(info, rejected).value())
-                .sorted(Comparator.comparing(ClassInfo::getName))
-                .map(ClassInfo::loadClass)
-                .forEach(classes::add);
+            classes = new ListOf<>(
+                new Mapped<>(
+                    ClassInfo::loadClass,
+                    new Sorted<>(
+                        Comparator.comparing(ClassInfo::getName),
+                        new Filtered<>(
+                            info -> !new Rejected(info, rejected).value(),
+                            scan.getAllClasses()
+                        )
+                    )
+                )
+            );
         }
         return List.copyOf(classes);
     }

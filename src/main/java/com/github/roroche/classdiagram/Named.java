@@ -45,14 +45,35 @@ public final class Named implements Scalar<DiagramSpec> {
     private final DiagramConfiguration config;
 
     /**
+     * Default member options.
+     */
+    private final MemberOptions members;
+
+    /**
      * New named diagram specification.
      *
      * @param directory Default output directory
      * @param config Diagram configuration
      */
     public Named(final File directory, final DiagramConfiguration config) {
+        this(directory, config, new MemberOptions());
+    }
+
+    /**
+     * New named diagram specification.
+     *
+     * @param directory Default output directory
+     * @param config Diagram configuration
+     * @param members Default member options
+     */
+    public Named(
+        final File directory,
+        final DiagramConfiguration config,
+        final MemberOptions members
+    ) {
         this.directory = directory;
         this.config = config;
+        this.members = members;
     }
 
     @Override
@@ -69,7 +90,8 @@ public final class Named implements Scalar<DiagramSpec> {
                 this.config
             ).value().toPath().resolve(
                 new FileName(this.config, name).toString()
-            )
+            ),
+            new ConfiguredMemberOptions(this.members, this.config).value()
         );
     }
 }

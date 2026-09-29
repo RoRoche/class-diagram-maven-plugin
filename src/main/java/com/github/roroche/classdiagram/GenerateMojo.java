@@ -35,6 +35,9 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.cactoos.Func;
+import org.cactoos.scalar.Or;
+import org.cactoos.scalar.Unchecked;
 
 /**
  * Generate PlantUML class diagrams from compiled project classes.
@@ -47,7 +50,10 @@ import org.apache.maven.project.MavenProject;
     requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
     threadSafe = true
 )
-@SuppressWarnings("PMD.ConstructorShouldDoInitialization")
+@SuppressWarnings({
+    "PMD.ConstructorShouldDoInitialization",
+    "PMD.LongVariable"
+})
 // @checkstyle MemberNameCheck (500 lines)
 public final class GenerateMojo extends AbstractMojo {
 
@@ -109,6 +115,24 @@ public final class GenerateMojo extends AbstractMojo {
     private boolean failOnEmpty;
 
     /**
+     * Include fields in class blocks.
+     */
+    @Parameter(defaultValue = "true")
+    private boolean includeFields;
+
+    /**
+     * Include constructors in class blocks.
+     */
+    @Parameter(defaultValue = "false")
+    private boolean includeConstructors;
+
+    /**
+     * Include methods in class blocks.
+     */
+    @Parameter(defaultValue = "true")
+    private boolean includeMethods;
+
+    /**
      * Empty constructor for Maven.
      */
     public GenerateMojo() {
@@ -117,7 +141,7 @@ public final class GenerateMojo extends AbstractMojo {
 
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     @Override
-    // @checkstyle IllegalCatchCheck (34 lines)
+    // @checkstyle IllegalCatchCheck (45 lines)
     public void execute() throws MojoExecutionException {
         try {
             final List<DiagramSpec> specs = new DiagramSpecs(
@@ -127,9 +151,21 @@ public final class GenerateMojo extends AbstractMojo {
                 this.diagrams,
                 this.outputDirectory,
                 this.fileName,
-                this.perPackage
+                this.perPackage,
+                new MemberOptions(
+                    this.includeFields,
+                    this.includeConstructors,
+                    this.includeMethods
+                )
             ).value();
-            if (specs.isEmpty() || specs.stream().anyMatch(item -> item.packages().isEmpty())) {
+            if (
+                specs.isEmpty() || new Unchecked<>(
+                    new Or(
+                        (Func<DiagramSpec, Boolean>) item -> item.packages().isEmpty(),
+                        specs
+                    )
+                ).value()
+            ) {
                 throw new IllegalArgumentException(
                     "Configure at least one package to analyze"
                 );
@@ -140,7 +176,8 @@ public final class GenerateMojo extends AbstractMojo {
                     new PlantUmlDiagram(
                         spec.name(),
                         new ClassGraphClasses(spec, classpath),
-                        this.failOnEmpty
+                        this.failOnEmpty,
+                        spec.members()
                     ),
                     spec.output()
                 ).generate();

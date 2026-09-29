@@ -36,8 +36,8 @@ import java.util.List;
  * @since 0.0.1
  */
 @SuppressWarnings({
-    "PMD.DataClass",
-    "PMD.ConstructorShouldDoInitialization"
+    "PMD.ConstructorShouldDoInitialization",
+    "PMD.LongVariable"
 })
 // @checkstyle MemberNameCheck (500 lines)
 public final class DiagramConfiguration {
@@ -59,6 +59,15 @@ public final class DiagramConfiguration {
 
     /** Optional output file name override. */
     private String fileName;
+
+    /** Optional field rendering override. */
+    private Boolean includeFields;
+
+    /** Optional constructor rendering override. */
+    private Boolean includeConstructors;
+
+    /** Optional method rendering override. */
+    private Boolean includeMethods;
 
     /**
      * Empty constructor for Maven.
@@ -119,5 +128,32 @@ public final class DiagramConfiguration {
      */
     public String getFileName() {
         return this.fileName;
+    }
+
+    /**
+     * Getter for field rendering.
+     *
+     * @return Field rendering or null
+     */
+    public Boolean isIncludeFields() {
+        return this.includeFields;
+    }
+
+    /**
+     * Getter for constructor rendering.
+     *
+     * @return Constructor rendering or null
+     */
+    public Boolean isIncludeConstructors() {
+        return this.includeConstructors;
+    }
+
+    /**
+     * Getter for method rendering.
+     *
+     * @return Method rendering or null
+     */
+    public Boolean isIncludeMethods() {
+        return this.includeMethods;
     }
 }

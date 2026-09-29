@@ -25,7 +25,10 @@ package com.github.roroche.classdiagram;
 
 import io.github.classgraph.ClassInfo;
 import java.util.List;
+import org.cactoos.Func;
 import org.cactoos.Scalar;
+import org.cactoos.scalar.Or;
+import org.cactoos.scalar.Unchecked;
 
 /**
  * Rejected class.
@@ -60,8 +63,11 @@ public final class Rejected implements Scalar<Boolean> {
 
     @Override
     public Boolean value() {
-        return this.patterns.stream().anyMatch(
-            pattern -> pattern.matches(this.info.getName())
-        );
+        return new Unchecked<>(
+            new Or(
+                (Func<ClassNamePattern, Boolean>) pattern -> pattern.matches(this.info.getName()),
+                this.patterns
+            )
+        ).value();
     }
 }

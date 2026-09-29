@@ -58,6 +58,11 @@ public final class Single implements Scalar<DiagramSpec> {
     private final File directory;
 
     /**
+     * Member options.
+     */
+    private final MemberOptions members;
+
+    /**
      * New single-package diagram specification.
      *
      * @param pkg Package
@@ -71,10 +76,30 @@ public final class Single implements Scalar<DiagramSpec> {
         final List<String> excludedClasses,
         final File directory
     ) {
+        this(pkg, excludedPackages, excludedClasses, directory, new MemberOptions());
+    }
+
+    /**
+     * New single-package diagram specification.
+     *
+     * @param pkg Package
+     * @param excludedPackages Excluded packages
+     * @param excludedClasses Excluded classes
+     * @param directory Output directory
+     * @param members Member options
+     */
+    public Single(
+        final String pkg,
+        final List<String> excludedPackages,
+        final List<String> excludedClasses,
+        final File directory,
+        final MemberOptions members
+    ) {
         this.pkg = pkg;
         this.excludedPackages = excludedPackages;
         this.excludedClasses = excludedClasses;
         this.directory = directory;
+        this.members = members;
     }
 
     @Override
@@ -84,7 +109,8 @@ public final class Single implements Scalar<DiagramSpec> {
             new ListOf<>(this.pkg),
             this.excludedPackages,
             this.excludedClasses,
-            this.directory.toPath().resolve(String.format("%s.puml", this.pkg))
+            this.directory.toPath().resolve(String.format("%s.puml", this.pkg)),
+            this.members
         );
     }
 }

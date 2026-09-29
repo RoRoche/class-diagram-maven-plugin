@@ -34,16 +34,45 @@ import java.util.List;
  * @param excludedPackages Rejected packages.
  * @param excludedClasses Rejected class patterns.
  * @param output Output file.
+ * @param members Member options.
  *
  * @since 0.0.1
  */
+// @checkstyle ParameterNameCheck (100 lines)
 public record DiagramSpec(
     String name,
     List<String> packages,
     List<String> excludedPackages,
     List<String> excludedClasses,
-    Path output
+    Path output,
+    MemberOptions members
 ) {
+    /**
+     * Ctor with default member options.
+     *
+     * @param name Diagram name
+     * @param packages Accepted packages
+     * @param excludedPackages Rejected packages
+     * @param excludedClasses Rejected class patterns
+     * @param output Output file
+     */
+    public DiagramSpec(
+        final String name,
+        final List<String> packages,
+        final List<String> excludedPackages,
+        final List<String> excludedClasses,
+        final Path output
+    ) {
+        this(
+            name,
+            packages,
+            excludedPackages,
+            excludedClasses,
+            output,
+            new MemberOptions()
+        );
+    }
+
     /**
      * Ctor.
      *
@@ -52,6 +81,7 @@ public record DiagramSpec(
      * @param excludedPackages Rejected packages
      * @param excludedClasses Rejected class patterns
      * @param output Output file
+     * @param members Member options
      */
     public DiagramSpec {
         packages = List.copyOf(packages);

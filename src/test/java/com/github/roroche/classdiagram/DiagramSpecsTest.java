@@ -25,6 +25,7 @@ package com.github.roroche.classdiagram;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -82,6 +83,24 @@ final class DiagramSpecsTest {
     }
 
     @Test
+    void createsAggregateMemberOptions() {
+        MatcherAssert.assertThat(
+            "Aggregate should retain member options",
+            new DiagramSpecs(
+                List.of("com.acme"),
+                List.of(),
+                List.of(),
+                List.of(),
+                new File("target/diagrams"),
+                "architecture.puml",
+                false,
+                new MemberOptions(false, true, false)
+            ).value().get(0).members(),
+            Matchers.is(new MemberOptions(false, true, false))
+        );
+    }
+
+    @Test
     void createsPerPackageCount() {
         MatcherAssert.assertThat(
             "Per-package mode should create one spec per package",
@@ -118,6 +137,20 @@ final class DiagramSpecsTest {
     }
 
     @Test
+    void createsDefaultSingleMemberOptions() {
+        MatcherAssert.assertThat(
+            "Single spec should use default member options",
+            new Single(
+                "com.acme",
+                List.of(),
+                List.of(),
+                new File("target/diagrams")
+            ).value().members(),
+            Matchers.is(new MemberOptions())
+        );
+    }
+
+    @Test
     void createsNamedName() throws Exception {
         MatcherAssert.assertThat(
             "Named spec should use configured name",
@@ -141,6 +174,18 @@ final class DiagramSpecsTest {
             "Named spec should derive file from name",
             new Spec(new FakeConfig("domain", null, null).value()).value().output(),
             Matchers.is(Path.of("target/diagrams/domain.puml"))
+        );
+    }
+
+    @Test
+    void createsDefaultNamedMemberOptions() throws Exception {
+        MatcherAssert.assertThat(
+            "Named spec should use default member options",
+            new Named(
+                new File("target/diagrams"),
+                new FakeConfig("domain", null, null).value()
+            ).value().members(),
+            Matchers.is(new MemberOptions())
         );
     }
 
@@ -198,6 +243,26 @@ final class DiagramSpecsTest {
             "Named spec should use named excluded classes",
             new Spec(cfg).value().excludedClasses(),
             Matchers.contains("**.*Factory")
+        );
+    }
+
+    @Test
+    void createsNamedConfiguredMemberOptions() throws Exception {
+        final DiagramConfiguration cfg = new FakeConfig("domain", null, null).value();
+        new DiagramConfigurationWithField(cfg, "includeConstructors", true).value();
+        MatcherAssert.assertThat(
+            "Named member options should override global options",
+            new DiagramSpecs(
+                List.of(),
+                List.of(),
+                List.of(),
+                List.of(cfg),
+                new File("target/diagrams"),
+                "architecture.puml",
+                false,
+                new MemberOptions(true, false, true)
+            ).value().get(0).members(),
+            Matchers.is(new MemberOptions(true, true, true))
         );
     }
 }

@@ -26,6 +26,8 @@ package com.github.roroche.classdiagram;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
 
 /**
  * Converts Maven configuration into immutable diagram specifications.
@@ -72,6 +74,11 @@ public final class DiagramSpecs {
     private final boolean perPackage;
 
     /**
+     * Member options.
+     */
+    private final MemberOptions members;
+
+    /**
      * New specifications.
      *
      * @param packages Packages
@@ -83,7 +90,6 @@ public final class DiagramSpecs {
      * @param perPackage One file per package
      */
     // @checkstyle ParameterNameCheck (18 lines)
-    // @checkstyle ConstructorsCodeFreeCheck (17 lines)
     public DiagramSpecs(
         final List<String> packages,
         final List<String> excludedPackages,
@@ -93,6 +99,42 @@ public final class DiagramSpecs {
         final String file,
         final boolean perPackage
     ) {
+        this(
+            packages,
+            excludedPackages,
+            excludedClasses,
+            diagrams,
+            directory,
+            file,
+            perPackage,
+            new MemberOptions()
+        );
+    }
+
+    /**
+     * New specifications.
+     *
+     * @param packages Packages
+     * @param excludedPackages Excluded packages
+     * @param excludedClasses Excluded classes
+     * @param diagrams Named diagrams
+     * @param directory Output directory
+     * @param file Output file
+     * @param perPackage One file per package
+     * @param members Member options
+     */
+    // @checkstyle ParameterNameCheck (20 lines)
+    // @checkstyle ConstructorsCodeFreeCheck (19 lines)
+    public DiagramSpecs(
+        final List<String> packages,
+        final List<String> excludedPackages,
+        final List<String> excludedClasses,
+        final List<DiagramConfiguration> diagrams,
+        final File directory,
+        final String file,
+        final boolean perPackage,
+        final MemberOptions members
+    ) {
         this.packages = List.copyOf(packages);
         this.excludedPackages = List.copyOf(excludedPackages);
         this.excludedClasses = List.copyOf(excludedClasses);
@@ -100,6 +142,7 @@ public final class DiagramSpecs {
         this.directory = directory;
         this.file = file;
         this.perPackage = perPackage;
+        this.members = members;
     }
 
     /**
@@ -111,26 +154,40 @@ public final class DiagramSpecs {
     public List<DiagramSpec> value() {
         final List<DiagramSpec> specs = new ArrayList<>(0);
         if (!this.diagrams.isEmpty()) {
-            this.diagrams.stream().map(
-                config -> new Named(this.directory, config).value()
-            ).forEach(specs::add);
+            specs.addAll(
+                new ListOf<>(
+                    new Mapped<>(
+                        config -> new Named(this.directory, config, this.members).value(),
+                        this.diagrams
+                    )
+                )
+            );
         } else if (this.perPackage) {
-            this.packages.stream().map(
-                pkg -> new Single(
-                    pkg,
-                    this.excludedPackages,
-                    this.excludedClasses,
-                    this.directory
-                ).value()
-            ).forEach(specs::add);
+            specs.addAll(
+                new ListOf<>(
+                    new Mapped<>(
+                        pkg -> new Single(
+                            pkg,
+                            this.excludedPackages,
+                            this.excludedClasses,
+                            this.directory,
+                            this.members
+                        ).value(),
+                        this.packages
+                    )
+                )
+            );
         } else {
-            specs.add(
-                new DiagramSpec(
-                    "class-diagram",
-                    this.packages,
-                    this.excludedPackages,
-                    this.excludedClasses,
-                    this.directory.toPath().resolve(this.file)
+            specs.addAll(
+                List.of(
+                    new DiagramSpec(
+                        "class-diagram",
+                        this.packages,
+                        this.excludedPackages,
+                        this.excludedClasses,
+                        this.directory.toPath().resolve(this.file),
+                        this.members
+                    )
                 )
             );
         }

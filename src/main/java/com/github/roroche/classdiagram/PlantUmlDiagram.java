@@ -42,6 +42,9 @@ public final class PlantUmlDiagram implements DiagramText {
     /** Diagram name for diagnostics. */
     private final String name;
 
+    /** Member options. */
+    private final MemberOptions options;
+
     /**
      * New diagram.
      *
@@ -54,9 +57,27 @@ public final class PlantUmlDiagram implements DiagramText {
         final Classes classes,
         final boolean fail
     ) {
+        this(name, classes, fail, new MemberOptions());
+    }
+
+    /**
+     * New diagram.
+     *
+     * @param name Name
+     * @param classes Classes
+     * @param fail Fail on empty
+     * @param options Member options
+     */
+    public PlantUmlDiagram(
+        final String name,
+        final Classes classes,
+        final boolean fail,
+        final MemberOptions options
+    ) {
         this.name = name;
         this.classes = classes;
         this.fail = fail;
+        this.options = options;
     }
 
     @Override
@@ -67,8 +88,12 @@ public final class PlantUmlDiagram implements DiagramText {
                 String.format("No classes found for diagram '%s'", this.name)
             );
         }
-        return new ClassDiagramBuilder()
-            .addClasses(found.toArray(Class<?>[]::new))
-            .build();
+        return new DiagramMembers(
+            new ClassDiagramBuilder()
+                .addClasses(found.toArray(Class<?>[]::new))
+                .build(),
+            found,
+            this.options
+        ).value();
     }
 }

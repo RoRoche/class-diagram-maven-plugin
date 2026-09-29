@@ -170,6 +170,29 @@ final class GenerateMojoTest {
         );
     }
 
+    @Test
+    void generatesConfiguredMembers(@TempDir final Path temp) throws Exception {
+        final GenerateMojo mojo = GenerateMojoTest.mojo(
+            temp,
+            new GenerateMojoTest.CompileProject()
+        );
+        GenerateMojoTest.list(mojo, "packages").add("com.github.roroche.classdiagram");
+        GenerateMojoTest.set(mojo, "failOnEmpty", false);
+        GenerateMojoTest.set(mojo, "includeFields", false);
+        GenerateMojoTest.set(mojo, "includeConstructors", true);
+        GenerateMojoTest.set(mojo, "includeMethods", false);
+        mojo.execute();
+        MatcherAssert.assertThat(
+            "Mojo member options should affect generated diagram",
+            Files.readString(temp.resolve("class-diagram.puml")),
+            Matchers.allOf(
+                Matchers.containsString("PlantUmlDiagram("),
+                Matchers.not(Matchers.containsString("classes : Classes")),
+                Matchers.not(Matchers.containsString("value() : String"))
+            )
+        );
+    }
+
     private static GenerateMojo mojo(final Path temp, final MavenProject project) throws Exception {
         final GenerateMojo mojo = new GenerateMojo();
         GenerateMojoTest.set(mojo, "project", project);

@@ -85,6 +85,30 @@ final class DiagramSpecTest {
     }
 
     @Test
+    void returnsMemberOptions() {
+        MatcherAssert.assertThat(
+            "Member options should be retained",
+            new DiagramSpecTest.Spec().value().members(),
+            Matchers.is(new MemberOptions(false, true, false))
+        );
+    }
+
+    @Test
+    void returnsDefaultMemberOptions() {
+        MatcherAssert.assertThat(
+            "Default member options should match historical output",
+            new DiagramSpec(
+                "domain",
+                new ListOf<>(),
+                new ListOf<>(),
+                new ListOf<>(),
+                Path.of("x.puml")
+            ).members(),
+            Matchers.is(new MemberOptions())
+        );
+    }
+
+    @Test
     void copiesPackages() {
         final List<String> values = new ArrayList<>(new ListOf<>("a"));
         final DiagramSpec item = new DiagramSpec(
@@ -152,7 +176,8 @@ final class DiagramSpecTest {
                 new ListOf<>("a"),
                 new ListOf<>("b"),
                 new ListOf<>("c"),
-                Path.of("x.puml")
+                Path.of("x.puml"),
+                new MemberOptions(false, true, false)
             );
         }
     }

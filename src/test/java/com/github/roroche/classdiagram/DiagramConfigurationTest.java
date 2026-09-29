@@ -90,6 +90,33 @@ final class DiagramConfigurationTest {
     }
 
     @Test
+    void returnsNullFieldsOptionByDefault() {
+        MatcherAssert.assertThat(
+            "Default fields option should be null",
+            new DiagramConfiguration().isIncludeFields(),
+            Matchers.nullValue()
+        );
+    }
+
+    @Test
+    void returnsNullConstructorsOptionByDefault() {
+        MatcherAssert.assertThat(
+            "Default constructors option should be null",
+            new DiagramConfiguration().isIncludeConstructors(),
+            Matchers.nullValue()
+        );
+    }
+
+    @Test
+    void returnsNullMethodsOptionByDefault() {
+        MatcherAssert.assertThat(
+            "Default methods option should be null",
+            new DiagramConfiguration().isIncludeMethods(),
+            Matchers.nullValue()
+        );
+    }
+
+    @Test
     void returnsConfiguredName() throws Exception {
         MatcherAssert.assertThat(
             "Configured name should be returned",
@@ -156,6 +183,42 @@ final class DiagramConfigurationTest {
                 "domain.puml"
             ).value().getFileName(),
             Matchers.is("domain.puml")
+        );
+    }
+
+    @Test
+    void returnsConfiguredFieldsOption() throws Exception {
+        MatcherAssert.assertThat(
+            "Configured fields option should be returned",
+            new DiagramConfigurationWithField(
+                "includeFields",
+                false
+            ).value().isIncludeFields(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void returnsConfiguredConstructorsOption() throws Exception {
+        MatcherAssert.assertThat(
+            "Configured constructors option should be returned",
+            new DiagramConfigurationWithField(
+                "includeConstructors",
+                true
+            ).value().isIncludeConstructors(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void returnsConfiguredMethodsOption() throws Exception {
+        MatcherAssert.assertThat(
+            "Configured methods option should be returned",
+            new DiagramConfigurationWithField(
+                "includeMethods",
+                false
+            ).value().isIncludeMethods(),
+            Matchers.is(false)
         );
     }
 }
