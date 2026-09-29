@@ -41,6 +41,7 @@ to generate PlantUML class diagrams.
 - Generate a class diagram from one or more Java packages
 - Generate a single aggregated diagram or one diagram per package
 - Define named diagrams in the same Maven configuration
+- Include or hide class fields, constructors, and methods
 - Exclude packages from the scan
 - Exclude classes with glob-style patterns
 - Customize the output directory and file name
@@ -166,6 +167,43 @@ target/class-diagrams/
 ```
 
 A named diagram can contain one or more packages.
+
+### Configure class members
+
+By default, the plugin includes fields and methods and skips constructors to
+preserve the historical output.
+
+Use `includeFields`, `includeConstructors`, and `includeMethods` to configure
+the generated class blocks:
+
+```xml
+<configuration>
+    <packages>
+        <package>com.github.roroche.domain</package>
+    </packages>
+    <includeFields>true</includeFields>
+    <includeConstructors>true</includeConstructors>
+    <includeMethods>true</includeMethods>
+</configuration>
+```
+
+Named diagrams can override the global member options:
+
+```xml
+<configuration>
+    <includeFields>false</includeFields>
+    <includeMethods>false</includeMethods>
+    <diagrams>
+        <diagram>
+            <name>domain</name>
+            <packages>
+                <package>com.github.roroche.domain</package>
+            </packages>
+            <includeConstructors>true</includeConstructors>
+        </diagram>
+    </diagrams>
+</configuration>
+```
 
 ### Exclude packages
 
