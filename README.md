@@ -170,40 +170,42 @@ A named diagram can contain one or more packages.
 
 ### Configure class members
 
-By default, the plugin includes fields and methods and skips constructors to
-preserve the historical output.
+The plugin supports three diagram description levels:
 
-Use `includeFields`, `includeConstructors`, and `includeMethods` to configure
-the generated class blocks:
+- `MINIMAL`: classes and relations.
+- `API`: classes and relations, plus public methods and public constructors.
+- `FULL`: classes and relations, plus all methods, all fields, and all constructors.
+
+The plugin uses `MINIMAL` unless the POM configures another level:
 
 ```xml
 <configuration>
     <packages>
         <package>com.github.roroche.domain</package>
     </packages>
-    <includeFields>true</includeFields>
-    <includeConstructors>true</includeConstructors>
-    <includeMethods>true</includeMethods>
+    <descriptionLevel>API</descriptionLevel>
 </configuration>
 ```
 
-Named diagrams can override the global member options:
+Named diagrams can override the global description level:
 
 ```xml
 <configuration>
-    <includeFields>false</includeFields>
-    <includeMethods>false</includeMethods>
+    <descriptionLevel>MINIMAL</descriptionLevel>
     <diagrams>
         <diagram>
             <name>domain</name>
             <packages>
                 <package>com.github.roroche.domain</package>
             </packages>
-            <includeConstructors>true</includeConstructors>
+            <descriptionLevel>FULL</descriptionLevel>
         </diagram>
     </diagrams>
 </configuration>
 ```
+
+Use `includeFields`, `includeConstructors`, and `includeMethods` when a
+diagram needs to override part of the selected level.
 
 ### Exclude packages
 
