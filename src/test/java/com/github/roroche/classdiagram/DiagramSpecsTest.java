@@ -265,4 +265,28 @@ final class DiagramSpecsTest {
             Matchers.is(new MemberOptions(true, true, true))
         );
     }
+
+    @Test
+    void createsNamedConfiguredDescriptionLevel() throws Exception {
+        final DiagramConfiguration cfg = new FakeConfig("domain", null, null).value();
+        new DiagramConfigurationWithField(
+            cfg,
+            "descriptionLevel",
+            DescriptionLevel.API
+        ).value();
+        MatcherAssert.assertThat(
+            "Named description level should override global options",
+            new DiagramSpecs(
+                new ListOf<>(),
+                new ListOf<>(),
+                new ListOf<>(),
+                new ListOf<>(cfg),
+                new File("target/diagrams"),
+                "architecture.puml",
+                false,
+                new MemberOptions(true, true, true)
+            ).value().get(0).members(),
+            Matchers.is(new MemberOptions(false, true, true, true))
+        );
+    }
 }

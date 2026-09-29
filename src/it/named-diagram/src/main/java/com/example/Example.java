@@ -29,4 +29,43 @@ package com.example;
  * @since 1.0
  */
 public final class Example {
+
+    /**
+     * Hidden state.
+     */
+    private final String secret;
+
+    /**
+     * New example.
+     */
+    public Example() {
+        this.secret = "";
+    }
+
+    /**
+     * Hidden constructor.
+     *
+     * @param secret Secret
+     */
+    private Example(final String secret) {
+        this.secret = secret;
+    }
+
+    /**
+     * Exposed API.
+     *
+     * @return Secret
+     */
+    public String exposed() {
+        return this.secret;
+    }
+
+    /**
+     * Internal method.
+     *
+     * @return Secret
+     */
+    private String hidden() {
+        return this.secret;
+    }
 }

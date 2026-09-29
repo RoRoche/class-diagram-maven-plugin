@@ -33,7 +33,7 @@ import org.cactoos.Scalar;
 public final class ConfiguredMemberOptions implements Scalar<MemberOptions> {
 
     /**
-     * Defaults.
+     * Defaults from the global configuration.
      */
     private final MemberOptions defaults;
 
@@ -58,19 +58,11 @@ public final class ConfiguredMemberOptions implements Scalar<MemberOptions> {
 
     @Override
     public MemberOptions value() {
-        return new MemberOptions(
-            new ConfiguredOption(
-                this.config.isIncludeFields(),
-                this.defaults.fields()
-            ).value(),
-            new ConfiguredOption(
-                this.config.isIncludeConstructors(),
-                this.defaults.constructors()
-            ).value(),
-            new ConfiguredOption(
-                this.config.isIncludeMethods(),
-                this.defaults.methods()
-            ).value()
-        );
+        return new MemberOptionsOverride(
+            new ConfiguredMemberDefaults(this.defaults, this.config).value(),
+            this.config.isIncludeFields(),
+            this.config.isIncludeConstructors(),
+            this.config.isIncludeMethods()
+        ).value();
     }
 }

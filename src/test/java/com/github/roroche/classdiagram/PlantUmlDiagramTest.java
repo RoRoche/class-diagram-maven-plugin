@@ -23,7 +23,6 @@
  */
 package com.github.roroche.classdiagram;
 
-import java.util.List;
 import org.cactoos.Scalar;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
@@ -86,7 +85,7 @@ final class PlantUmlDiagramTest {
     void rendersEmptyWhenAllowed() {
         MatcherAssert.assertThat(
             "Allowed empty diagram should still render PlantUML",
-            new PlantUmlDiagram("empty", List::of, false).value(),
+            new PlantUmlDiagram("empty", ListOf::new, false).value(),
             Matchers.containsString("@startuml")
         );
     }
@@ -96,7 +95,7 @@ final class PlantUmlDiagramTest {
         MatcherAssert.assertThat(
             "Required non-empty diagram should report its name",
             new PlantUmlDiagramTest.Failure(
-                new PlantUmlDiagram("empty", List::of, true)
+                new PlantUmlDiagram("empty", ListOf::new, true)
             ).value(),
             Matchers.hasProperty(
                 "message",

@@ -23,6 +23,7 @@
  */
 package com.github.roroche.classdiagram;
 
+import com.github.roroche.classdiagram.members.MemberLines;
 import java.util.List;
 import org.cactoos.Scalar;
 import org.cactoos.text.TextEnvelope;

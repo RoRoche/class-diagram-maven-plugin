@@ -115,22 +115,28 @@ public final class GenerateMojo extends AbstractMojo {
     private boolean failOnEmpty;
 
     /**
+     * Class diagram description level.
+     */
+    @Parameter(defaultValue = "MINIMAL")
+    private DescriptionLevel descriptionLevel;
+
+    /**
      * Include fields in class blocks.
      */
-    @Parameter(defaultValue = "true")
-    private boolean includeFields;
+    @Parameter
+    private Boolean includeFields;
 
     /**
      * Include constructors in class blocks.
      */
-    @Parameter(defaultValue = "false")
-    private boolean includeConstructors;
+    @Parameter
+    private Boolean includeConstructors;
 
     /**
      * Include methods in class blocks.
      */
-    @Parameter(defaultValue = "true")
-    private boolean includeMethods;
+    @Parameter
+    private Boolean includeMethods;
 
     /**
      * Empty constructor for Maven.
@@ -152,11 +158,12 @@ public final class GenerateMojo extends AbstractMojo {
                 this.outputDirectory,
                 this.fileName,
                 this.perPackage,
-                new MemberOptions(
+                new MemberOptionsOverride(
+                    new MemberOptionsOfLevel(this.descriptionLevel).value(),
                     this.includeFields,
                     this.includeConstructors,
                     this.includeMethods
-                )
+                ).value()
             ).value();
             if (
                 specs.isEmpty() || new Unchecked<>(

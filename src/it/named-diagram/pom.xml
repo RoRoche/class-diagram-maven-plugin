@@ -16,9 +16,24 @@
         <artifactId>class-diagram-maven-plugin</artifactId>
         <version>@project.version@</version>
         <configuration>
+          <descriptionLevel>FULL</descriptionLevel>
           <diagrams>
             <diagram>
-              <name>example</name>
+              <name>api</name>
+              <descriptionLevel>API</descriptionLevel>
+              <packages>
+                <package>com.example</package>
+              </packages>
+            </diagram>
+            <diagram>
+              <name>full</name>
+              <packages>
+                <package>com.example</package>
+              </packages>
+            </diagram>
+            <diagram>
+              <name>minimal</name>
+              <descriptionLevel>MINIMAL</descriptionLevel>
               <packages>
                 <package>com.example</package>
               </packages>

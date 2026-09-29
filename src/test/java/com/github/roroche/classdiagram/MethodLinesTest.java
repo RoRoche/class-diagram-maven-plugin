@@ -23,6 +23,7 @@
  */
 package com.github.roroche.classdiagram;
 
+import com.github.roroche.classdiagram.members.MethodLines;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,20 @@ final class MethodLinesTest {
         MatcherAssert.assertThat(
             "Method lines should be rendered and sorted by method name",
             new MethodLines(MethodLinesTest.Sample.class),
-            Matchers.contains("  alpha()", "  beta() : int")
+            Matchers.contains("  alpha()", "  beta() : int", "  gamma() : String")
+        );
+    }
+
+    @Test
+    void rendersPublicMethodLines() {
+        MatcherAssert.assertThat(
+            "Public method lines should omit non-public methods",
+            new MethodLines(MemberOptions.class, true),
+            Matchers.hasItems(
+                "  constructors() : boolean",
+                "  fields() : boolean",
+                "  methods() : boolean"
+            )
         );
     }
 
@@ -65,6 +79,15 @@ final class MethodLinesTest {
          */
         void alpha() {
             // Empty method.
+        }
+
+        /**
+         * Gamma.
+         *
+         * @return Gamma
+         */
+        String gamma() {
+            return "";
         }
     }
 }

@@ -23,6 +23,7 @@
  */
 package com.github.roroche.classdiagram;
 
+import com.github.roroche.classdiagram.members.MemberLines;
 import java.util.List;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
@@ -64,6 +65,22 @@ final class MemberLinesTest {
                 new MemberOptions(false, false, false)
             ).value(),
             Matchers.empty()
+        );
+    }
+
+    @Test
+    void rendersPublicApiMembers() {
+        MatcherAssert.assertThat(
+            "Public-only options should render public constructors and methods",
+            new MemberLines(
+                MemberOptions.class,
+                new MemberOptions(false, true, true, true)
+            ).value(),
+            Matchers.hasItems(
+                "  MemberOptions()",
+                "  constructors() : boolean",
+                "  fields() : boolean"
+            )
         );
     }
 

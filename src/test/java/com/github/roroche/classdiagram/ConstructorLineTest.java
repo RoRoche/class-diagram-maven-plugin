@@ -23,6 +23,7 @@
  */
 package com.github.roroche.classdiagram;
 
+import com.github.roroche.classdiagram.members.ConstructorLine;
 import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

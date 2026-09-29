@@ -29,18 +29,35 @@ package com.github.roroche.classdiagram;
  * @param fields Include fields.
  * @param constructors Include constructors.
  * @param methods Include methods.
+ * @param publicOnly Include only public members.
  *
  * @since 0.0.4
  */
 public record MemberOptions(
     boolean fields,
     boolean constructors,
-    boolean methods
+    boolean methods,
+    boolean publicOnly
 ) {
+    /**
+     * New member options.
+     *
+     * @param fields Include fields
+     * @param constructors Include constructors
+     * @param methods Include methods
+     */
+    public MemberOptions(
+        final boolean fields,
+        final boolean constructors,
+        final boolean methods
+    ) {
+        this(fields, constructors, methods, false);
+    }
+
     /**
      * Default options matching the historical renderer.
      */
     public MemberOptions() {
-        this(true, false, true);
+        this(true, false, true, false);
     }
 }

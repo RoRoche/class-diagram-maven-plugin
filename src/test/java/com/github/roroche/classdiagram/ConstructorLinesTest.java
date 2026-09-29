@@ -23,6 +23,7 @@
  */
 package com.github.roroche.classdiagram;
 
+import com.github.roroche.classdiagram.members.ConstructorLines;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,15 @@ final class ConstructorLinesTest {
             "Constructor lines should be rendered and sorted",
             new ConstructorLines(ConstructorLinesTest.Sample.class),
             Matchers.contains("  Sample()", "  Sample(String)")
+        );
+    }
+
+    @Test
+    void rendersPublicConstructorLines() {
+        MatcherAssert.assertThat(
+            "Public constructor lines should omit non-public constructors",
+            new ConstructorLines(PublicConstructorFixture.class, true),
+            Matchers.contains("  PublicConstructorFixture()")
         );
     }
 

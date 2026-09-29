@@ -117,6 +117,15 @@ final class DiagramConfigurationTest {
     }
 
     @Test
+    void returnsNullDescriptionLevelByDefault() {
+        MatcherAssert.assertThat(
+            "Default description level should be null",
+            new DiagramConfiguration().getDescriptionLevel(),
+            Matchers.nullValue()
+        );
+    }
+
+    @Test
     void returnsConfiguredName() throws Exception {
         MatcherAssert.assertThat(
             "Configured name should be returned",
@@ -195,6 +204,18 @@ final class DiagramConfigurationTest {
                 false
             ).value().isIncludeFields(),
             Matchers.is(false)
+        );
+    }
+
+    @Test
+    void returnsConfiguredDescriptionLevel() throws Exception {
+        MatcherAssert.assertThat(
+            "Configured description level should be returned",
+            new DiagramConfigurationWithField(
+                "descriptionLevel",
+                DescriptionLevel.FULL
+            ).value().getDescriptionLevel(),
+            Matchers.is(DescriptionLevel.FULL)
         );
     }
 

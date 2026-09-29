@@ -37,6 +37,7 @@ import java.util.List;
  */
 @SuppressWarnings({
     "PMD.ConstructorShouldDoInitialization",
+    "PMD.DataClass",
     "PMD.LongVariable"
 })
 // @checkstyle MemberNameCheck (500 lines)
@@ -59,6 +60,9 @@ public final class DiagramConfiguration {
 
     /** Optional output file name override. */
     private String fileName;
+
+    /** Optional description level override. */
+    private DescriptionLevel descriptionLevel;
 
     /** Optional field rendering override. */
     private Boolean includeFields;
@@ -128,6 +132,15 @@ public final class DiagramConfiguration {
      */
     public String getFileName() {
         return this.fileName;
+    }
+
+    /**
+     * Getter for the description level.
+     *
+     * @return Description level or null
+     */
+    public DescriptionLevel getDescriptionLevel() {
+        return this.descriptionLevel;
     }
 
     /**
