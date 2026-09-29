@@ -21,53 +21,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.files;
 
-import com.github.roroche.classdiagram.configuration.MemberOptions;
-import java.util.ArrayList;
-import java.util.List;
-import org.cactoos.Scalar;
+import com.github.roroche.classdiagram.diagram.DiagramText;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
- * PlantUML member lines for a class.
+ * Diagram written to a file.
  *
- * @since 0.0.4
+ * @since 0.0.1
  */
-public final class MemberLines implements Scalar<List<String>> {
+public final class GeneratedDiagram {
+
+    /** Diagram. */
+    private final DiagramText diagram;
+
+    /** Destination. */
+    private final Path output;
 
     /**
-     * Class.
-     */
-    private final Class<?> type;
-
-    /**
-     * Options.
-     */
-    private final MemberOptions options;
-
-    /**
-     * New member lines.
+     * New generated diagram.
      *
-     * @param type Type
-     * @param options Options
+     * @param diagram Diagram
+     * @param output Destination
      */
-    public MemberLines(final Class<?> type, final MemberOptions options) {
-        this.type = type;
-        this.options = options;
+    public GeneratedDiagram(final DiagramText diagram, final Path output) {
+        this.diagram = diagram;
+        this.output = output;
     }
 
-    @Override
-    public List<String> value() {
-        final List<String> lines = new ArrayList<>(0);
-        if (this.options.fields()) {
-            lines.addAll(new FieldLines(this.type));
+    /**
+     * Generate the file.
+     *
+     * @return Output path
+     */
+    public Path generate() throws IOException {
+        final Path parent = this.output.toAbsolutePath().getParent();
+        if (parent != null) {
+            Files.createDirectories(parent);
         }
-        if (this.options.constructors()) {
-            lines.addAll(new ConstructorLines(this.type, this.options.publicOnly()));
-        }
-        if (this.options.methods()) {
-            lines.addAll(new MethodLines(this.type, this.options.publicOnly()));
-        }
-        return List.copyOf(lines);
+        Files.writeString(
+            this.output,
+            this.diagram.value(),
+            StandardCharsets.UTF_8
+        );
+        return this.output;
     }
 }

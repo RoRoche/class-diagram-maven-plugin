@@ -1,0 +1,91 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2026 Romain Rochegude
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package com.github.roroche.classdiagram.members;
+
+import org.cactoos.text.UncheckedText;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+
+/**
+ * Tests for {@link MethodLine}.
+ *
+ * @since 0.0.4
+ */
+final class MethodLineTest {
+
+    @Test
+    void rendersVoidMethodLine() throws Exception {
+        MatcherAssert.assertThat(
+            "Void method line should omit return type",
+            new UncheckedText(
+                new MethodLine(
+                    MethodLineTest.Sample.class.getDeclaredMethod("rename", String.class)
+                )
+            ).asString(),
+            Matchers.is("  rename(String)")
+        );
+    }
+
+    @Test
+    void rendersReturningMethodLine() throws Exception {
+        MatcherAssert.assertThat(
+            "Returning method line should include return type",
+            new UncheckedText(
+                new MethodLine(MethodLineTest.Sample.class.getDeclaredMethod("count"))
+            ).asString(),
+            Matchers.is("  count() : int")
+        );
+    }
+
+    /**
+     * Sample.
+     *
+     * @since 0.0.4
+     */
+    @SuppressWarnings({
+        "UnusedMethod",
+        "UnusedVariable"
+    })
+    private static final class Sample {
+
+        /**
+         * Rename.
+         *
+         * @param name Name
+         */
+        void rename(final String name) {
+            // Empty method.
+        }
+
+        /**
+         * Count.
+         *
+         * @return Count
+         */
+        int count() {
+            return 1;
+        }
+    }
+}

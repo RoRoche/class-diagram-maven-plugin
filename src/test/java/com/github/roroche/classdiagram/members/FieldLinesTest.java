@@ -23,47 +23,45 @@
  */
 package com.github.roroche.classdiagram.members;
 
-import com.github.roroche.classdiagram.metadata.MemberParameters;
-import com.github.roroche.classdiagram.metadata.TypeName;
-import java.lang.reflect.Method;
-import org.cactoos.Scalar;
-import org.cactoos.text.FormattedText;
-import org.cactoos.text.TextEnvelope;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * PlantUML method line.
+ * Tests for {@link FieldLines}.
  *
  * @since 0.0.4
  */
-public final class MethodLine extends TextEnvelope {
+final class FieldLinesTest {
+
+    @Test
+    void rendersFieldLines() {
+        MatcherAssert.assertThat(
+            "Field lines should be rendered and sorted",
+            new FieldLines(FieldLinesTest.Sample.class),
+            Matchers.contains("  first : String", "  second : int")
+        );
+    }
 
     /**
-     * New method line.
+     * Sample.
      *
-     * @param method Method
+     * @since 0.0.4
      */
-    public MethodLine(final Method method) {
-        super(
-            new FormattedText(
-                new TextOf(
-                    (Scalar<String>) () -> {
-                        final String format;
-                        if (Void.TYPE.equals(method.getReturnType())) {
-                            format = "  %s(%s)";
-                        } else {
-                            format = "  %s(%s) : %s";
-                        }
-                        return format;
-                    }
-                ),
-                method.getName(),
-                new UncheckedText(
-                    new MemberParameters(method.getGenericParameterTypes())
-                ).asString(),
-                new TypeName(method.getGenericReturnType())
-            )
-        );
+    @SuppressWarnings({
+        "PMD.UnusedPrivateField",
+        "UnusedVariable"
+    })
+    private static final class Sample {
+
+        /**
+         * Second.
+         */
+        private int second;
+
+        /**
+         * First.
+         */
+        private String first;
     }
 }

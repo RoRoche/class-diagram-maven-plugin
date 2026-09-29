@@ -21,53 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.diagram;
 
-import com.github.roroche.classdiagram.configuration.MemberOptions;
-import java.util.ArrayList;
-import java.util.List;
-import org.cactoos.Scalar;
+import org.cactoos.BiFunc;
 
 /**
- * PlantUML member lines for a class.
+ * Append a wildcard as regex text.
  *
- * @since 0.0.4
+ * @since 0.0.3
  */
-public final class MemberLines implements Scalar<List<String>> {
+public final class AppendWildcard implements BiFunc<Integer, StringBuilder, Integer> {
 
     /**
-     * Class.
+     * Glob expression.
      */
-    private final Class<?> type;
+    private final String glob;
 
     /**
-     * Options.
-     */
-    private final MemberOptions options;
-
-    /**
-     * New member lines.
+     * New wildcard append operation.
      *
-     * @param type Type
-     * @param options Options
+     * @param glob Glob expression
      */
-    public MemberLines(final Class<?> type, final MemberOptions options) {
-        this.type = type;
-        this.options = options;
+    public AppendWildcard(final String glob) {
+        this.glob = glob;
     }
 
     @Override
-    public List<String> value() {
-        final List<String> lines = new ArrayList<>(0);
-        if (this.options.fields()) {
-            lines.addAll(new FieldLines(this.type));
+    public Integer apply(final Integer idx, final StringBuilder regex) {
+        final int step;
+        if (idx + 1 < this.glob.length() && this.glob.charAt(idx + 1) == '*') {
+            regex.append(".*");
+            step = 2;
+        } else {
+            regex.append("[^.]*");
+            step = 1;
         }
-        if (this.options.constructors()) {
-            lines.addAll(new ConstructorLines(this.type, this.options.publicOnly()));
-        }
-        if (this.options.methods()) {
-            lines.addAll(new MethodLines(this.type, this.options.publicOnly()));
-        }
-        return List.copyOf(lines);
+        return step;
     }
 }

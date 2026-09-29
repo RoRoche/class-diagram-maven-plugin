@@ -21,38 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.files;
 
-import com.github.roroche.classdiagram.metadata.MemberParameters;
-import java.lang.reflect.Constructor;
-import org.cactoos.text.TextEnvelope;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
+import com.github.roroche.classdiagram.configuration.DiagramConfiguration;
+import com.github.roroche.classdiagram.configuration.DiagramConfigurationWithField;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * PlantUML constructor line.
+ * Tests for {@link FileName}.
  *
- * @since 0.0.4
+ * @since 0.0.1
  */
-public final class ConstructorLine extends TextEnvelope {
+final class FileNameTest {
 
-    /**
-     * New constructor line.
-     *
-     * @param type Declaring type
-     * @param ctor Constructor
-     */
-    public ConstructorLine(final Class<?> type, final Constructor<?> ctor) {
-        super(
-            new TextOf(
-                String.format(
-                    "  %s(%s)",
-                    type.getSimpleName(),
-                    new UncheckedText(
-                        new MemberParameters(ctor.getGenericParameterTypes())
-                    ).asString()
-                )
-            )
+    @Test
+    void createsDefaultFileName() {
+        MatcherAssert.assertThat(
+            "Default file name should use diagram name",
+            new FileName(new DiagramConfiguration(), "domain").toString(),
+            Matchers.is("domain.puml")
+        );
+    }
+
+    @Test
+    void createsConfiguredFileName() throws Exception {
+        MatcherAssert.assertThat(
+            "Configured file name should override default",
+            new FileName(
+                new DiagramConfigurationWithField("fileName", "custom.puml").value(),
+                "domain"
+            ).toString(),
+            Matchers.is("custom.puml")
         );
     }
 }

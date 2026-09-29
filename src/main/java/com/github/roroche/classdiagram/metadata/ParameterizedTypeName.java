@@ -21,48 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.metadata;
 
-import com.github.roroche.classdiagram.metadata.MemberParameters;
-import com.github.roroche.classdiagram.metadata.TypeName;
-import java.lang.reflect.Method;
-import org.cactoos.Scalar;
+import java.lang.reflect.ParameterizedType;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.TextEnvelope;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 
 /**
- * PlantUML method line.
+ * Compact parameterized type name.
  *
  * @since 0.0.4
  */
-public final class MethodLine extends TextEnvelope {
+public final class ParameterizedTypeName extends TextEnvelope {
 
     /**
-     * New method line.
+     * New parameterized type name.
      *
-     * @param method Method
+     * @param type Type
      */
-    public MethodLine(final Method method) {
+    public ParameterizedTypeName(final ParameterizedType type) {
         super(
             new FormattedText(
-                new TextOf(
-                    (Scalar<String>) () -> {
-                        final String format;
-                        if (Void.TYPE.equals(method.getReturnType())) {
-                            format = "  %s(%s)";
-                        } else {
-                            format = "  %s(%s) : %s";
-                        }
-                        return format;
-                    }
-                ),
-                method.getName(),
+                new TextOf("%s<%s>"),
+                new TypeName(type.getRawType()),
                 new UncheckedText(
-                    new MemberParameters(method.getGenericParameterTypes())
-                ).asString(),
-                new TypeName(method.getGenericReturnType())
+                    new TypeArguments(type.getActualTypeArguments())
+                ).asString()
             )
         );
     }

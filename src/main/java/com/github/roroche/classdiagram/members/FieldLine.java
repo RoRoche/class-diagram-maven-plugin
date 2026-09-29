@@ -23,7 +23,7 @@
  */
 package com.github.roroche.classdiagram.members;
 
-import com.github.roroche.classdiagram.TypeName;
+import com.github.roroche.classdiagram.metadata.TypeName;
 import java.lang.reflect.Field;
 import org.cactoos.text.TextEnvelope;
 import org.cactoos.text.TextOf;

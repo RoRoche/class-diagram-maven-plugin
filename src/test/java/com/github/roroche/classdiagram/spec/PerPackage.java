@@ -21,38 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.spec;
 
-import com.github.roroche.classdiagram.metadata.MemberParameters;
-import java.lang.reflect.Constructor;
-import org.cactoos.text.TextEnvelope;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
+import java.io.File;
+import org.cactoos.list.ListEnvelope;
+import org.cactoos.list.ListOf;
 
 /**
- * PlantUML constructor line.
+ * Per-package diagram specifications.
  *
- * @since 0.0.4
+ * @since 0.0.3
  */
-public final class ConstructorLine extends TextEnvelope {
+public final class PerPackage extends ListEnvelope<DiagramSpec> {
 
     /**
-     * New constructor line.
-     *
-     * @param type Declaring type
-     * @param ctor Constructor
+     * New per-package diagram specifications.
      */
-    public ConstructorLine(final Class<?> type, final Constructor<?> ctor) {
+    public PerPackage() {
         super(
-            new TextOf(
-                String.format(
-                    "  %s(%s)",
-                    type.getSimpleName(),
-                    new UncheckedText(
-                        new MemberParameters(ctor.getGenericParameterTypes())
-                    ).asString()
-                )
-            )
+            new DiagramSpecs(
+                new ListOf<>("com.acme.one", "com.acme.two"),
+                new ListOf<>("x"),
+                new ListOf<>("y"),
+                new ListOf<>(),
+                new File("target/diagrams"),
+                "ignored",
+                true
+            ).value()
         );
     }
 }

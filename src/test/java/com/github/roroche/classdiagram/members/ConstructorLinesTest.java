@@ -23,47 +23,60 @@
  */
 package com.github.roroche.classdiagram.members;
 
-import com.github.roroche.classdiagram.metadata.MemberParameters;
-import com.github.roroche.classdiagram.metadata.TypeName;
-import java.lang.reflect.Method;
-import org.cactoos.Scalar;
-import org.cactoos.text.FormattedText;
-import org.cactoos.text.TextEnvelope;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * PlantUML method line.
+ * Tests for {@link ConstructorLines}.
  *
  * @since 0.0.4
  */
-public final class MethodLine extends TextEnvelope {
+final class ConstructorLinesTest {
+
+    @Test
+    void rendersConstructorLines() {
+        MatcherAssert.assertThat(
+            "Constructor lines should be rendered and sorted",
+            new ConstructorLines(ConstructorLinesTest.Sample.class),
+            Matchers.contains("  Sample()", "  Sample(String)")
+        );
+    }
+
+    @Test
+    void rendersPublicConstructorLines() {
+        MatcherAssert.assertThat(
+            "Public constructor lines should omit non-public constructors",
+            new ConstructorLines(PublicConstructorFixture.class, true),
+            Matchers.contains("  PublicConstructorFixture()")
+        );
+    }
 
     /**
-     * New method line.
+     * Sample.
      *
-     * @param method Method
+     * @since 0.0.4
      */
-    public MethodLine(final Method method) {
-        super(
-            new FormattedText(
-                new TextOf(
-                    (Scalar<String>) () -> {
-                        final String format;
-                        if (Void.TYPE.equals(method.getReturnType())) {
-                            format = "  %s(%s)";
-                        } else {
-                            format = "  %s(%s) : %s";
-                        }
-                        return format;
-                    }
-                ),
-                method.getName(),
-                new UncheckedText(
-                    new MemberParameters(method.getGenericParameterTypes())
-                ).asString(),
-                new TypeName(method.getGenericReturnType())
-            )
-        );
+    @SuppressWarnings({
+        "UnusedMethod",
+        "UnusedVariable"
+    })
+    private static final class Sample {
+
+        /**
+         * New sample.
+         */
+        Sample() {
+            this("");
+        }
+
+        /**
+         * New sample.
+         *
+         * @param name Name
+         */
+        Sample(final String name) {
+            // Empty constructor.
+        }
     }
 }

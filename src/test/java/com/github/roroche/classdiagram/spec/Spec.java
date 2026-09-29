@@ -21,53 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.spec;
 
-import com.github.roroche.classdiagram.configuration.MemberOptions;
-import java.util.ArrayList;
-import java.util.List;
+import com.github.roroche.classdiagram.configuration.DiagramConfiguration;
+import java.io.File;
 import org.cactoos.Scalar;
+import org.cactoos.list.ListOf;
 
 /**
- * PlantUML member lines for a class.
+ * Diagram specification from configuration.
  *
- * @since 0.0.4
+ * @since 0.0.3
  */
-public final class MemberLines implements Scalar<List<String>> {
+public final class Spec implements Scalar<DiagramSpec> {
 
     /**
-     * Class.
+     * Diagram configuration.
      */
-    private final Class<?> type;
+    private final DiagramConfiguration config;
 
     /**
-     * Options.
-     */
-    private final MemberOptions options;
-
-    /**
-     * New member lines.
+     * New diagram specification.
      *
-     * @param type Type
-     * @param options Options
+     * @param config Diagram configuration
      */
-    public MemberLines(final Class<?> type, final MemberOptions options) {
-        this.type = type;
-        this.options = options;
+    public Spec(final DiagramConfiguration config) {
+        this.config = config;
     }
 
     @Override
-    public List<String> value() {
-        final List<String> lines = new ArrayList<>(0);
-        if (this.options.fields()) {
-            lines.addAll(new FieldLines(this.type));
-        }
-        if (this.options.constructors()) {
-            lines.addAll(new ConstructorLines(this.type, this.options.publicOnly()));
-        }
-        if (this.options.methods()) {
-            lines.addAll(new MethodLines(this.type, this.options.publicOnly()));
-        }
-        return List.copyOf(lines);
+    public DiagramSpec value() {
+        return new DiagramSpecs(
+            new ListOf<>("ignored"),
+            new ListOf<>(),
+            new ListOf<>(),
+            new ListOf<>(this.config),
+            new File("target/diagrams"),
+            "ignored.puml",
+            false
+        ).value().get(0);
     }
 }

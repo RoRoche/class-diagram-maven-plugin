@@ -21,48 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.files;
 
-import com.github.roroche.classdiagram.metadata.MemberParameters;
-import com.github.roroche.classdiagram.metadata.TypeName;
-import java.lang.reflect.Method;
-import org.cactoos.Scalar;
-import org.cactoos.text.FormattedText;
+import com.github.roroche.classdiagram.configuration.DiagramConfiguration;
+import java.util.Optional;
 import org.cactoos.text.TextEnvelope;
 import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
 
 /**
- * PlantUML method line.
+ * Represents a diagram file name.
  *
- * @since 0.0.4
+ * @since 0.0.1
  */
-public final class MethodLine extends TextEnvelope {
+public class FileName extends TextEnvelope {
 
     /**
-     * New method line.
+     * Ctor.
      *
-     * @param method Method
+     * @param config The diagram configuration
+     * @param name The diagram name
      */
-    public MethodLine(final Method method) {
+    public FileName(final DiagramConfiguration config, final String name) {
         super(
-            new FormattedText(
-                new TextOf(
-                    (Scalar<String>) () -> {
-                        final String format;
-                        if (Void.TYPE.equals(method.getReturnType())) {
-                            format = "  %s(%s)";
-                        } else {
-                            format = "  %s(%s) : %s";
-                        }
-                        return format;
-                    }
-                ),
-                method.getName(),
-                new UncheckedText(
-                    new MemberParameters(method.getGenericParameterTypes())
-                ).asString(),
-                new TypeName(method.getGenericReturnType())
+            new TextOf(
+                Optional.ofNullable(
+                    config.getFileName()
+                ).map(String::valueOf).orElseGet(
+                    () -> String.format("%s.puml", name)
+                )
             )
         );
     }

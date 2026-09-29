@@ -23,6 +23,7 @@
  */
 package com.github.roroche.classdiagram;
 
+import com.github.roroche.classdiagram.configuration.DiagramConfiguration;
 import com.github.roroche.classdiagram.matchers.MojoExecutionHasCause;
 import com.github.roroche.classdiagram.matchers.MojoExecutionHasMessage;
 import java.io.File;

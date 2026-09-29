@@ -21,53 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
-
-import com.github.roroche.classdiagram.configuration.MemberOptions;
-import java.util.ArrayList;
-import java.util.List;
-import org.cactoos.Scalar;
+package com.github.roroche.classdiagram.configuration;
 
 /**
- * PlantUML member lines for a class.
+ * Options for class member rendering.
+ *
+ * @param fields Include fields.
+ * @param constructors Include constructors.
+ * @param methods Include methods.
+ * @param publicOnly Include only public members.
  *
  * @since 0.0.4
  */
-public final class MemberLines implements Scalar<List<String>> {
-
+public record MemberOptions(
+    boolean fields,
+    boolean constructors,
+    boolean methods,
+    boolean publicOnly
+) {
     /**
-     * Class.
-     */
-    private final Class<?> type;
-
-    /**
-     * Options.
-     */
-    private final MemberOptions options;
-
-    /**
-     * New member lines.
+     * New member options.
      *
-     * @param type Type
-     * @param options Options
+     * @param fields Include fields
+     * @param constructors Include constructors
+     * @param methods Include methods
      */
-    public MemberLines(final Class<?> type, final MemberOptions options) {
-        this.type = type;
-        this.options = options;
+    public MemberOptions(
+        final boolean fields,
+        final boolean constructors,
+        final boolean methods
+    ) {
+        this(fields, constructors, methods, false);
     }
 
-    @Override
-    public List<String> value() {
-        final List<String> lines = new ArrayList<>(0);
-        if (this.options.fields()) {
-            lines.addAll(new FieldLines(this.type));
-        }
-        if (this.options.constructors()) {
-            lines.addAll(new ConstructorLines(this.type, this.options.publicOnly()));
-        }
-        if (this.options.methods()) {
-            lines.addAll(new MethodLines(this.type, this.options.publicOnly()));
-        }
-        return List.copyOf(lines);
+    /**
+     * Default options matching the historical renderer.
+     */
+    public MemberOptions() {
+        this(true, false, true, false);
     }
 }

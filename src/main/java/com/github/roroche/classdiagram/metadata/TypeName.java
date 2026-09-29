@@ -21,53 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.metadata;
 
-import com.github.roroche.classdiagram.configuration.MemberOptions;
-import java.util.ArrayList;
-import java.util.List;
-import org.cactoos.Scalar;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import org.cactoos.text.UncheckedText;
 
 /**
- * PlantUML member lines for a class.
+ * Compact PlantUML type name.
  *
  * @since 0.0.4
  */
-public final class MemberLines implements Scalar<List<String>> {
+public final class TypeName {
 
     /**
-     * Class.
+     * Type.
      */
-    private final Class<?> type;
+    private final Type type;
 
     /**
-     * Options.
-     */
-    private final MemberOptions options;
-
-    /**
-     * New member lines.
+     * New type name.
      *
      * @param type Type
-     * @param options Options
      */
-    public MemberLines(final Class<?> type, final MemberOptions options) {
+    public TypeName(final Type type) {
         this.type = type;
-        this.options = options;
     }
 
     @Override
-    public List<String> value() {
-        final List<String> lines = new ArrayList<>(0);
-        if (this.options.fields()) {
-            lines.addAll(new FieldLines(this.type));
+    public String toString() {
+        final String name;
+        if (this.type instanceof Class<?>) {
+            name = new UncheckedText(
+                new ClassTypeName((Class<?>) this.type)
+            ).asString();
+        } else if (this.type instanceof ParameterizedType parameterized) {
+            name = new UncheckedText(new ParameterizedTypeName(parameterized)).asString();
+        } else {
+            name = this.type.getTypeName();
         }
-        if (this.options.constructors()) {
-            lines.addAll(new ConstructorLines(this.type, this.options.publicOnly()));
-        }
-        if (this.options.methods()) {
-            lines.addAll(new MethodLines(this.type, this.options.publicOnly()));
-        }
-        return List.copyOf(lines);
+        return name;
     }
 }

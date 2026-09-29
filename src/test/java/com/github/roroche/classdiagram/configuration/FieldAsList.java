@@ -21,53 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.configuration;
 
-import com.github.roroche.classdiagram.configuration.MemberOptions;
-import java.util.ArrayList;
+import java.lang.reflect.Field;
 import java.util.List;
 import org.cactoos.Scalar;
+import org.cactoos.list.ListEnvelope;
 
 /**
- * PlantUML member lines for a class.
+ * Returns a field of a {@link DiagramConfiguration} as a list.
  *
- * @since 0.0.4
+ * @since 0.0.3
  */
-public final class MemberLines implements Scalar<List<String>> {
+@SuppressWarnings("PMD.AvoidAccessibilityAlteration")
+public final class FieldAsList extends ListEnvelope<String> {
 
     /**
-     * Class.
-     */
-    private final Class<?> type;
-
-    /**
-     * Options.
-     */
-    private final MemberOptions options;
-
-    /**
-     * New member lines.
+     * New field as list.
      *
-     * @param type Type
-     * @param options Options
+     * @param cfg Diagram configuration
+     * @param name Field name
+     * @throws Exception If the field is not accessible
      */
-    public MemberLines(final Class<?> type, final MemberOptions options) {
-        this.type = type;
-        this.options = options;
-    }
-
-    @Override
-    public List<String> value() {
-        final List<String> lines = new ArrayList<>(0);
-        if (this.options.fields()) {
-            lines.addAll(new FieldLines(this.type));
-        }
-        if (this.options.constructors()) {
-            lines.addAll(new ConstructorLines(this.type, this.options.publicOnly()));
-        }
-        if (this.options.methods()) {
-            lines.addAll(new MethodLines(this.type, this.options.publicOnly()));
-        }
-        return List.copyOf(lines);
+    public FieldAsList(
+        final DiagramConfiguration cfg,
+        final String name
+    ) throws Exception {
+        super(
+            ((Scalar<List<String>>) () -> {
+                final Field fld = DiagramConfiguration.class.getDeclaredField(name);
+                fld.setAccessible(true);
+                return (List<String>) fld.get(cfg);
+            }).value()
+        );
     }
 }

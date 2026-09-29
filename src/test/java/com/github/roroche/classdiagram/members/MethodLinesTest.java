@@ -24,50 +24,70 @@
 package com.github.roroche.classdiagram.members;
 
 import com.github.roroche.classdiagram.configuration.MemberOptions;
-import java.util.ArrayList;
-import java.util.List;
-import org.cactoos.Scalar;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * PlantUML member lines for a class.
+ * Tests for {@link MethodLines}.
  *
  * @since 0.0.4
  */
-public final class MemberLines implements Scalar<List<String>> {
+final class MethodLinesTest {
 
-    /**
-     * Class.
-     */
-    private final Class<?> type;
-
-    /**
-     * Options.
-     */
-    private final MemberOptions options;
-
-    /**
-     * New member lines.
-     *
-     * @param type Type
-     * @param options Options
-     */
-    public MemberLines(final Class<?> type, final MemberOptions options) {
-        this.type = type;
-        this.options = options;
+    @Test
+    void rendersMethodLines() {
+        MatcherAssert.assertThat(
+            "Method lines should be rendered and sorted by method name",
+            new MethodLines(MethodLinesTest.Sample.class),
+            Matchers.contains("  alpha()", "  beta() : int", "  gamma() : String")
+        );
     }
 
-    @Override
-    public List<String> value() {
-        final List<String> lines = new ArrayList<>(0);
-        if (this.options.fields()) {
-            lines.addAll(new FieldLines(this.type));
+    @Test
+    void rendersPublicMethodLines() {
+        MatcherAssert.assertThat(
+            "Public method lines should omit non-public methods",
+            new MethodLines(MemberOptions.class, true),
+            Matchers.hasItems(
+                "  constructors() : boolean",
+                "  fields() : boolean",
+                "  methods() : boolean"
+            )
+        );
+    }
+
+    /**
+     * Sample.
+     *
+     * @since 0.0.4
+     */
+    @SuppressWarnings("UnusedMethod")
+    private static final class Sample {
+
+        /**
+         * Beta.
+         *
+         * @return Beta
+         */
+        int beta() {
+            return 1;
         }
-        if (this.options.constructors()) {
-            lines.addAll(new ConstructorLines(this.type, this.options.publicOnly()));
+
+        /**
+         * Alpha.
+         */
+        void alpha() {
+            // Empty method.
         }
-        if (this.options.methods()) {
-            lines.addAll(new MethodLines(this.type, this.options.publicOnly()));
+
+        /**
+         * Gamma.
+         *
+         * @return Gamma
+         */
+        String gamma() {
+            return "";
         }
-        return List.copyOf(lines);
     }
 }

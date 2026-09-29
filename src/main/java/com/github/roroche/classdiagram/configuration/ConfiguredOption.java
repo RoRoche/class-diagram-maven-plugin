@@ -21,53 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.configuration;
 
-import com.github.roroche.classdiagram.configuration.MemberOptions;
-import java.util.ArrayList;
-import java.util.List;
 import org.cactoos.Scalar;
 
 /**
- * PlantUML member lines for a class.
+ * Configured boolean option with fallback.
  *
  * @since 0.0.4
  */
-public final class MemberLines implements Scalar<List<String>> {
+public final class ConfiguredOption implements Scalar<Boolean> {
 
     /**
-     * Class.
+     * Configured value.
      */
-    private final Class<?> type;
+    private final Boolean configured;
 
     /**
-     * Options.
+     * Fallback value.
      */
-    private final MemberOptions options;
+    private final boolean fallback;
 
     /**
-     * New member lines.
+     * New configured option.
      *
-     * @param type Type
-     * @param options Options
+     * @param configured Configured value
+     * @param fallback Fallback value
      */
-    public MemberLines(final Class<?> type, final MemberOptions options) {
-        this.type = type;
-        this.options = options;
+    public ConfiguredOption(final Boolean configured, final boolean fallback) {
+        this.configured = configured;
+        this.fallback = fallback;
     }
 
     @Override
-    public List<String> value() {
-        final List<String> lines = new ArrayList<>(0);
-        if (this.options.fields()) {
-            lines.addAll(new FieldLines(this.type));
+    public Boolean value() {
+        final boolean resolved;
+        if (this.configured == null) {
+            resolved = this.fallback;
+        } else {
+            resolved = this.configured;
         }
-        if (this.options.constructors()) {
-            lines.addAll(new ConstructorLines(this.type, this.options.publicOnly()));
-        }
-        if (this.options.methods()) {
-            lines.addAll(new MethodLines(this.type, this.options.publicOnly()));
-        }
-        return List.copyOf(lines);
+        return resolved;
     }
 }

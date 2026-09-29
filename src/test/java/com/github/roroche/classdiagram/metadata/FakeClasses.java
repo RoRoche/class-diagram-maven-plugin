@@ -21,53 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.metadata;
 
-import com.github.roroche.classdiagram.configuration.MemberOptions;
-import java.util.ArrayList;
+import com.github.roroche.classdiagram.spec.DiagramSpec;
+import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
-import org.cactoos.Scalar;
+import org.cactoos.list.ListEnvelope;
+import org.cactoos.list.ListOf;
 
 /**
- * PlantUML member lines for a class.
+ * Converts a list of class names into a list of classes.
  *
- * @since 0.0.4
+ * @since 0.0.3
  */
-public final class MemberLines implements Scalar<List<String>> {
+// @checkstyle ParameterNameCheck (500 lines)
+public final class FakeClasses extends ListEnvelope<Class<?>> {
 
     /**
-     * Class.
-     */
-    private final Class<?> type;
-
-    /**
-     * Options.
-     */
-    private final MemberOptions options;
-
-    /**
-     * New member lines.
+     * New classes.
      *
-     * @param type Type
-     * @param options Options
+     * @param excludedPackages Excluded packages
+     * @param excludedClasses Excluded classes
      */
-    public MemberLines(final Class<?> type, final MemberOptions options) {
-        this.type = type;
-        this.options = options;
-    }
-
-    @Override
-    public List<String> value() {
-        final List<String> lines = new ArrayList<>(0);
-        if (this.options.fields()) {
-            lines.addAll(new FieldLines(this.type));
-        }
-        if (this.options.constructors()) {
-            lines.addAll(new ConstructorLines(this.type, this.options.publicOnly()));
-        }
-        if (this.options.methods()) {
-            lines.addAll(new MethodLines(this.type, this.options.publicOnly()));
-        }
-        return List.copyOf(lines);
+    public FakeClasses(
+        final List<String> excludedPackages,
+        final List<String> excludedClasses
+    ) {
+        super(
+            new ClassGraphClasses(
+                new DiagramSpec(
+                    "test",
+                    new ListOf<>("com.github.roroche.classdiagram"),
+                    excludedPackages,
+                    excludedClasses,
+                    Path.of("x")
+                ),
+                new ListOf<>(
+                    System.getProperty("java.class.path").split(File.pathSeparator)
+                )
+            ).value()
+        );
     }
 }

@@ -21,24 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.diagram;
 
 import com.github.roroche.classdiagram.configuration.MemberOptions;
-import java.util.ArrayList;
 import java.util.List;
 import org.cactoos.Scalar;
 
 /**
- * PlantUML member lines for a class.
+ * Diagram text with configured class members.
  *
  * @since 0.0.4
  */
-public final class MemberLines implements Scalar<List<String>> {
+public final class DiagramMembers implements Scalar<String> {
 
     /**
-     * Class.
+     * Diagram text.
      */
-    private final Class<?> type;
+    private final String text;
+
+    /**
+     * Classes.
+     */
+    private final List<Class<?>> classes;
 
     /**
      * Options.
@@ -46,28 +50,28 @@ public final class MemberLines implements Scalar<List<String>> {
     private final MemberOptions options;
 
     /**
-     * New member lines.
+     * New diagram members.
      *
-     * @param type Type
+     * @param text Diagram text
+     * @param classes Classes
      * @param options Options
      */
-    public MemberLines(final Class<?> type, final MemberOptions options) {
-        this.type = type;
+    public DiagramMembers(
+        final String text,
+        final List<Class<?>> classes,
+        final MemberOptions options
+    ) {
+        this.text = text;
+        this.classes = classes;
         this.options = options;
     }
 
     @Override
-    public List<String> value() {
-        final List<String> lines = new ArrayList<>(0);
-        if (this.options.fields()) {
-            lines.addAll(new FieldLines(this.type));
+    public String value() {
+        String diagram = this.text;
+        for (final Class<?> type : this.classes) {
+            diagram = new DiagramWithMembers(diagram, type, this.options).value();
         }
-        if (this.options.constructors()) {
-            lines.addAll(new ConstructorLines(this.type, this.options.publicOnly()));
-        }
-        if (this.options.methods()) {
-            lines.addAll(new MethodLines(this.type, this.options.publicOnly()));
-        }
-        return List.copyOf(lines);
+        return diagram;
     }
 }

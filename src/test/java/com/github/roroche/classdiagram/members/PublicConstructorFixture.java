@@ -23,47 +23,41 @@
  */
 package com.github.roroche.classdiagram.members;
 
-import com.github.roroche.classdiagram.metadata.MemberParameters;
-import com.github.roroche.classdiagram.metadata.TypeName;
-import java.lang.reflect.Method;
-import org.cactoos.Scalar;
-import org.cactoos.text.FormattedText;
-import org.cactoos.text.TextEnvelope;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
-
 /**
- * PlantUML method line.
+ * Fixture with constructors of different visibility.
  *
  * @since 0.0.4
  */
-public final class MethodLine extends TextEnvelope {
+@SuppressWarnings("UnusedMethod")
+public final class PublicConstructorFixture {
 
     /**
-     * New method line.
-     *
-     * @param method Method
+     * Name.
      */
-    public MethodLine(final Method method) {
-        super(
-            new FormattedText(
-                new TextOf(
-                    (Scalar<String>) () -> {
-                        final String format;
-                        if (Void.TYPE.equals(method.getReturnType())) {
-                            format = "  %s(%s)";
-                        } else {
-                            format = "  %s(%s) : %s";
-                        }
-                        return format;
-                    }
-                ),
-                method.getName(),
-                new UncheckedText(
-                    new MemberParameters(method.getGenericParameterTypes())
-                ).asString(),
-                new TypeName(method.getGenericReturnType())
-            )
-        );
+    private final String name;
+
+    /**
+     * New fixture.
+     */
+    public PublicConstructorFixture() {
+        this("");
+    }
+
+    /**
+     * New named fixture.
+     *
+     * @param name Name
+     */
+    private PublicConstructorFixture(final String name) {
+        this.name = name;
+    }
+
+    /**
+     * Name.
+     *
+     * @return Name
+     */
+    public String name() {
+        return this.name;
     }
 }

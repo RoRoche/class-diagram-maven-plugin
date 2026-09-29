@@ -21,53 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.spec;
 
-import com.github.roroche.classdiagram.configuration.MemberOptions;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
 import org.cactoos.Scalar;
+import org.cactoos.list.ListOf;
 
 /**
- * PlantUML member lines for a class.
+ * Aggregate diagram specification.
  *
- * @since 0.0.4
+ * @since 0.0.3
  */
-public final class MemberLines implements Scalar<List<String>> {
+public final class Aggregate implements Scalar<DiagramSpec> {
 
     /**
-     * Class.
+     * New aggregate diagram specification.
      */
-    private final Class<?> type;
-
-    /**
-     * Options.
-     */
-    private final MemberOptions options;
-
-    /**
-     * New member lines.
-     *
-     * @param type Type
-     * @param options Options
-     */
-    public MemberLines(final Class<?> type, final MemberOptions options) {
-        this.type = type;
-        this.options = options;
+    public Aggregate() {
+        // Empty constructor
     }
 
     @Override
-    public List<String> value() {
-        final List<String> lines = new ArrayList<>(0);
-        if (this.options.fields()) {
-            lines.addAll(new FieldLines(this.type));
-        }
-        if (this.options.constructors()) {
-            lines.addAll(new ConstructorLines(this.type, this.options.publicOnly()));
-        }
-        if (this.options.methods()) {
-            lines.addAll(new MethodLines(this.type, this.options.publicOnly()));
-        }
-        return List.copyOf(lines);
+    public DiagramSpec value() {
+        return new DiagramSpecs(
+            new ListOf<>("com.acme"),
+            new ListOf<>("com.acme.internal"),
+            new ListOf<>("**.*Test"),
+            new ListOf<>(),
+            new File("target/diagrams"),
+            "architecture.puml",
+            false
+        ).value().get(0);
     }
 }

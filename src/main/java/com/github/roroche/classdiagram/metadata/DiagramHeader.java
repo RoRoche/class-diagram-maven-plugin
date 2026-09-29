@@ -21,48 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.metadata;
 
-import com.github.roroche.classdiagram.metadata.MemberParameters;
-import com.github.roroche.classdiagram.metadata.TypeName;
-import java.lang.reflect.Method;
 import org.cactoos.Scalar;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.TextEnvelope;
 import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
 
 /**
- * PlantUML method line.
+ * PlantUML diagram class header.
  *
  * @since 0.0.4
  */
-public final class MethodLine extends TextEnvelope {
+public final class DiagramHeader extends TextEnvelope {
 
     /**
-     * New method line.
+     * New diagram header.
      *
-     * @param method Method
+     * @param type Type
      */
-    public MethodLine(final Method method) {
+    public DiagramHeader(final Class<?> type) {
         super(
             new FormattedText(
+                new TextOf("%s \"%s\""),
                 new TextOf(
                     (Scalar<String>) () -> {
-                        final String format;
-                        if (Void.TYPE.equals(method.getReturnType())) {
-                            format = "  %s(%s)";
+                        final String kind;
+                        if (type.isInterface()) {
+                            kind = "interface";
                         } else {
-                            format = "  %s(%s) : %s";
+                            kind = "class";
                         }
-                        return format;
+                        return kind;
                     }
                 ),
-                method.getName(),
-                new UncheckedText(
-                    new MemberParameters(method.getGenericParameterTypes())
-                ).asString(),
-                new TypeName(method.getGenericReturnType())
+                type.getSimpleName()
             )
         );
     }

@@ -21,48 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.metadata;
 
-import com.github.roroche.classdiagram.metadata.MemberParameters;
-import com.github.roroche.classdiagram.metadata.TypeName;
-import java.lang.reflect.Method;
-import org.cactoos.Scalar;
-import org.cactoos.text.FormattedText;
+import java.lang.reflect.Type;
+import org.cactoos.iterable.IterableOf;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.text.Joined;
 import org.cactoos.text.TextEnvelope;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
 
 /**
- * PlantUML method line.
+ * PlantUML member parameters.
  *
  * @since 0.0.4
  */
-public final class MethodLine extends TextEnvelope {
+public final class MemberParameters extends TextEnvelope {
 
     /**
-     * New method line.
+     * New member parameters.
      *
-     * @param method Method
+     * @param types Parameter types
      */
-    public MethodLine(final Method method) {
+    public MemberParameters(final Type... types) {
         super(
-            new FormattedText(
-                new TextOf(
-                    (Scalar<String>) () -> {
-                        final String format;
-                        if (Void.TYPE.equals(method.getReturnType())) {
-                            format = "  %s(%s)";
-                        } else {
-                            format = "  %s(%s) : %s";
-                        }
-                        return format;
-                    }
-                ),
-                method.getName(),
-                new UncheckedText(
-                    new MemberParameters(method.getGenericParameterTypes())
-                ).asString(),
-                new TypeName(method.getGenericReturnType())
+            new Joined(
+                ", ",
+                new Mapped<>(
+                    TypeName::toString,
+                    new Mapped<>(TypeName::new, new IterableOf<>(types))
+                )
             )
         );
     }

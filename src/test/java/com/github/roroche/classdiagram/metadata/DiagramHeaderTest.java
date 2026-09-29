@@ -21,53 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.metadata;
 
-import com.github.roroche.classdiagram.configuration.MemberOptions;
-import java.util.ArrayList;
-import java.util.List;
-import org.cactoos.Scalar;
+import org.cactoos.text.UncheckedText;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * PlantUML member lines for a class.
+ * Tests for {@link DiagramHeader}.
  *
  * @since 0.0.4
  */
-public final class MemberLines implements Scalar<List<String>> {
+final class DiagramHeaderTest {
 
-    /**
-     * Class.
-     */
-    private final Class<?> type;
-
-    /**
-     * Options.
-     */
-    private final MemberOptions options;
-
-    /**
-     * New member lines.
-     *
-     * @param type Type
-     * @param options Options
-     */
-    public MemberLines(final Class<?> type, final MemberOptions options) {
-        this.type = type;
-        this.options = options;
+    @Test
+    void rendersClassHeader() {
+        MatcherAssert.assertThat(
+            "Class header should identify class declarations",
+            new UncheckedText(new DiagramHeader(DiagramHeaderTest.Sample.class)).asString(),
+            Matchers.is("class \"Sample\"")
+        );
     }
 
-    @Override
-    public List<String> value() {
-        final List<String> lines = new ArrayList<>(0);
-        if (this.options.fields()) {
-            lines.addAll(new FieldLines(this.type));
-        }
-        if (this.options.constructors()) {
-            lines.addAll(new ConstructorLines(this.type, this.options.publicOnly()));
-        }
-        if (this.options.methods()) {
-            lines.addAll(new MethodLines(this.type, this.options.publicOnly()));
-        }
-        return List.copyOf(lines);
+    @Test
+    void rendersInterfaceHeader() {
+        MatcherAssert.assertThat(
+            "Interface header should identify interface declarations",
+            new UncheckedText(new DiagramHeader(DiagramHeaderTest.Contract.class)).asString(),
+            Matchers.is("interface \"Contract\"")
+        );
+    }
+
+    /**
+     * Sample.
+     *
+     * @since 0.0.4
+     */
+    private static final class Sample {
+    }
+
+    /**
+     * Contract.
+     *
+     * @since 0.0.4
+     */
+    private interface Contract {
     }
 }

@@ -21,53 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.configuration;
 
-import com.github.roroche.classdiagram.configuration.MemberOptions;
-import java.util.ArrayList;
-import java.util.List;
-import org.cactoos.Scalar;
+import java.lang.reflect.Field;
+import org.cactoos.scalar.ScalarEnvelope;
 
 /**
- * PlantUML member lines for a class.
+ * Diagram configuration with a field set to a value.
  *
- * @since 0.0.4
+ * @since 0.0.3
  */
-public final class MemberLines implements Scalar<List<String>> {
+@SuppressWarnings("PMD.AvoidAccessibilityAlteration")
+public final class DiagramConfigurationWithField extends ScalarEnvelope<DiagramConfiguration> {
 
     /**
-     * Class.
-     */
-    private final Class<?> type;
-
-    /**
-     * Options.
-     */
-    private final MemberOptions options;
-
-    /**
-     * New member lines.
+     * New diagram configuration with a field set to a value.
      *
-     * @param type Type
-     * @param options Options
+     * @param name Field name
+     * @param value Field value
      */
-    public MemberLines(final Class<?> type, final MemberOptions options) {
-        this.type = type;
-        this.options = options;
+    public DiagramConfigurationWithField(
+        final String name,
+        final Object value
+    ) {
+        this(new DiagramConfiguration(), name, value);
     }
 
-    @Override
-    public List<String> value() {
-        final List<String> lines = new ArrayList<>(0);
-        if (this.options.fields()) {
-            lines.addAll(new FieldLines(this.type));
-        }
-        if (this.options.constructors()) {
-            lines.addAll(new ConstructorLines(this.type, this.options.publicOnly()));
-        }
-        if (this.options.methods()) {
-            lines.addAll(new MethodLines(this.type, this.options.publicOnly()));
-        }
-        return List.copyOf(lines);
+    /**
+     * New diagram configuration with a field set to a value.
+     *
+     * @param cfg Diagram configuration
+     * @param name Field name
+     * @param value Field value
+     */
+    public DiagramConfigurationWithField(
+        final DiagramConfiguration cfg,
+        final String name,
+        final Object value
+    ) {
+        super(() -> {
+            final Field fld = DiagramConfiguration.class.getDeclaredField(name);
+            fld.setAccessible(true);
+            fld.set(cfg, value);
+            return cfg;
+        });
     }
 }

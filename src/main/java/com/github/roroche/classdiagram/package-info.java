@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 /**
- * This package contains the unit tests for the class diagram generator.
+ * Maven plugin entry point for generating class diagrams.
  */
 package com.github.roroche.classdiagram;

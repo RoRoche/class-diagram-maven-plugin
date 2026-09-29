@@ -21,49 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.metadata;
 
-import com.github.roroche.classdiagram.metadata.MemberParameters;
-import com.github.roroche.classdiagram.metadata.TypeName;
-import java.lang.reflect.Method;
-import org.cactoos.Scalar;
-import org.cactoos.text.FormattedText;
 import org.cactoos.text.TextEnvelope;
 import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
 
 /**
- * PlantUML method line.
+ * Compact class type name.
  *
  * @since 0.0.4
  */
-public final class MethodLine extends TextEnvelope {
+public final class ClassTypeName extends TextEnvelope {
 
     /**
-     * New method line.
+     * New class type name.
      *
-     * @param method Method
+     * @param type Type
      */
-    public MethodLine(final Method method) {
-        super(
-            new FormattedText(
-                new TextOf(
-                    (Scalar<String>) () -> {
-                        final String format;
-                        if (Void.TYPE.equals(method.getReturnType())) {
-                            format = "  %s(%s)";
-                        } else {
-                            format = "  %s(%s) : %s";
-                        }
-                        return format;
-                    }
-                ),
-                method.getName(),
-                new UncheckedText(
-                    new MemberParameters(method.getGenericParameterTypes())
-                ).asString(),
-                new TypeName(method.getGenericReturnType())
-            )
-        );
+    public ClassTypeName(final Class<?> type) {
+        super(new TextOf(type.getSimpleName()));
     }
 }

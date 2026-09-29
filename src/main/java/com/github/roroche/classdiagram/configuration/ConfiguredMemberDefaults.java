@@ -21,53 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.configuration;
 
-import com.github.roroche.classdiagram.configuration.MemberOptions;
-import java.util.ArrayList;
-import java.util.List;
 import org.cactoos.Scalar;
 
 /**
- * PlantUML member lines for a class.
+ * Member defaults resolved from global and diagram description levels.
  *
  * @since 0.0.4
  */
-public final class MemberLines implements Scalar<List<String>> {
+public final class ConfiguredMemberDefaults implements Scalar<MemberOptions> {
 
     /**
-     * Class.
+     * Global defaults.
      */
-    private final Class<?> type;
+    private final MemberOptions defaults;
 
     /**
-     * Options.
+     * Diagram configuration.
      */
-    private final MemberOptions options;
+    private final DiagramConfiguration config;
 
     /**
-     * New member lines.
+     * New configured member defaults.
      *
-     * @param type Type
-     * @param options Options
+     * @param defaults Global defaults
+     * @param config Diagram configuration
      */
-    public MemberLines(final Class<?> type, final MemberOptions options) {
-        this.type = type;
-        this.options = options;
+    public ConfiguredMemberDefaults(
+        final MemberOptions defaults,
+        final DiagramConfiguration config
+    ) {
+        this.defaults = defaults;
+        this.config = config;
     }
 
     @Override
-    public List<String> value() {
-        final List<String> lines = new ArrayList<>(0);
-        if (this.options.fields()) {
-            lines.addAll(new FieldLines(this.type));
+    public MemberOptions value() {
+        final MemberOptions resolved;
+        if (this.config.getDescriptionLevel() == null) {
+            resolved = this.defaults;
+        } else {
+            resolved = new MemberOptionsOfLevel(
+                this.config.getDescriptionLevel()
+            ).value();
         }
-        if (this.options.constructors()) {
-            lines.addAll(new ConstructorLines(this.type, this.options.publicOnly()));
-        }
-        if (this.options.methods()) {
-            lines.addAll(new MethodLines(this.type, this.options.publicOnly()));
-        }
-        return List.copyOf(lines);
+        return resolved;
     }
 }

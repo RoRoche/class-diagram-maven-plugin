@@ -21,38 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.files;
 
-import com.github.roroche.classdiagram.metadata.MemberParameters;
-import java.lang.reflect.Constructor;
-import org.cactoos.text.TextEnvelope;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
+import com.github.roroche.classdiagram.configuration.DiagramConfiguration;
+import com.github.roroche.classdiagram.configuration.DiagramConfigurationWithField;
+import java.io.File;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * PlantUML constructor line.
+ * Tests for {@link Target}.
  *
- * @since 0.0.4
+ * @since 0.0.1
  */
-public final class ConstructorLine extends TextEnvelope {
+final class TargetTest {
 
-    /**
-     * New constructor line.
-     *
-     * @param type Declaring type
-     * @param ctor Constructor
-     */
-    public ConstructorLine(final Class<?> type, final Constructor<?> ctor) {
-        super(
-            new TextOf(
-                String.format(
-                    "  %s(%s)",
-                    type.getSimpleName(),
-                    new UncheckedText(
-                        new MemberParameters(ctor.getGenericParameterTypes())
-                    ).asString()
-                )
-            )
+    @Test
+    void returnsDefaultDirectory() {
+        final File dir = new File("target/default");
+        MatcherAssert.assertThat(
+            "Default directory should be used without override",
+            new Target(dir, new DiagramConfiguration()).value(),
+            Matchers.is(dir)
+        );
+    }
+
+    @Test
+    void returnsConfiguredDirectory() throws Exception {
+        final File dir = new File("target/custom");
+        MatcherAssert.assertThat(
+            "Configured directory should override default",
+            new Target(
+                new File("target/default"),
+                new DiagramConfigurationWithField("outputDirectory", dir).value()
+            ).value(),
+            Matchers.is(dir)
         );
     }
 }

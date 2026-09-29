@@ -21,22 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.diagram;
 
 import com.github.roroche.classdiagram.configuration.MemberOptions;
-import java.util.ArrayList;
-import java.util.List;
+import com.github.roroche.classdiagram.metadata.DiagramHeader;
 import org.cactoos.Scalar;
+import org.cactoos.text.UncheckedText;
 
 /**
- * PlantUML member lines for a class.
+ * Diagram text with members for one class.
  *
  * @since 0.0.4
  */
-public final class MemberLines implements Scalar<List<String>> {
+public final class DiagramWithMembers implements Scalar<String> {
 
     /**
-     * Class.
+     * Diagram.
+     */
+    private final String diagram;
+
+    /**
+     * Type.
      */
     private final Class<?> type;
 
@@ -46,28 +51,46 @@ public final class MemberLines implements Scalar<List<String>> {
     private final MemberOptions options;
 
     /**
-     * New member lines.
+     * New diagram with members.
      *
+     * @param diagram Diagram
      * @param type Type
      * @param options Options
      */
-    public MemberLines(final Class<?> type, final MemberOptions options) {
+    public DiagramWithMembers(
+        final String diagram,
+        final Class<?> type,
+        final MemberOptions options
+    ) {
+        this.diagram = diagram;
         this.type = type;
         this.options = options;
     }
 
     @Override
-    public List<String> value() {
-        final List<String> lines = new ArrayList<>(0);
-        if (this.options.fields()) {
-            lines.addAll(new FieldLines(this.type));
+    public String value() {
+        final int start = this.diagram.indexOf(
+            new UncheckedText(new DiagramHeader(this.type)).asString()
+        );
+        String updated = this.diagram;
+        if (start >= 0) {
+            final int line = this.diagram.indexOf('\n', start);
+            final String declaration = this.diagram.substring(start, line);
+            final int end;
+            if (declaration.endsWith("{")) {
+                end = this.diagram.indexOf(String.format("%n}"), line) + 2;
+            } else {
+                end = line;
+            }
+            updated = String.format(
+                "%s%s%s",
+                this.diagram.substring(0, start),
+                new UncheckedText(
+                    new DiagramBlock(this.type, this.options)
+                ).asString(),
+                this.diagram.substring(end)
+            );
         }
-        if (this.options.constructors()) {
-            lines.addAll(new ConstructorLines(this.type, this.options.publicOnly()));
-        }
-        if (this.options.methods()) {
-            lines.addAll(new MethodLines(this.type, this.options.publicOnly()));
-        }
-        return List.copyOf(lines);
+        return updated;
     }
 }

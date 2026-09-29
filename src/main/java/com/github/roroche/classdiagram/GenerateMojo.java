@@ -23,6 +23,16 @@
  */
 package com.github.roroche.classdiagram;
 
+import com.github.roroche.classdiagram.configuration.DescriptionLevel;
+import com.github.roroche.classdiagram.configuration.DiagramConfiguration;
+import com.github.roroche.classdiagram.configuration.MemberOptionsOfLevel;
+import com.github.roroche.classdiagram.configuration.MemberOptionsOverride;
+import com.github.roroche.classdiagram.diagram.PlantUmlDiagram;
+import com.github.roroche.classdiagram.files.GeneratedDiagram;
+import com.github.roroche.classdiagram.metadata.ClassGraphClasses;
+import com.github.roroche.classdiagram.metadata.Classpath;
+import com.github.roroche.classdiagram.spec.DiagramSpec;
+import com.github.roroche.classdiagram.spec.DiagramSpecs;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;

@@ -21,53 +21,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
+package com.github.roroche.classdiagram.metadata;
 
-import com.github.roroche.classdiagram.configuration.MemberOptions;
-import java.util.ArrayList;
+import io.github.classgraph.ClassInfo;
 import java.util.List;
+import org.cactoos.Func;
 import org.cactoos.Scalar;
+import org.cactoos.scalar.Or;
+import org.cactoos.scalar.Unchecked;
 
 /**
- * PlantUML member lines for a class.
+ * Rejected class.
  *
- * @since 0.0.4
+ * @since 0.0.3
  */
-public final class MemberLines implements Scalar<List<String>> {
+public final class Rejected implements Scalar<Boolean> {
 
     /**
-     * Class.
+     * Class information.
      */
-    private final Class<?> type;
+    private final ClassInfo info;
 
     /**
-     * Options.
+     * Rejected name patterns.
      */
-    private final MemberOptions options;
+    private final List<ClassNamePattern> patterns;
 
     /**
-     * New member lines.
+     * New rejected class.
      *
-     * @param type Type
-     * @param options Options
+     * @param info Class information
+     * @param patterns Rejected name patterns
      */
-    public MemberLines(final Class<?> type, final MemberOptions options) {
-        this.type = type;
-        this.options = options;
+    public Rejected(
+        final ClassInfo info,
+        final List<ClassNamePattern> patterns
+    ) {
+        this.info = info;
+        this.patterns = patterns;
     }
 
     @Override
-    public List<String> value() {
-        final List<String> lines = new ArrayList<>(0);
-        if (this.options.fields()) {
-            lines.addAll(new FieldLines(this.type));
-        }
-        if (this.options.constructors()) {
-            lines.addAll(new ConstructorLines(this.type, this.options.publicOnly()));
-        }
-        if (this.options.methods()) {
-            lines.addAll(new MethodLines(this.type, this.options.publicOnly()));
-        }
-        return List.copyOf(lines);
+    public Boolean value() {
+        return new Unchecked<>(
+            new Or(
+                (Func<ClassNamePattern, Boolean>) pattern -> pattern.matches(this.info.getName()),
+                this.patterns
+            )
+        ).value();
     }
 }

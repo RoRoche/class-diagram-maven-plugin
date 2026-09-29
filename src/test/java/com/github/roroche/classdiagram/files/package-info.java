@@ -21,38 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.roroche.classdiagram.members;
-
-import com.github.roroche.classdiagram.metadata.MemberParameters;
-import java.lang.reflect.Constructor;
-import org.cactoos.text.TextEnvelope;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
-
 /**
- * PlantUML constructor line.
- *
- * @since 0.0.4
+ * Tests for diagram output and file handling.
  */
-public final class ConstructorLine extends TextEnvelope {
-
-    /**
-     * New constructor line.
-     *
-     * @param type Declaring type
-     * @param ctor Constructor
-     */
-    public ConstructorLine(final Class<?> type, final Constructor<?> ctor) {
-        super(
-            new TextOf(
-                String.format(
-                    "  %s(%s)",
-                    type.getSimpleName(),
-                    new UncheckedText(
-                        new MemberParameters(ctor.getGenericParameterTypes())
-                    ).asString()
-                )
-            )
-        );
-    }
-}
+package com.github.roroche.classdiagram.files;
