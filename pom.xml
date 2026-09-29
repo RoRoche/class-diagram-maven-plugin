@@ -139,9 +139,7 @@
           <packages>
             <package>com.github.roroche.classdiagram</package>
           </packages>
-          <includeFields>true</includeFields>
-          <includeConstructors>true</includeConstructors>
-          <includeMethods>true</includeMethods>
+          <descriptionLevel>FULL</descriptionLevel>
         </configuration>
       </plugin>
       <plugin>
