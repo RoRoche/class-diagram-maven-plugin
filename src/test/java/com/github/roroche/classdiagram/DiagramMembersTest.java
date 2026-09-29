@@ -23,7 +23,7 @@
  */
 package com.github.roroche.classdiagram;
 
-import java.util.List;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ final class DiagramMembersTest {
             "Unknown class should leave diagram text unchanged",
             new DiagramMembers(
                 String.format("@startuml%nclass \"Other\"%n@enduml%n"),
-                List.of(DiagramMembersTest.Sample.class),
+                new ListOf<>(DiagramMembersTest.Sample.class),
                 new MemberOptions()
             ).value(),
             Matchers.is(String.format("@startuml%nclass \"Other\"%n@enduml%n"))
@@ -54,7 +54,7 @@ final class DiagramMembersTest {
             "Class without block should receive configured members",
             new DiagramMembers(
                 String.format("@startuml%nclass \"Sample\"%n@enduml%n"),
-                List.of(DiagramMembersTest.Sample.class),
+                new ListOf<>(DiagramMembersTest.Sample.class),
                 new MemberOptions(false, true, false)
             ).value(),
             Matchers.is(
@@ -71,7 +71,7 @@ final class DiagramMembersTest {
             "Class at the beginning should receive configured members",
             new DiagramMembers(
                 String.format("class \"Sample\"%n@enduml%n"),
-                List.of(DiagramMembersTest.Sample.class),
+                new ListOf<>(DiagramMembersTest.Sample.class),
                 new MemberOptions(false, true, false)
             ).value(),
             Matchers.is(String.format("class \"Sample\" {%n  Sample()%n}%n@enduml%n"))
@@ -86,7 +86,7 @@ final class DiagramMembersTest {
                 String.format(
                     "@startuml%ninterface \"Contract\" {%n  old()%n}%n@enduml%n"
                 ),
-                List.of(DiagramMembersTest.Contract.class),
+                new ListOf<>(DiagramMembersTest.Contract.class),
                 new MemberOptions(false, false, true)
             ).value(),
             Matchers.is(String.format("@startuml%ninterface \"Contract\" {%n  run()%n}%n@enduml%n"))
@@ -99,7 +99,7 @@ final class DiagramMembersTest {
             "Class block should be removed when all members are disabled",
             new DiagramMembers(
                 String.format("@startuml%nclass \"Sample\" {%n  old%n}%n@enduml%n"),
-                List.of(DiagramMembersTest.Sample.class),
+                new ListOf<>(DiagramMembersTest.Sample.class),
                 new MemberOptions(false, false, false)
             ).value(),
             Matchers.is(String.format("@startuml%nclass \"Sample\"%n@enduml%n"))

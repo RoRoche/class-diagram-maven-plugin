@@ -24,6 +24,7 @@
 package com.github.roroche.classdiagram;
 
 import java.util.List;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -97,7 +98,6 @@ final class MemberLinesTest {
      * @since 0.0.4
      */
     @SuppressWarnings("UnusedMethod")
-    // @checkstyle ConstructorsCodeFreeCheck (60 lines)
     private static final class Sample<T> {
 
         /**
@@ -116,7 +116,7 @@ final class MemberLinesTest {
          * @param values Values
          */
         Sample(final String... values) {
-            this.names = List.of();
+            this.names = new ListOf<>();
             this.values = values.clone();
         }
 

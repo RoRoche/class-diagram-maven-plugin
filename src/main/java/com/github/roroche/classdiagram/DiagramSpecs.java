@@ -179,7 +179,7 @@ public final class DiagramSpecs {
             );
         } else {
             specs.addAll(
-                List.of(
+                new ListOf<>(
                     new DiagramSpec(
                         "class-diagram",
                         this.packages,

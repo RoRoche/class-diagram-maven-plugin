@@ -23,7 +23,7 @@
  */
 package com.github.roroche.classdiagram;
 
-import java.util.List;
+import org.cactoos.list.ListOf;
 import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -40,7 +40,7 @@ final class DiagramBlockTest {
     void rendersBlockWithoutMembers() {
         MatcherAssert.assertThat(
             "Block with no members should be just the header",
-            new UncheckedText(new DiagramBlock("class \"Sample\"", List.of())).asString(),
+            new UncheckedText(new DiagramBlock("class \"Sample\"", new ListOf<>())).asString(),
             Matchers.is("class \"Sample\"")
         );
     }
@@ -50,7 +50,7 @@ final class DiagramBlockTest {
         MatcherAssert.assertThat(
             "Block with members should wrap them in braces",
             new UncheckedText(
-                new DiagramBlock("class \"Sample\"", List.of("  Sample()"))
+                new DiagramBlock("class \"Sample\"", new ListOf<>("  Sample()"))
             ).asString(),
             Matchers.is(String.format("class \"Sample\" {%n  Sample()%n}"))
         );

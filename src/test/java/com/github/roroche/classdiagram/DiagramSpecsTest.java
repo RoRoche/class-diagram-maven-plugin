@@ -25,7 +25,7 @@ package com.github.roroche.classdiagram;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.List;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -87,10 +87,10 @@ final class DiagramSpecsTest {
         MatcherAssert.assertThat(
             "Aggregate should retain member options",
             new DiagramSpecs(
-                List.of("com.acme"),
-                List.of(),
-                List.of(),
-                List.of(),
+                new ListOf<>("com.acme"),
+                new ListOf<>(),
+                new ListOf<>(),
+                new ListOf<>(),
                 new File("target/diagrams"),
                 "architecture.puml",
                 false,
@@ -142,8 +142,8 @@ final class DiagramSpecsTest {
             "Single spec should use default member options",
             new Single(
                 "com.acme",
-                List.of(),
-                List.of(),
+                new ListOf<>(),
+                new ListOf<>(),
                 new File("target/diagrams")
             ).value().members(),
             Matchers.is(new MemberOptions())
@@ -253,10 +253,10 @@ final class DiagramSpecsTest {
         MatcherAssert.assertThat(
             "Named member options should override global options",
             new DiagramSpecs(
-                List.of(),
-                List.of(),
-                List.of(),
-                List.of(cfg),
+                new ListOf<>(),
+                new ListOf<>(),
+                new ListOf<>(),
+                new ListOf<>(cfg),
                 new File("target/diagrams"),
                 "architecture.puml",
                 false,
