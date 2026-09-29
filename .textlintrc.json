@@ -15,9 +15,7 @@
             "tooWordy": true,
             "passive": true
         },
-        "max-comma": {
-            "max": 3
-        },
+        "max-comma": false,
         "en-max-word-count": {
             "max": 30
         },
