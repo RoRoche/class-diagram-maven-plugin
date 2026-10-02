@@ -65,7 +65,7 @@ public final class Rejected implements Scalar<Boolean> {
     public Boolean value() {
         return new Unchecked<>(
             new Or(
-                (Func<ClassNamePattern, Boolean>) pattern -> pattern.matches(this.info.getName()),
+                (Func<ClassNamePattern, Boolean>) pattern -> pattern.test(this.info.getName()),
                 this.patterns
             )
         ).value();

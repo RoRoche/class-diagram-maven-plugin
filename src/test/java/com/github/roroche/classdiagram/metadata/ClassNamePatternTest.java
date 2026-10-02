@@ -39,7 +39,7 @@ final class ClassNamePatternTest {
     void matchesDoubleWildcard() {
         MatcherAssert.assertThat(
             "Double wildcard should cross package boundaries",
-            new ClassNamePattern("**.*Test").matches("com.acme.deep.CustomerTest"),
+            new ClassNamePattern("**.*Test").test("com.acme.deep.CustomerTest"),
             Matchers.is(true)
         );
     }
@@ -48,7 +48,7 @@ final class ClassNamePatternTest {
     void matchesSingleWildcard() {
         MatcherAssert.assertThat(
             "Single wildcard should match inside one package segment",
-            new ClassNamePattern("com.acme.*Factory").matches("com.acme.UserFactory"),
+            new ClassNamePattern("com.acme.*Factory").test("com.acme.UserFactory"),
             Matchers.is(true)
         );
     }
@@ -57,7 +57,7 @@ final class ClassNamePatternTest {
     void matchesTrailingSingleWildcard() {
         MatcherAssert.assertThat(
             "Trailing single wildcard should match the rest of one segment",
-            new ClassNamePattern("com.acme.*").matches("com.acme.User"),
+            new ClassNamePattern("com.acme.*").test("com.acme.User"),
             Matchers.is(true)
         );
     }
@@ -66,7 +66,7 @@ final class ClassNamePatternTest {
     void rejectsSingleWildcardAcrossDot() {
         MatcherAssert.assertThat(
             "Single wildcard should not cross a package boundary",
-            new ClassNamePattern("com.acme.*Factory").matches("com.acme.deep.UserFactory"),
+            new ClassNamePattern("com.acme.*Factory").test("com.acme.deep.UserFactory"),
             Matchers.is(false)
         );
     }
@@ -75,7 +75,7 @@ final class ClassNamePatternTest {
     void escapesRegexCharacters() {
         MatcherAssert.assertThat(
             "Glob metacharacters should be treated literally",
-            new ClassNamePattern("a.b+$Thing").matches("a.b+$Thing"),
+            new ClassNamePattern("a.b+$Thing").test("a.b+$Thing"),
             Matchers.is(true)
         );
     }
@@ -84,7 +84,7 @@ final class ClassNamePatternTest {
     void escapesLeadingBackslash() {
         MatcherAssert.assertThat(
             "Leading backslash should be treated literally",
-            new ClassNamePattern("\\Name").matches("\\Name"),
+            new ClassNamePattern("\\Name").test("\\Name"),
             Matchers.is(true)
         );
     }
@@ -93,7 +93,7 @@ final class ClassNamePatternTest {
     void rejectsDifferentName() {
         MatcherAssert.assertThat(
             "Different class name should not match",
-            new ClassNamePattern("**.*Test").matches("com.acme.Customer"),
+            new ClassNamePattern("**.*Test").test("com.acme.Customer"),
             Matchers.is(false)
         );
     }
@@ -102,7 +102,7 @@ final class ClassNamePatternTest {
     void usesCompiledPattern() {
         MatcherAssert.assertThat(
             "Compiled constructor should delegate matching to the supplied pattern",
-            new ClassNamePattern(Pattern.compile("^Exact$")).matches("Exact"),
+            new ClassNamePattern(Pattern.compile("^Exact$")).test("Exact"),
             Matchers.is(true)
         );
     }
