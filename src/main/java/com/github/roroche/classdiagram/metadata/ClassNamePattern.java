@@ -23,6 +23,7 @@
  */
 package com.github.roroche.classdiagram.metadata;
 
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import org.cactoos.scalar.Unchecked;
 
@@ -31,7 +32,7 @@ import org.cactoos.scalar.Unchecked;
  *
  * @since 0.0.1
  */
-public final class ClassNamePattern {
+public final class ClassNamePattern implements Predicate<String> {
 
     /**
      * Compiled expression.
@@ -60,13 +61,8 @@ public final class ClassNamePattern {
         this.pattern = pattern;
     }
 
-    /**
-     * Match a class name.
-     *
-     * @param name Fully-qualified class name
-     * @return Whether it matches
-     */
-    public boolean matches(final String name) {
+    @Override
+    public boolean test(final String name) {
         return this.pattern.matcher(name).matches();
     }
 }
