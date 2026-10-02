@@ -33,7 +33,7 @@ import org.cactoos.text.TextOf;
  *
  * @since 0.0.1
  */
-public class FileName extends TextEnvelope {
+public final class FileName extends TextEnvelope {
 
     /**
      * Ctor.
