@@ -63,7 +63,7 @@ final class GeneratedDiagramTest {
         final Path out = temp.resolve("deep/diagram.puml");
         MatcherAssert.assertThat(
             "Generation should return destination",
-            new GeneratedDiagram(() -> "diagram", out).generate(),
+            new GeneratedDiagram(() -> "diagram", out).value(),
             Matchers.is(out)
         );
     }
@@ -71,7 +71,7 @@ final class GeneratedDiagramTest {
     @Test
     void writesContent(@TempDir final Path temp) throws Exception {
         final Path out = temp.resolve("diagram.puml");
-        new GeneratedDiagram(() -> "diagram", out).generate();
+        new GeneratedDiagram(() -> "diagram", out).value();
         MatcherAssert.assertThat(
             "Generation should write diagram text",
             Files.readString(out, StandardCharsets.UTF_8),
@@ -85,7 +85,7 @@ final class GeneratedDiagramTest {
         try {
             MatcherAssert.assertThat(
                 "Relative output should be returned",
-                new GeneratedDiagram(() -> "diagram", out).generate(),
+                new GeneratedDiagram(() -> "diagram", out).value(),
                 Matchers.is(out)
             );
         } finally {
@@ -176,7 +176,7 @@ final class GeneratedDiagramTest {
 
         @Override
         public Path call() throws Exception {
-            return new GeneratedDiagram(() -> this.value, this.out).generate();
+            return new GeneratedDiagram(() -> this.value, this.out).value();
         }
     }
 
@@ -206,7 +206,7 @@ final class GeneratedDiagramTest {
         @Override
         public Exception value() {
             try {
-                this.diagram.generate();
+                this.diagram.value();
                 return new IllegalStateException("No exception");
             } catch (final Exception err) {
                 return err;

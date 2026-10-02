@@ -197,7 +197,7 @@ public final class GenerateMojo extends AbstractMojo {
                         spec.members()
                     ),
                     spec.output()
-                ).generate();
+                ).value();
                 this.getLog().info(String.format("Generated %s", output));
             }
         } catch (final DependencyResolutionRequiredException err) {
