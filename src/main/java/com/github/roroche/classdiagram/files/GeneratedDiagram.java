@@ -28,18 +28,23 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.cactoos.Scalar;
 
 /**
  * Diagram written to a file.
  *
  * @since 0.0.1
  */
-public final class GeneratedDiagram {
+public final class GeneratedDiagram implements Scalar<Path> {
 
-    /** Diagram. */
+    /**
+     * Diagram.
+     */
     private final DiagramText diagram;
 
-    /** Destination. */
+    /**
+     * Destination.
+     */
     private final Path output;
 
     /**
@@ -53,12 +58,8 @@ public final class GeneratedDiagram {
         this.output = output;
     }
 
-    /**
-     * Generate the file.
-     *
-     * @return Output path
-     */
-    public Path generate() throws IOException {
+    @Override
+    public Path value() throws IOException {
         final Path parent = this.output.toAbsolutePath().getParent();
         if (parent != null) {
             Files.createDirectories(parent);
