@@ -24,7 +24,11 @@
 package com.github.roroche.classdiagram;
 
 import com.github.roroche.eorules.ClassesAreAbstractOrFinalRule;
+import com.github.roroche.eorules.ClassesShouldHaveNoStaticMethodsRule;
+import com.github.roroche.eorules.ClassesShouldNotHaveGettersOrSettersRule;
 import com.github.roroche.eorules.ClassesShouldNotHavePrivateMethodsRule;
+import com.github.roroche.eorules.FieldsShouldBeFinalRule;
+import com.github.roroche.eorules.PublicMethodsDeclaredInInterfacesRule;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
@@ -51,12 +55,32 @@ final class ArchitectureTest {
         .importPackages("com.github.roroche.classdiagram");
 
     @Test
+    void checksPublicMethodsAreDeclaredInInterfaces() {
+        new PublicMethodsDeclaredInInterfacesRule().check(this.classes);
+    }
+
+    @Test
     void checksClassesAreAbstractOrFinal() {
         new ClassesAreAbstractOrFinalRule().check(this.classes);
     }
 
     @Test
+    void checksFieldsAreFinal() {
+        new FieldsShouldBeFinalRule().check(this.classes);
+    }
+
+    @Test
+    void checksThereAreNoStaticMethods() {
+        new ClassesShouldHaveNoStaticMethodsRule().check(this.classes);
+    }
+
+    @Test
     void checksClassesDoNotHavePrivateMethods() {
         new ClassesShouldNotHavePrivateMethodsRule().check(this.classes);
+    }
+
+    @Test
+    void checksClassesDoNotHaveGettersOrSetters() {
+        new ClassesShouldNotHaveGettersOrSettersRule().check(this.classes);
     }
 }
