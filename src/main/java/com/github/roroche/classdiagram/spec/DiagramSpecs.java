@@ -28,6 +28,7 @@ import com.github.roroche.classdiagram.configuration.MemberOptions;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import org.cactoos.Scalar;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
 
@@ -38,7 +39,7 @@ import org.cactoos.list.ListOf;
  */
 // @checkstyle ParameterNameCheck (500 lines)
 // @checkstyle MemberNameCheck (500 lines)
-public final class DiagramSpecs {
+public final class DiagramSpecs implements Scalar<List<DiagramSpec>> {
 
     /**
      * Global packages.
@@ -147,12 +148,8 @@ public final class DiagramSpecs {
         this.members = members;
     }
 
-    /**
-     * Build specs.
-     *
-     * @return Specs
-     */
     @SuppressWarnings("PMD.ConfusingTernary")
+    @Override
     public List<DiagramSpec> value() {
         final List<DiagramSpec> specs = new ArrayList<>(0);
         if (!this.diagrams.isEmpty()) {

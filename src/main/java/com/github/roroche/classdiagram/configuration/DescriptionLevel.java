@@ -23,11 +23,17 @@
  */
 package com.github.roroche.classdiagram.configuration;
 
+import com.github.roroche.eorules.SuppressEoRule;
+
 /**
  * Level of class diagram description.
  *
  * @since 0.0.4
  */
+@SuppressEoRule({
+    SuppressEoRule.NO_STATIC_METHODS,
+    SuppressEoRule.PUBLIC_CONTRACTS
+})
 public enum DescriptionLevel {
 
     /**

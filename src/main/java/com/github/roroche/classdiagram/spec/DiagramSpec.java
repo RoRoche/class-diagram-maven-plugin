@@ -24,6 +24,7 @@
 package com.github.roroche.classdiagram.spec;
 
 import com.github.roroche.classdiagram.configuration.MemberOptions;
+import com.github.roroche.eorules.SuppressEoRule;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -39,6 +40,7 @@ import java.util.List;
  *
  * @since 0.0.1
  */
+@SuppressEoRule(SuppressEoRule.PUBLIC_CONTRACTS)
 // @checkstyle ParameterNameCheck (100 lines)
 public record DiagramSpec(
     String name,

@@ -23,6 +23,8 @@
  */
 package com.github.roroche.classdiagram.configuration;
 
+import com.github.roroche.eorules.SuppressEoRule;
+
 /**
  * Options for class member rendering.
  *
@@ -33,6 +35,7 @@ package com.github.roroche.classdiagram.configuration;
  *
  * @since 0.0.4
  */
+@SuppressEoRule(SuppressEoRule.PUBLIC_CONTRACTS)
 public record MemberOptions(
     boolean fields,
     boolean constructors,

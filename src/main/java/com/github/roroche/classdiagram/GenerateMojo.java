@@ -33,6 +33,7 @@ import com.github.roroche.classdiagram.metadata.ClassGraphClasses;
 import com.github.roroche.classdiagram.metadata.Classpath;
 import com.github.roroche.classdiagram.spec.DiagramSpec;
 import com.github.roroche.classdiagram.spec.DiagramSpecs;
+import com.github.roroche.eorules.SuppressEoRule;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -60,6 +61,7 @@ import org.cactoos.scalar.Unchecked;
     requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
     threadSafe = true
 )
+@SuppressEoRule(SuppressEoRule.FIELDS_FINAL)
 @SuppressWarnings({
     "PMD.ConstructorShouldDoInitialization",
     "PMD.LongVariable"

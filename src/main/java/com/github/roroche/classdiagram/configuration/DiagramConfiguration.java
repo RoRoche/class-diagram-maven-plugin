@@ -23,6 +23,7 @@
  */
 package com.github.roroche.classdiagram.configuration;
 
+import com.github.roroche.eorules.SuppressEoRule;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,11 @@ import java.util.List;
  *
  * @since 0.0.1
  */
+@SuppressEoRule({
+    SuppressEoRule.FIELDS_FINAL,
+    SuppressEoRule.NO_ACCESSORS,
+    SuppressEoRule.PUBLIC_CONTRACTS
+})
 @SuppressWarnings({
     "PMD.ConstructorShouldDoInitialization",
     "PMD.DataClass",
