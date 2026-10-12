@@ -56,7 +56,8 @@ final class ConstructorLineTest {
      */
     @SuppressWarnings({
         "UnusedMethod",
-        "UnusedVariable"
+        "UnusedVariable",
+        "PMD.UnusedFormalParameter"
     })
     private static final class Sample {
 
@@ -65,7 +66,7 @@ final class ConstructorLineTest {
          *
          * @param name Name
          */
-        Sample(final String name) {
+        private Sample(final String name) {
             // Empty constructor.
         }
     }

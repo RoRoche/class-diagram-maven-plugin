@@ -219,7 +219,7 @@ final class GenerateMojoTest {
          * @throws Exception If the field is not accessible
          */
         @SuppressWarnings("unchecked")
-        FieldAsList(final GenerateMojo mojo, final String name) throws Exception {
+        private FieldAsList(final GenerateMojo mojo, final String name) throws Exception {
             super(
                 ((Scalar<List<T>>) () -> {
                     final Field field = GenerateMojo.class.getDeclaredField(name);
@@ -253,7 +253,7 @@ final class GenerateMojoTest {
          * @param temp Output directory
          * @param project Maven project
          */
-        Mojo(final Path temp, final MavenProject project) {
+        private Mojo(final Path temp, final MavenProject project) {
             this.temp = temp;
             this.project = project;
         }
@@ -297,7 +297,7 @@ final class GenerateMojoTest {
          * @param name Field name
          * @param value Field value
          */
-        Set(final GenerateMojo mojo, final String name, final Object value) {
+        private Set(final GenerateMojo mojo, final String name, final Object value) {
             this.mojo = mojo;
             this.name = name;
             this.value = value;
@@ -335,7 +335,7 @@ final class GenerateMojoTest {
          * @param mojo Mojo to execute
          * @since 0.0.5
          */
-        Failure(final GenerateMojo mojo) {
+        private Failure(final GenerateMojo mojo) {
             this.mojo = mojo;
         }
 

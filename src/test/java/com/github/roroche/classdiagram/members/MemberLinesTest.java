@@ -147,7 +147,7 @@ final class MemberLinesTest {
          *
          * @param values Values
          */
-        Sample(final String... values) {
+        private Sample(final String... values) {
             this.names = new ListOf<>();
             this.values = values.clone();
         }

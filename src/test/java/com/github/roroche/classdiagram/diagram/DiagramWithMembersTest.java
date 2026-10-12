@@ -62,7 +62,7 @@ final class DiagramWithMembersTest {
         /**
          * New sample.
          */
-        Sample() {
+        private Sample() {
             // Empty constructor.
         }
     }

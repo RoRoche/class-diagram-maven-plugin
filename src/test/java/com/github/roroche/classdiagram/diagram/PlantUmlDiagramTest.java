@@ -163,7 +163,7 @@ final class PlantUmlDiagramTest {
          *
          * @param diagram PlantUML diagram
          */
-        Failure(final PlantUmlDiagram diagram) {
+        private Failure(final PlantUmlDiagram diagram) {
             this.diagram = diagram;
         }
 

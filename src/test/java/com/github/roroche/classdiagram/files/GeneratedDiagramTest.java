@@ -167,7 +167,7 @@ final class GeneratedDiagramTest {
          * @param out Output path
          * @param value Diagram text
          */
-        Task(final Path out, final String value) {
+        private Task(final Path out, final String value) {
             this.out = out;
             this.value = value;
         }
@@ -195,7 +195,7 @@ final class GeneratedDiagramTest {
          *
          * @param diagram Generated diagram
          */
-        Failure(final GeneratedDiagram diagram) {
+        private Failure(final GeneratedDiagram diagram) {
             this.diagram = diagram;
         }
 

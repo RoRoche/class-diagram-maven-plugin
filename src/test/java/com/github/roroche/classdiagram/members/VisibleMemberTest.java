@@ -78,7 +78,7 @@ final class VisibleMemberTest {
         /**
          * New sample.
          */
-        Sample() {
+        private Sample() {
             // Empty constructor.
         }
     }

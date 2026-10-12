@@ -66,7 +66,7 @@ final class ConstructorLinesTest {
         /**
          * New sample.
          */
-        Sample() {
+        private Sample() {
             this("");
         }
 
