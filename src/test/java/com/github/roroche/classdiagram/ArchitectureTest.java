@@ -32,6 +32,7 @@ import com.github.roroche.eorules.PublicMethodsDeclaredInInterfacesRule;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
+import org.cactoos.Scalar;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -45,41 +46,78 @@ import org.junit.jupiter.api.Test;
 })
 final class ArchitectureTest {
 
-    /**
-     * The classes to be checked.
-     */
-    // @checkstyle ProhibitFieldsInTestClassesCheck (4 lines)
-    private final JavaClasses classes = new ClassFileImporter()
-        .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("com.github.roroche.classdiagram");
-
     @Test
     void checksPublicMethodsAreDeclaredInInterfaces() {
-        new PublicMethodsDeclaredInInterfacesRule().check(this.classes);
+        new PublicMethodsDeclaredInInterfacesRule().check(
+            new ArchitectureTest.WithoutTestsClasses().value()
+        );
     }
 
     @Test
     void checksClassesAreAbstractOrFinal() {
-        new ClassesAreAbstractOrFinalRule().check(this.classes);
+        new ClassesAreAbstractOrFinalRule().check(
+            new ArchitectureTest.WithoutTestsClasses().value()
+        );
     }
 
     @Test
     void checksFieldsAreFinal() {
-        new FieldsShouldBeFinalRule().check(this.classes);
+        new FieldsShouldBeFinalRule().check(
+            new ArchitectureTest.WithoutTestsClasses().value()
+        );
     }
 
     @Test
     void checksThereAreNoStaticMethods() {
-        new ClassesShouldHaveNoStaticMethodsRule().check(this.classes);
+        new ClassesShouldHaveNoStaticMethodsRule().check(
+            new ArchitectureTest.WithoutTestsClasses().value()
+        );
     }
 
     @Test
     void checksClassesDoNotHavePrivateMethods() {
-        new ClassesShouldNotHavePrivateMethodsRule().check(this.classes);
+        new ClassesShouldNotHavePrivateMethodsRule().check(
+            new ArchitectureTest.WithoutTestsClasses().value()
+        );
     }
 
     @Test
     void checksClassesDoNotHaveGettersOrSetters() {
-        new ClassesShouldNotHaveGettersOrSettersRule().check(this.classes);
+        new ClassesShouldNotHaveGettersOrSettersRule().check(
+            new ArchitectureTest.WithoutTestsClasses().value()
+        );
+    }
+
+    /**
+     * The classes to be checked.
+     *
+     * @param classes The classes to be checked.
+     * @since 0.0.5
+     */
+    private record WithoutTestsClasses(JavaClasses classes) implements Scalar<JavaClasses> {
+
+        /**
+         * Default constructor.
+         */
+        private WithoutTestsClasses() {
+            this(
+                new ClassFileImporter()
+                    .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+                    .importPackages("com.github.roroche.classdiagram")
+            );
+        }
+
+        /**
+         * Constructor.
+         *
+         * @param classes The classes to be checked
+         */
+        private WithoutTestsClasses {
+        }
+
+        @Override
+        public JavaClasses value() {
+            return this.classes;
+        }
     }
 }
