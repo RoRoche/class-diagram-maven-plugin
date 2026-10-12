@@ -23,7 +23,9 @@
  */
 package com.github.roroche.classdiagram.diagram;
 
+import com.github.roroche.classdiagram.configuration.MemberKind;
 import com.github.roroche.classdiagram.configuration.MemberOptions;
+import com.github.roroche.classdiagram.configuration.MemberSelection;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -56,7 +58,7 @@ final class DiagramMembersTest {
             new DiagramMembers(
                 String.format("@startuml%nclass \"Sample\"%n@enduml%n"),
                 new ListOf<>(DiagramMembersTest.Sample.class),
-                new MemberOptions(false, true, false)
+                new MemberOptions(new MemberSelection(MemberKind.CONSTRUCTOR))
             ).value(),
             Matchers.is(
                 String.format(
@@ -73,7 +75,7 @@ final class DiagramMembersTest {
             new DiagramMembers(
                 String.format("class \"Sample\"%n@enduml%n"),
                 new ListOf<>(DiagramMembersTest.Sample.class),
-                new MemberOptions(false, true, false)
+                new MemberOptions(new MemberSelection(MemberKind.CONSTRUCTOR))
             ).value(),
             Matchers.is(String.format("class \"Sample\" {%n  Sample()%n}%n@enduml%n"))
         );
@@ -88,7 +90,7 @@ final class DiagramMembersTest {
                     "@startuml%ninterface \"Contract\" {%n  old()%n}%n@enduml%n"
                 ),
                 new ListOf<>(DiagramMembersTest.Contract.class),
-                new MemberOptions(false, false, true)
+                new MemberOptions(new MemberSelection(MemberKind.METHOD))
             ).value(),
             Matchers.is(String.format("@startuml%ninterface \"Contract\" {%n  run()%n}%n@enduml%n"))
         );
@@ -101,7 +103,7 @@ final class DiagramMembersTest {
             new DiagramMembers(
                 String.format("@startuml%nclass \"Sample\" {%n  old%n}%n@enduml%n"),
                 new ListOf<>(DiagramMembersTest.Sample.class),
-                new MemberOptions(false, false, false)
+                new MemberOptions(new MemberSelection())
             ).value(),
             Matchers.is(String.format("@startuml%nclass \"Sample\"%n@enduml%n"))
         );

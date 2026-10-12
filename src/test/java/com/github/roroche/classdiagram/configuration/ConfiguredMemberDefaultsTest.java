@@ -39,10 +39,24 @@ final class ConfiguredMemberDefaultsTest {
         MatcherAssert.assertThat(
             "Missing diagram level should keep global defaults",
             new ConfiguredMemberDefaults(
-                new MemberOptions(true, true, true),
+                new MemberOptions(
+                    new MemberSelection(
+                        MemberKind.FIELD,
+                        MemberKind.CONSTRUCTOR,
+                        MemberKind.METHOD
+                    )
+                ),
                 new DiagramConfiguration()
             ).value(),
-            Matchers.is(new MemberOptions(true, true, true))
+            Matchers.is(
+                new MemberOptions(
+                    new MemberSelection(
+                        MemberKind.FIELD,
+                        MemberKind.CONSTRUCTOR,
+                        MemberKind.METHOD
+                    )
+                )
+            )
         );
     }
 
@@ -51,13 +65,27 @@ final class ConfiguredMemberDefaultsTest {
         MatcherAssert.assertThat(
             "Diagram level should replace global defaults",
             new ConfiguredMemberDefaults(
-                new MemberOptions(true, true, true),
+                new MemberOptions(
+                    new MemberSelection(
+                        MemberKind.FIELD,
+                        MemberKind.CONSTRUCTOR,
+                        MemberKind.METHOD
+                    )
+                ),
                 new DiagramConfigurationWithField(
                     "descriptionLevel",
                     DescriptionLevel.API
                 ).value()
             ).value(),
-            Matchers.is(new MemberOptions(false, true, true, true))
+            Matchers.is(
+                new MemberOptions(
+                    new MemberSelection(
+                        MemberKind.CONSTRUCTOR,
+                        MemberKind.METHOD
+                    ),
+                    MemberVisibility.PUBLIC_ONLY
+                )
+            )
         );
     }
 }

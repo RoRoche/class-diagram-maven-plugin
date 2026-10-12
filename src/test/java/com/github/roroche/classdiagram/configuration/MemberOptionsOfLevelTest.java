@@ -39,7 +39,7 @@ final class MemberOptionsOfLevelTest {
         MatcherAssert.assertThat(
             "Minimal level should disable all member lines",
             new MemberOptionsOfLevel(DescriptionLevel.MINIMAL).value(),
-            Matchers.is(new MemberOptions(false, false, false))
+            Matchers.is(new MemberOptions(new MemberSelection()))
         );
     }
 
@@ -48,7 +48,15 @@ final class MemberOptionsOfLevelTest {
         MatcherAssert.assertThat(
             "API level should render public constructors and methods only",
             new MemberOptionsOfLevel(DescriptionLevel.API).value(),
-            Matchers.is(new MemberOptions(false, true, true, true))
+            Matchers.is(
+                new MemberOptions(
+                    new MemberSelection(
+                        MemberKind.CONSTRUCTOR,
+                        MemberKind.METHOD
+                    ),
+                    MemberVisibility.PUBLIC_ONLY
+                )
+            )
         );
     }
 
@@ -57,7 +65,15 @@ final class MemberOptionsOfLevelTest {
         MatcherAssert.assertThat(
             "Full level should render every class member",
             new MemberOptionsOfLevel(DescriptionLevel.FULL).value(),
-            Matchers.is(new MemberOptions(true, true, true))
+            Matchers.is(
+                new MemberOptions(
+                    new MemberSelection(
+                        MemberKind.FIELD,
+                        MemberKind.CONSTRUCTOR,
+                        MemberKind.METHOD
+                    )
+                )
+            )
         );
     }
 
@@ -66,7 +82,7 @@ final class MemberOptionsOfLevelTest {
         MatcherAssert.assertThat(
             "Missing level should use minimal options",
             new MemberOptionsOfLevel(null).value(),
-            Matchers.is(new MemberOptions(false, false, false))
+            Matchers.is(new MemberOptions(new MemberSelection()))
         );
     }
 }

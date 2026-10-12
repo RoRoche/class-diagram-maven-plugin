@@ -54,11 +54,20 @@ public final class MemberOptionsOfLevel implements Scalar<MemberOptions> {
         ).value();
         final MemberOptions options;
         if (DescriptionLevel.MINIMAL.equals(resolved)) {
-            options = new MemberOptions(false, false, false);
+            options = new MemberOptions(new MemberSelection());
         } else if (DescriptionLevel.API.equals(resolved)) {
-            options = new MemberOptions(false, true, true, true);
+            options = new MemberOptions(
+                new MemberSelection(MemberKind.CONSTRUCTOR, MemberKind.METHOD),
+                MemberVisibility.PUBLIC_ONLY
+            );
         } else {
-            options = new MemberOptions(true, true, true);
+            options = new MemberOptions(
+                new MemberSelection(
+                    MemberKind.FIELD,
+                    MemberKind.CONSTRUCTOR,
+                    MemberKind.METHOD
+                )
+            );
         }
         return options;
     }

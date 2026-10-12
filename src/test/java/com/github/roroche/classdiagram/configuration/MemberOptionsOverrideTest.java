@@ -39,12 +39,20 @@ final class MemberOptionsOverrideTest {
         MatcherAssert.assertThat(
             "Boolean overrides should replace default member flags",
             new MemberOptionsOverride(
-                new MemberOptions(false, false, true, true),
+                new MemberOptions(
+                    new MemberSelection(MemberKind.METHOD),
+                    MemberVisibility.PUBLIC_ONLY
+                ),
                 true,
                 true,
                 false
             ).value(),
-            Matchers.is(new MemberOptions(true, true, false, true))
+            Matchers.is(
+                new MemberOptions(
+                    new MemberSelection(MemberKind.FIELD, MemberKind.CONSTRUCTOR),
+                    MemberVisibility.PUBLIC_ONLY
+                )
+            )
         );
     }
 
@@ -53,12 +61,26 @@ final class MemberOptionsOverrideTest {
         MatcherAssert.assertThat(
             "Null overrides should keep default member flags",
             new MemberOptionsOverride(
-                new MemberOptions(false, true, true, true),
+                new MemberOptions(
+                    new MemberSelection(
+                        MemberKind.CONSTRUCTOR,
+                        MemberKind.METHOD
+                    ),
+                    MemberVisibility.PUBLIC_ONLY
+                ),
                 null,
                 null,
                 null
             ).value(),
-            Matchers.is(new MemberOptions(false, true, true, true))
+            Matchers.is(
+                new MemberOptions(
+                    new MemberSelection(
+                        MemberKind.CONSTRUCTOR,
+                        MemberKind.METHOD
+                    ),
+                    MemberVisibility.PUBLIC_ONLY
+                )
+            )
         );
     }
 }

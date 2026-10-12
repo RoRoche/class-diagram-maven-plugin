@@ -75,13 +75,15 @@ public final class MemberOptionsOverride implements Scalar<MemberOptions> {
     @Override
     public MemberOptions value() {
         return new MemberOptions(
-            new ConfiguredOption(this.fields, this.defaults.fields()).value(),
-            new ConfiguredOption(
-                this.constructors,
-                this.defaults.constructors()
-            ).value(),
-            new ConfiguredOption(this.methods, this.defaults.methods()).value(),
-            this.defaults.publicOnly()
+            new MemberSelection(
+                new ConfiguredOption(this.fields, this.defaults.fields()).value(),
+                new ConfiguredOption(
+                    this.constructors,
+                    this.defaults.constructors()
+                ).value(),
+                new ConfiguredOption(this.methods, this.defaults.methods()).value()
+            ),
+            this.defaults.visibility()
         );
     }
 }

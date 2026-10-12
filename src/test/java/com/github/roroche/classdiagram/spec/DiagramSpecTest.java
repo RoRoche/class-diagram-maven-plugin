@@ -23,7 +23,9 @@
  */
 package com.github.roroche.classdiagram.spec;
 
+import com.github.roroche.classdiagram.configuration.MemberKind;
 import com.github.roroche.classdiagram.configuration.MemberOptions;
+import com.github.roroche.classdiagram.configuration.MemberSelection;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +92,9 @@ final class DiagramSpecTest {
         MatcherAssert.assertThat(
             "Member options should be retained",
             new DiagramSpecTest.Spec().value().members(),
-            Matchers.is(new MemberOptions(false, true, false))
+            Matchers.is(
+                new MemberOptions(new MemberSelection(MemberKind.CONSTRUCTOR))
+            )
         );
     }
 
@@ -178,7 +182,7 @@ final class DiagramSpecTest {
                 new ListOf<>("b"),
                 new ListOf<>("c"),
                 Path.of("x.puml"),
-                new MemberOptions(false, true, false)
+                new MemberOptions(new MemberSelection(MemberKind.CONSTRUCTOR))
             );
         }
     }
