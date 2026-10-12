@@ -28,7 +28,10 @@ import com.github.roroche.classdiagram.configuration.DiagramConfiguration;
 import com.github.roroche.classdiagram.configuration.DiagramConfigurationWithField;
 import com.github.roroche.classdiagram.configuration.FakeConfig;
 import com.github.roroche.classdiagram.configuration.FieldAsList;
+import com.github.roroche.classdiagram.configuration.MemberKind;
 import com.github.roroche.classdiagram.configuration.MemberOptions;
+import com.github.roroche.classdiagram.configuration.MemberSelection;
+import com.github.roroche.classdiagram.configuration.MemberVisibility;
 import java.io.File;
 import java.nio.file.Path;
 import org.cactoos.list.ListOf;
@@ -100,9 +103,11 @@ final class DiagramSpecsTest {
                 new File("target/diagrams"),
                 "architecture.puml",
                 false,
-                new MemberOptions(false, true, false)
+                new MemberOptions(new MemberSelection(MemberKind.CONSTRUCTOR))
             ).value().get(0).members(),
-            Matchers.is(new MemberOptions(false, true, false))
+            Matchers.is(
+                new MemberOptions(new MemberSelection(MemberKind.CONSTRUCTOR))
+            )
         );
     }
 
@@ -266,9 +271,19 @@ final class DiagramSpecsTest {
                 new File("target/diagrams"),
                 "architecture.puml",
                 false,
-                new MemberOptions(true, false, true)
+                new MemberOptions(
+                    new MemberSelection(MemberKind.FIELD, MemberKind.METHOD)
+                )
             ).value().get(0).members(),
-            Matchers.is(new MemberOptions(true, true, true))
+            Matchers.is(
+                new MemberOptions(
+                    new MemberSelection(
+                        MemberKind.FIELD,
+                        MemberKind.CONSTRUCTOR,
+                        MemberKind.METHOD
+                    )
+                )
+            )
         );
     }
 
@@ -290,9 +305,23 @@ final class DiagramSpecsTest {
                 new File("target/diagrams"),
                 "architecture.puml",
                 false,
-                new MemberOptions(true, true, true)
+                new MemberOptions(
+                    new MemberSelection(
+                        MemberKind.FIELD,
+                        MemberKind.CONSTRUCTOR,
+                        MemberKind.METHOD
+                    )
+                )
             ).value().get(0).members(),
-            Matchers.is(new MemberOptions(false, true, true, true))
+            Matchers.is(
+                new MemberOptions(
+                    new MemberSelection(
+                        MemberKind.CONSTRUCTOR,
+                        MemberKind.METHOD
+                    ),
+                    MemberVisibility.PUBLIC_ONLY
+                )
+            )
         );
     }
 }

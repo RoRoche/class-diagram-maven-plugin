@@ -23,11 +23,8 @@
  */
 package com.github.roroche.classdiagram.metadata;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.project.MavenProject;
-import org.cactoos.Scalar;
 import org.cactoos.list.ListEnvelope;
 
 /**
@@ -41,16 +38,10 @@ public final class Classpath extends ListEnvelope<String> {
      * New project classpath.
      *
      * @param project Maven project
-     * @throws Exception If classpath cannot be resolved
+     * @throws DependencyResolutionRequiredException If classpath cannot be resolved
      */
-    public Classpath(final MavenProject project) throws Exception {
-        super(
-            ((Scalar<List<String>>) () -> {
-                final Set<String> elements = LinkedHashSet.newLinkedHashSet(0);
-                elements.addAll(project.getCompileClasspathElements());
-                elements.addAll(project.getRuntimeClasspathElements());
-                return List.copyOf(elements);
-            }).value()
-        );
+    public Classpath(final MavenProject project)
+        throws DependencyResolutionRequiredException {
+        super(new ClasspathElements(project).value());
     }
 }

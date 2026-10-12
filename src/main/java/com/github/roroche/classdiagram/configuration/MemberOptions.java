@@ -28,39 +28,65 @@ import com.github.roroche.eorules.SuppressEoRule;
 /**
  * Options for class member rendering.
  *
- * @param fields Include fields.
- * @param constructors Include constructors.
- * @param methods Include methods.
- * @param publicOnly Include only public members.
+ * @param selection Selected members.
+ * @param visibility Member visibility.
  *
  * @since 0.0.4
  */
 @SuppressEoRule(SuppressEoRule.PUBLIC_CONTRACTS)
 public record MemberOptions(
-    boolean fields,
-    boolean constructors,
-    boolean methods,
-    boolean publicOnly
+    MemberSelection selection,
+    MemberVisibility visibility
 ) {
     /**
      * New member options.
      *
-     * @param fields Include fields
-     * @param constructors Include constructors
-     * @param methods Include methods
+     * @param selection Selected members
      */
-    public MemberOptions(
-        final boolean fields,
-        final boolean constructors,
-        final boolean methods
-    ) {
-        this(fields, constructors, methods, false);
+    public MemberOptions(final MemberSelection selection) {
+        this(selection, MemberVisibility.ALL);
     }
 
     /**
      * Default options matching the historical renderer.
      */
     public MemberOptions() {
-        this(true, false, true, false);
+        this(new MemberSelection(MemberKind.FIELD, MemberKind.METHOD));
+    }
+
+    /**
+     * Whether fields are rendered.
+     *
+     * @return True when fields are rendered
+     */
+    public boolean fields() {
+        return this.selection.includes(MemberKind.FIELD);
+    }
+
+    /**
+     * Whether constructors are rendered.
+     *
+     * @return True when constructors are rendered
+     */
+    public boolean constructors() {
+        return this.selection.includes(MemberKind.CONSTRUCTOR);
+    }
+
+    /**
+     * Whether methods are rendered.
+     *
+     * @return True when methods are rendered
+     */
+    public boolean methods() {
+        return this.selection.includes(MemberKind.METHOD);
+    }
+
+    /**
+     * Whether only public members are rendered.
+     *
+     * @return True when only public members are rendered
+     */
+    public boolean publicOnly() {
+        return this.visibility.publicOnly();
     }
 }

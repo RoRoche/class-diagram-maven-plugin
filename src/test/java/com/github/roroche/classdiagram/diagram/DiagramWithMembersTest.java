@@ -23,7 +23,9 @@
  */
 package com.github.roroche.classdiagram.diagram;
 
+import com.github.roroche.classdiagram.configuration.MemberKind;
 import com.github.roroche.classdiagram.configuration.MemberOptions;
+import com.github.roroche.classdiagram.configuration.MemberSelection;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -42,7 +44,7 @@ final class DiagramWithMembersTest {
             new DiagramWithMembers(
                 String.format("@startuml%nclass \"Sample\"%n@enduml%n"),
                 DiagramWithMembersTest.Sample.class,
-                new MemberOptions(false, true, false)
+                new MemberOptions(new MemberSelection(MemberKind.CONSTRUCTOR))
             ).value(),
             Matchers.is(
                 String.format("@startuml%nclass \"Sample\" {%n  Sample()%n}%n@enduml%n")

@@ -23,7 +23,10 @@
  */
 package com.github.roroche.classdiagram.members;
 
+import com.github.roroche.classdiagram.configuration.MemberKind;
 import com.github.roroche.classdiagram.configuration.MemberOptions;
+import com.github.roroche.classdiagram.configuration.MemberSelection;
+import com.github.roroche.classdiagram.configuration.MemberVisibility;
 import java.util.List;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
@@ -43,7 +46,13 @@ final class MemberLinesTest {
             "Selected members should be rendered as PlantUML lines",
             new MemberLines(
                 MemberLinesTest.Sample.class,
-                new MemberOptions(true, true, true)
+                new MemberOptions(
+                    new MemberSelection(
+                        MemberKind.FIELD,
+                        MemberKind.CONSTRUCTOR,
+                        MemberKind.METHOD
+                    )
+                )
             ).value(),
             Matchers.contains(
                 "  names : List<String>",
@@ -62,7 +71,7 @@ final class MemberLinesTest {
             "Disabled member options should render no lines",
             new MemberLines(
                 MemberLinesTest.Sample.class,
-                new MemberOptions(false, false, false)
+                new MemberOptions(new MemberSelection())
             ).value(),
             Matchers.empty()
         );
@@ -74,7 +83,13 @@ final class MemberLinesTest {
             "Public-only options should render public constructors and methods",
             new MemberLines(
                 MemberOptions.class,
-                new MemberOptions(false, true, true, true)
+                new MemberOptions(
+                    new MemberSelection(
+                        MemberKind.CONSTRUCTOR,
+                        MemberKind.METHOD
+                    ),
+                    MemberVisibility.PUBLIC_ONLY
+                )
             ).value(),
             Matchers.hasItems(
                 "  MemberOptions()",
@@ -90,7 +105,7 @@ final class MemberLinesTest {
             "Instrumentation fields should not be rendered",
             new MemberLines(
                 MemberLinesTest.Choice.class,
-                new MemberOptions(true, false, false)
+                new MemberOptions(new MemberSelection(MemberKind.FIELD))
             ).value(),
             Matchers.not(Matchers.hasItem("  $VALUES : Choice[]"))
         );
@@ -102,7 +117,7 @@ final class MemberLinesTest {
             "Instrumentation methods should not be rendered",
             new MemberLines(
                 MemberLinesTest.Probed.class,
-                new MemberOptions(false, false, true)
+                new MemberOptions(new MemberSelection(MemberKind.METHOD))
             ).value(),
             Matchers.empty()
         );

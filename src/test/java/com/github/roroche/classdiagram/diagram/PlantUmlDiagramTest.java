@@ -23,7 +23,9 @@
  */
 package com.github.roroche.classdiagram.diagram;
 
+import com.github.roroche.classdiagram.configuration.MemberKind;
 import com.github.roroche.classdiagram.configuration.MemberOptions;
+import com.github.roroche.classdiagram.configuration.MemberSelection;
 import org.cactoos.Scalar;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
@@ -58,7 +60,13 @@ final class PlantUmlDiagramTest {
                 "sample",
                 () -> new ListOf<>(Sample.class),
                 true,
-                new MemberOptions(true, true, true)
+                new MemberOptions(
+                    new MemberSelection(
+                        MemberKind.FIELD,
+                        MemberKind.CONSTRUCTOR,
+                        MemberKind.METHOD
+                    )
+                )
             ).value(),
             Matchers.containsString("Sample(String)")
         );
@@ -72,7 +80,7 @@ final class PlantUmlDiagramTest {
                 "sample",
                 () -> new ListOf<>(Sample.class),
                 true,
-                new MemberOptions(false, false, false)
+                new MemberOptions(new MemberSelection())
             ).value(),
             Matchers.allOf(
                 Matchers.containsString("class \"Sample\""),
