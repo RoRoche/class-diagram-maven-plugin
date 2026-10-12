@@ -36,6 +36,8 @@ import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
+import org.cactoos.Scalar;
+import org.cactoos.list.ListEnvelope;
 import org.cactoos.list.ListOf;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
@@ -49,20 +51,18 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.0.1
  */
-// @checkstyle ReturnCountCheck (400 lines)
 @SuppressWarnings({
     "PMD.AvoidAccessibilityAlteration",
-    "PMD.OnlyOneReturn",
     "PMD.UnnecessaryLocalRule"
 })
 final class GenerateMojoTest {
 
     @Test
     void rejectsMissingPackages(@TempDir final Path temp) throws Exception {
-        final GenerateMojo mojo = GenerateMojoTest.mojo(temp, new MavenProject());
+        final GenerateMojo mojo = new GenerateMojoTest.Mojo(temp, new MavenProject()).value();
         MatcherAssert.assertThat(
             "Missing packages should fail generation",
-            GenerateMojoTest.failure(mojo),
+            new GenerateMojoTest.Failure(mojo).value(),
             new MojoExecutionHasMessage(
                 Matchers.is("Cannot generate class diagram")
             )
@@ -71,12 +71,12 @@ final class GenerateMojoTest {
 
     @Test
     void rejectsEmptyPerPackageConfiguration(@TempDir final Path temp) throws Exception {
-        final GenerateMojo mojo = GenerateMojoTest.mojo(
+        final GenerateMojo mojo = new GenerateMojoTest.Mojo(
             temp,
             new GenerateMojoTest.BrokenProject()
-        );
-        GenerateMojoTest.set(mojo, "perPackage", true);
-        final MojoExecutionException failure = GenerateMojoTest.failure(mojo);
+        ).value();
+        new GenerateMojoTest.Set(mojo, "perPackage", true).run();
+        final MojoExecutionException failure = new GenerateMojoTest.Failure(mojo).value();
         MatcherAssert.assertThat(
             "Empty per-package configuration should fail generation",
             failure,
@@ -96,14 +96,14 @@ final class GenerateMojoTest {
 
     @Test
     void rejectsNamedDiagramWithoutPackages(@TempDir final Path temp) throws Exception {
-        final GenerateMojo mojo = GenerateMojoTest.mojo(
+        final GenerateMojo mojo = new GenerateMojoTest.Mojo(
             temp,
             new GenerateMojoTest.BrokenProject()
-        );
-        GenerateMojoTest.<DiagramConfiguration>list(mojo, "diagrams").add(
+        ).value();
+        new GenerateMojoTest.FieldAsList<DiagramConfiguration>(mojo, "diagrams").add(
             new DiagramConfiguration()
         );
-        final MojoExecutionException failure = GenerateMojoTest.failure(mojo);
+        final MojoExecutionException failure = new GenerateMojoTest.Failure(mojo).value();
         MatcherAssert.assertThat(
             "Named diagram without packages should fail generation",
             failure,
@@ -123,14 +123,17 @@ final class GenerateMojoTest {
 
     @Test
     void reportsClasspathResolutionFailure(@TempDir final Path temp) throws Exception {
-        final GenerateMojo mojo = GenerateMojoTest.mojo(
+        final GenerateMojo mojo = new GenerateMojoTest.Mojo(
             temp,
             new GenerateMojoTest.BrokenProject()
-        );
-        GenerateMojoTest.list(mojo, "packages").add("com.github.roroche.classdiagram");
+        ).value();
+        new GenerateMojoTest.FieldAsList<String>(
+            mojo,
+            "packages"
+        ).add("com.github.roroche.classdiagram");
         MatcherAssert.assertThat(
             "Classpath resolution failure should have a dedicated message",
-            GenerateMojoTest.failure(mojo),
+            new GenerateMojoTest.Failure(mojo).value(),
             new MojoExecutionHasMessage(
                 Matchers.is("Cannot resolve project classpath")
             )
@@ -139,14 +142,17 @@ final class GenerateMojoTest {
 
     @Test
     void generatesConfiguredDiagram(@TempDir final Path temp) throws Exception {
-        final GenerateMojo mojo = GenerateMojoTest.mojo(
+        final GenerateMojo mojo = new GenerateMojoTest.Mojo(
             temp,
             new GenerateMojoTest.CompileProject()
-        );
+        ).value();
         final GenerateMojoTest.RecordingLog log = new GenerateMojoTest.RecordingLog();
         mojo.setLog(log);
-        GenerateMojoTest.list(mojo, "packages").add("com.github.roroche.classdiagram");
-        GenerateMojoTest.set(mojo, "failOnEmpty", false);
+        new GenerateMojoTest.FieldAsList<String>(
+            mojo,
+            "packages"
+        ).add("com.github.roroche.classdiagram");
+        new GenerateMojoTest.Set(mojo, "failOnEmpty", false).run();
         mojo.execute();
         MatcherAssert.assertThat(
             "Mojo should generate and log the default diagram",
@@ -173,15 +179,18 @@ final class GenerateMojoTest {
 
     @Test
     void generatesConfiguredMembers(@TempDir final Path temp) throws Exception {
-        final GenerateMojo mojo = GenerateMojoTest.mojo(
+        final GenerateMojo mojo = new GenerateMojoTest.Mojo(
             temp,
             new GenerateMojoTest.CompileProject()
-        );
-        GenerateMojoTest.list(mojo, "packages").add("com.github.roroche.classdiagram");
-        GenerateMojoTest.set(mojo, "failOnEmpty", false);
-        GenerateMojoTest.set(mojo, "includeFields", false);
-        GenerateMojoTest.set(mojo, "includeConstructors", true);
-        GenerateMojoTest.set(mojo, "includeMethods", false);
+        ).value();
+        new GenerateMojoTest.FieldAsList<String>(
+            mojo,
+            "packages"
+        ).add("com.github.roroche.classdiagram");
+        new GenerateMojoTest.Set(mojo, "failOnEmpty", false).run();
+        new GenerateMojoTest.Set(mojo, "includeFields", false).run();
+        new GenerateMojoTest.Set(mojo, "includeConstructors", true).run();
+        new GenerateMojoTest.Set(mojo, "includeMethods", false).run();
         mojo.execute();
         MatcherAssert.assertThat(
             "Mojo member options should affect generated diagram",
@@ -194,35 +203,153 @@ final class GenerateMojoTest {
         );
     }
 
-    private static GenerateMojo mojo(final Path temp, final MavenProject project) throws Exception {
-        final GenerateMojo mojo = new GenerateMojo();
-        GenerateMojoTest.set(mojo, "project", project);
-        GenerateMojoTest.set(mojo, "outputDirectory", temp.toFile());
-        GenerateMojoTest.set(mojo, "fileName", "class-diagram.puml");
-        return mojo;
-    }
+    /**
+     * Mojo field as a list.
+     *
+     * @param <T> Element type
+     * @since 0.0.3
+     */
+    private static final class FieldAsList<T> extends ListEnvelope<T> {
 
-    private static MojoExecutionException failure(final GenerateMojo mojo) {
-        try {
-            mojo.execute();
-            return new MojoExecutionException("No exception");
-        } catch (final MojoExecutionException err) {
-            return err;
+        /**
+         * New field as list.
+         *
+         * @param mojo Mojo containing the field
+         * @param name Field name
+         * @throws Exception If the field is not accessible
+         */
+        @SuppressWarnings("unchecked")
+        FieldAsList(final GenerateMojo mojo, final String name) throws Exception {
+            super(
+                ((Scalar<List<T>>) () -> {
+                    final Field field = GenerateMojo.class.getDeclaredField(name);
+                    field.setAccessible(true);
+                    return (List<T>) field.get(mojo);
+                }).value()
+            );
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private static <T> List<T> list(final GenerateMojo mojo, final String name) throws Exception {
-        final Field field = GenerateMojo.class.getDeclaredField(name);
-        field.setAccessible(true);
-        return (List<T>) field.get(mojo);
+    /**
+     * Configured mojo.
+     *
+     * @since 0.0.3
+     */
+    private static final class Mojo implements Scalar<GenerateMojo> {
+
+        /**
+         * Output directory.
+         */
+        private final Path temp;
+
+        /**
+         * Maven project.
+         */
+        private final MavenProject project;
+
+        /**
+         * New configured mojo.
+         *
+         * @param temp Output directory
+         * @param project Maven project
+         */
+        Mojo(final Path temp, final MavenProject project) {
+            this.temp = temp;
+            this.project = project;
+        }
+
+        @Override
+        public GenerateMojo value() {
+            final GenerateMojo mojo = new GenerateMojo();
+            new GenerateMojoTest.Set(mojo, "project", this.project).run();
+            new GenerateMojoTest.Set(mojo, "outputDirectory", this.temp.toFile()).run();
+            new GenerateMojoTest.Set(mojo, "fileName", "class-diagram.puml").run();
+            return mojo;
+        }
     }
 
-    private static void set(final GenerateMojo mojo, final String name, final Object value)
-        throws Exception {
-        final Field field = GenerateMojo.class.getDeclaredField(name);
-        field.setAccessible(true);
-        field.set(mojo, value);
+    /**
+     * Assignment to a mojo field.
+     *
+     * @since 0.0.5
+     */
+    private static final class Set implements Runnable {
+
+        /**
+         * Mojo to configure.
+         */
+        private final GenerateMojo mojo;
+
+        /**
+         * Field name.
+         */
+        private final String name;
+
+        /**
+         * Field value.
+         */
+        private final Object value;
+
+        /**
+         * New assignment.
+         *
+         * @param mojo Mojo to configure
+         * @param name Field name
+         * @param value Field value
+         */
+        Set(final GenerateMojo mojo, final String name, final Object value) {
+            this.mojo = mojo;
+            this.name = name;
+            this.value = value;
+        }
+
+        @Override
+        public void run() {
+            try {
+                final Field field = GenerateMojo.class.getDeclaredField(this.name);
+                field.setAccessible(true);
+                field.set(this.mojo, this.value);
+            } catch (final ReflectiveOperationException err) {
+                throw new IllegalStateException(
+                    String.format("Cannot set mojo field %s", this.name), err
+                );
+            }
+        }
+    }
+
+    /**
+     * Failure from mojo execution.
+     *
+     * @since 0.0.5
+     */
+    private static final class Failure implements Scalar<MojoExecutionException> {
+
+        /**
+         * Mojo to execute.
+         */
+        private final GenerateMojo mojo;
+
+        /**
+         * New failure.
+         *
+         * @param mojo Mojo to execute
+         * @since 0.0.5
+         */
+        Failure(final GenerateMojo mojo) {
+            this.mojo = mojo;
+        }
+
+        @Override
+        public MojoExecutionException value() {
+            MojoExecutionException failure;
+            try {
+                this.mojo.execute();
+                failure = new MojoExecutionException("No exception");
+            } catch (final MojoExecutionException err) {
+                failure = err;
+            }
+            return failure;
+        }
     }
 
     private static final class BrokenProject extends MavenProject {

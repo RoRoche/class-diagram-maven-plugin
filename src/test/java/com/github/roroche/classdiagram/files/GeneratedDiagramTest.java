@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -49,11 +50,8 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.0.1
  */
-// @checkstyle IllegalCatchCheck (120 lines)
 @SuppressWarnings({
-    "PMD.AvoidCatchingGenericException",
     "PMD.CloseResource",
-    "PMD.OnlyOneReturn",
     "PMD.UnnecessaryLocalRule"
 })
 final class GeneratedDiagramTest {
@@ -123,7 +121,7 @@ final class GeneratedDiagramTest {
                     future -> {
                         try {
                             return future.get();
-                        } catch (final Exception err) {
+                        } catch (final InterruptedException | ExecutionException err) {
                             throw new IllegalStateException(err);
                         }
                     },
@@ -185,8 +183,6 @@ final class GeneratedDiagramTest {
      *
      * @since 0.0.3
      */
-    // @checkstyle ReturnCountCheck (50 lines)
-    // @checkstyle IllegalCatchCheck (50 lines)
     private static final class Failure implements Scalar<Exception> {
 
         /**
@@ -205,12 +201,14 @@ final class GeneratedDiagramTest {
 
         @Override
         public Exception value() {
+            Exception failure;
             try {
                 this.diagram.value();
-                return new IllegalStateException("No exception");
-            } catch (final Exception err) {
-                return err;
+                failure = new IllegalStateException("No exception");
+            } catch (final IOException err) {
+                failure = err;
             }
+            return failure;
         }
     }
 }
