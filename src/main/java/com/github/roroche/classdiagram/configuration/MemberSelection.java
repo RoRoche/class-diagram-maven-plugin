@@ -1,0 +1,86 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2026 Romain Rochegude
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package com.github.roroche.classdiagram.configuration;
+
+import com.github.roroche.eorules.SuppressEoRule;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+/**
+ * Selection of class members rendered in a class diagram.
+ *
+ * @param kinds Selected member kinds
+ *
+ * @since 0.0.5
+ */
+@SuppressEoRule(SuppressEoRule.PUBLIC_CONTRACTS)
+public record MemberSelection(Set<MemberKind> kinds) {
+
+    /**
+     * New member selection.
+     *
+     * @param kinds Selected member kinds
+     */
+    public MemberSelection {
+        kinds = Set.copyOf(kinds);
+    }
+
+    /**
+     * New member selection.
+     *
+     * @param kinds Selected member kinds
+     */
+    public MemberSelection(final MemberKind... kinds) {
+        this(
+            Arrays.stream(kinds)
+                .collect(Collectors.toUnmodifiableSet())
+        );
+    }
+
+    /**
+     * New member selection from configured flags.
+     *
+     * @param fields Include fields
+     * @param constructors Include constructors
+     * @param methods Include methods
+     */
+    MemberSelection(
+        final boolean fields,
+        final boolean constructors,
+        final boolean methods
+    ) {
+        this(new MemberKinds(fields, constructors, methods).value());
+    }
+
+    /**
+     * Whether the selection includes a member kind.
+     *
+     * @param kind Member kind
+     * @return True when the kind is selected
+     */
+    public boolean includes(final MemberKind kind) {
+        return this.kinds.contains(kind);
+    }
+}
