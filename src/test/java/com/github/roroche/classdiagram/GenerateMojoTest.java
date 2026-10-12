@@ -51,18 +51,16 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.0.1
  */
-@SuppressWarnings({
-    "PMD.AvoidAccessibilityAlteration",
-    "PMD.UnnecessaryLocalRule"
-})
+@SuppressWarnings("PMD.AvoidAccessibilityAlteration")
 final class GenerateMojoTest {
 
     @Test
     void rejectsMissingPackages(@TempDir final Path temp) throws Exception {
-        final GenerateMojo mojo = new GenerateMojoTest.Mojo(temp, new MavenProject()).value();
         MatcherAssert.assertThat(
             "Missing packages should fail generation",
-            new GenerateMojoTest.Failure(mojo).value(),
+            new GenerateMojoTest.Failure(
+                new GenerateMojoTest.Mojo(temp, new MavenProject()).value()
+            ).value(),
             new MojoExecutionHasMessage(
                 Matchers.is("Cannot generate class diagram")
             )
@@ -76,10 +74,9 @@ final class GenerateMojoTest {
             new GenerateMojoTest.BrokenProject()
         ).value();
         new GenerateMojoTest.Set(mojo, "perPackage", true).run();
-        final MojoExecutionException failure = new GenerateMojoTest.Failure(mojo).value();
         MatcherAssert.assertThat(
             "Empty per-package configuration should fail generation",
-            failure,
+            new GenerateMojoTest.Failure(mojo).value(),
             Matchers.allOf(
                 new MojoExecutionHasMessage(
                     Matchers.is("Cannot generate class diagram")
@@ -103,10 +100,9 @@ final class GenerateMojoTest {
         new GenerateMojoTest.FieldAsList<DiagramConfiguration>(mojo, "diagrams").add(
             new DiagramConfiguration()
         );
-        final MojoExecutionException failure = new GenerateMojoTest.Failure(mojo).value();
         MatcherAssert.assertThat(
             "Named diagram without packages should fail generation",
-            failure,
+            new GenerateMojoTest.Failure(mojo).value(),
             Matchers.allOf(
                 new MojoExecutionHasMessage(
                     Matchers.is("Cannot generate class diagram")

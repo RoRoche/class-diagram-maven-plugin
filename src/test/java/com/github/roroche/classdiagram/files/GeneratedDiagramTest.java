@@ -27,13 +27,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import org.cactoos.Scalar;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
@@ -50,10 +48,6 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.0.1
  */
-@SuppressWarnings({
-    "PMD.CloseResource",
-    "PMD.UnnecessaryLocalRule"
-})
 final class GeneratedDiagramTest {
 
     @Test
@@ -108,30 +102,30 @@ final class GeneratedDiagramTest {
     @Test
     void generatesSameNestedFileConcurrently(@TempDir final Path temp) throws Exception {
         final Path out = temp.resolve("race/diagram.puml");
-        final ExecutorService service = Executors.newFixedThreadPool(2);
-        try {
-            final List<Future<Path>> generated = service.invokeAll(
-                new ListOf<>(
-                    new GeneratedDiagramTest.Task(out, "first"),
-                    new GeneratedDiagramTest.Task(out, "second")
-                )
-            );
-            final List<Path> paths = new ListOf<>(
-                new Mapped<>(
-                    future -> {
-                        try {
-                            return future.get();
-                        } catch (final InterruptedException | ExecutionException err) {
-                            throw new IllegalStateException(err);
-                        }
-                    },
-                    generated
-                )
-            );
+        try (ExecutorService service = Executors.newFixedThreadPool(2)) {
             MatcherAssert.assertThat(
                 "Concurrent generation should return destinations and create output",
                 new MapOf<String, Object>(
-                    new MapEntry<>("generated", paths),
+                    new MapEntry<>(
+                        "generated",
+                        new ListOf<>(
+                            new Mapped<>(
+                                future -> {
+                                    try {
+                                        return future.get();
+                                    } catch (final InterruptedException | ExecutionException err) {
+                                        throw new IllegalStateException(err);
+                                    }
+                                },
+                                service.invokeAll(
+                                    new ListOf<>(
+                                        new GeneratedDiagramTest.Task(out, "first"),
+                                        new GeneratedDiagramTest.Task(out, "second")
+                                    )
+                                )
+                            )
+                        )
+                    ),
                     new MapEntry<>("exists", Files.exists(out))
                 ),
                 new AllOf<Map<String, Object>>(
@@ -139,8 +133,6 @@ final class GeneratedDiagramTest {
                     Matchers.hasEntry("exists", true)
                 )
             );
-        } finally {
-            service.shutdownNow();
         }
     }
 
