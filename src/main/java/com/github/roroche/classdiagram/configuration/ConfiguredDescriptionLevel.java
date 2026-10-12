@@ -23,6 +23,7 @@
  */
 package com.github.roroche.classdiagram.configuration;
 
+import java.util.Optional;
 import org.cactoos.Scalar;
 
 /**
@@ -58,12 +59,6 @@ public final class ConfiguredDescriptionLevel implements Scalar<DescriptionLevel
 
     @Override
     public DescriptionLevel value() {
-        final DescriptionLevel resolved;
-        if (this.configured == null) {
-            resolved = this.fallback;
-        } else {
-            resolved = this.configured;
-        }
-        return resolved;
+        return Optional.ofNullable(this.configured).orElse(this.fallback);
     }
 }

@@ -23,6 +23,7 @@
  */
 package com.github.roroche.classdiagram.configuration;
 
+import java.util.Optional;
 import org.cactoos.Scalar;
 
 /**
@@ -58,14 +59,8 @@ public final class ConfiguredMemberDefaults implements Scalar<MemberOptions> {
 
     @Override
     public MemberOptions value() {
-        final MemberOptions resolved;
-        if (this.config.getDescriptionLevel() == null) {
-            resolved = this.defaults;
-        } else {
-            resolved = new MemberOptionsOfLevel(
-                this.config.getDescriptionLevel()
-            ).value();
-        }
-        return resolved;
+        return Optional.ofNullable(this.config.getDescriptionLevel())
+            .map(level -> new MemberOptionsOfLevel(level).value())
+            .orElse(this.defaults);
     }
 }

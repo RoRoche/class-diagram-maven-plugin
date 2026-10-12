@@ -29,6 +29,7 @@ import com.github.roroche.classdiagram.configuration.MemberOptions;
 import com.github.roroche.classdiagram.files.FileName;
 import com.github.roroche.classdiagram.files.Target;
 import java.io.File;
+import java.util.Optional;
 import org.cactoos.Scalar;
 
 /**
@@ -36,7 +37,6 @@ import org.cactoos.Scalar;
  *
  * @since 0.0.3
  */
-// @checkstyle AvoidInlineConditionalsCheck (500 lines)
 public final class Named implements Scalar<DiagramSpec> {
 
     /**
@@ -83,8 +83,9 @@ public final class Named implements Scalar<DiagramSpec> {
 
     @Override
     public DiagramSpec value() {
-        final String name = this.config.getName() == null
-            ? "class-diagram" : this.config.getName();
+        final String name = Optional.ofNullable(
+            this.config.getName()
+        ).orElse("class-diagram");
         return new DiagramSpec(
             name,
             this.config.getPackages(),
