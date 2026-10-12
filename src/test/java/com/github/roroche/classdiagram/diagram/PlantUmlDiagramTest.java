@@ -118,7 +118,7 @@ final class PlantUmlDiagramTest {
      *
      * @param value Value
      */
-    private record Sample(String value) {
+    private record Sample(String value) implements Scalar<String> {
 
         /**
          * New sample.
@@ -135,8 +135,9 @@ final class PlantUmlDiagramTest {
         private Sample {
         }
 
+        @Override
         @SuppressWarnings("UnusedMethod")
-        private String value() {
+        public String value() {
             return this.value;
         }
     }
