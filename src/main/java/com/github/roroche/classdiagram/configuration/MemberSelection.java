@@ -66,7 +66,7 @@ public record MemberSelection(Set<MemberKind> kinds) {
      * @param constructors Include constructors
      * @param methods Include methods
      */
-    MemberSelection(
+    public MemberSelection(
         final boolean fields,
         final boolean constructors,
         final boolean methods
