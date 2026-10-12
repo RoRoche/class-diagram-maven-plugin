@@ -75,7 +75,8 @@ final class ConstructorLinesTest {
          *
          * @param name Name
          */
-        Sample(final String name) {
+        @SuppressWarnings("PMD.UnusedFormalParameter")
+        private Sample(final String name) {
             // Empty constructor.
         }
     }

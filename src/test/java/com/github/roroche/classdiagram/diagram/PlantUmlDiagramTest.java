@@ -113,7 +113,7 @@ final class PlantUmlDiagramTest {
         );
     }
 
-    static final class Sample {
+    private static final class Sample {
 
         /**
          * Value.
@@ -123,7 +123,7 @@ final class PlantUmlDiagramTest {
         /**
          * New sample.
          */
-        Sample() {
+        private Sample() {
             this("");
         }
 
@@ -132,16 +132,12 @@ final class PlantUmlDiagramTest {
          *
          * @param value Value
          */
-        Sample(final String value) {
+        private Sample(final String value) {
             this.value = value;
         }
 
-        /**
-         * Value.
-         *
-         * @return Value
-         */
-        String value() {
+        @SuppressWarnings("UnusedMethod")
+        private String value() {
             return this.value;
         }
     }
