@@ -55,7 +55,7 @@ import org.junit.jupiter.api.io.TempDir;
 final class GenerateMojoTest {
 
     @Test
-    void rejectsMissingPackages(@TempDir final Path temp) throws Exception {
+    void rejectsMissingPackages(@TempDir final Path temp) {
         MatcherAssert.assertThat(
             "Missing packages should fail generation",
             new GenerateMojoTest.Failure(
@@ -229,19 +229,11 @@ final class GenerateMojoTest {
     /**
      * Configured mojo.
      *
+     * @param temp Output directory.
+     * @param project Maven project.
      * @since 0.0.3
      */
-    private static final class Mojo implements Scalar<GenerateMojo> {
-
-        /**
-         * Output directory.
-         */
-        private final Path temp;
-
-        /**
-         * Maven project.
-         */
-        private final MavenProject project;
+    private record Mojo(Path temp, MavenProject project) implements Scalar<GenerateMojo> {
 
         /**
          * New configured mojo.
@@ -249,9 +241,7 @@ final class GenerateMojoTest {
          * @param temp Output directory
          * @param project Maven project
          */
-        private Mojo(final Path temp, final MavenProject project) {
-            this.temp = temp;
-            this.project = project;
+        private Mojo {
         }
 
         @Override

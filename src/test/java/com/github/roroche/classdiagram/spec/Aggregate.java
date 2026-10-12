@@ -51,6 +51,6 @@ public final class Aggregate implements Scalar<DiagramSpec> {
             new File("target/diagrams"),
             "architecture.puml",
             false
-        ).value().get(0);
+        ).value().getFirst();
     }
 }

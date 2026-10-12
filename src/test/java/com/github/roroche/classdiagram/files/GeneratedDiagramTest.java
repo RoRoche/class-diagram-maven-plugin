@@ -139,19 +139,11 @@ final class GeneratedDiagramTest {
     /**
      * Generated diagram task.
      *
+     * @param out Output path.
+     * @param value Diagram text.
      * @since 0.0.3
      */
-    private static final class Task implements Callable<Path> {
-
-        /**
-         * Output path.
-         */
-        private final Path out;
-
-        /**
-         * Diagram text.
-         */
-        private final String value;
+    private record Task(Path out, String value) implements Callable<Path> {
 
         /**
          * New generated diagram task.
@@ -159,9 +151,7 @@ final class GeneratedDiagramTest {
          * @param out Output path
          * @param value Diagram text
          */
-        private Task(final Path out, final String value) {
-            this.out = out;
-            this.value = value;
+        private Task {
         }
 
         @Override

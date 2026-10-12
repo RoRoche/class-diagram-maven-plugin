@@ -113,12 +113,12 @@ final class PlantUmlDiagramTest {
         );
     }
 
-    private static final class Sample {
-
-        /**
-         * Value.
-         */
-        private final String value;
+    /**
+     * Sample record to test diagram rendering.
+     *
+     * @param value Value
+     */
+    private record Sample(String value) {
 
         /**
          * New sample.
@@ -132,8 +132,7 @@ final class PlantUmlDiagramTest {
          *
          * @param value Value
          */
-        private Sample(final String value) {
-            this.value = value;
+        private Sample {
         }
 
         @SuppressWarnings("UnusedMethod")
@@ -145,22 +144,17 @@ final class PlantUmlDiagramTest {
     /**
      * Failure from PlantUML diagram.
      *
+     * @param diagram PlantUML diagram.
      * @since 0.0.3
      */
-    private static final class Failure implements Scalar<Exception> {
-
-        /**
-         * PlantUML diagram.
-         */
-        private final PlantUmlDiagram diagram;
+    private record Failure(PlantUmlDiagram diagram) implements Scalar<Exception> {
 
         /**
          * New failure.
          *
          * @param diagram PlantUML diagram
          */
-        private Failure(final PlantUmlDiagram diagram) {
-            this.diagram = diagram;
+        private Failure {
         }
 
         @Override

@@ -104,7 +104,7 @@ final class DiagramSpecsTest {
                 "architecture.puml",
                 false,
                 new MemberOptions(new MemberSelection(MemberKind.CONSTRUCTOR))
-            ).value().get(0).members(),
+            ).value().getFirst().members(),
             Matchers.is(
                 new MemberOptions(new MemberSelection(MemberKind.CONSTRUCTOR))
             )
@@ -124,7 +124,7 @@ final class DiagramSpecsTest {
     void createsPerPackageName() {
         MatcherAssert.assertThat(
             "Per-package name should equal package",
-            new PerPackage().get(0).name(),
+            new PerPackage().getFirst().name(),
             Matchers.is("com.acme.one")
         );
     }
@@ -133,7 +133,7 @@ final class DiagramSpecsTest {
     void createsPerPackagePackages() {
         MatcherAssert.assertThat(
             "Per-package spec should contain its package",
-            new PerPackage().get(0).packages(),
+            new PerPackage().getFirst().packages(),
             Matchers.contains("com.acme.one")
         );
     }
@@ -142,7 +142,7 @@ final class DiagramSpecsTest {
     void createsPerPackageOutput() {
         MatcherAssert.assertThat(
             "Per-package output should use package name",
-            new PerPackage().get(0).output(),
+            new PerPackage().getFirst().output(),
             Matchers.is(Path.of("target/diagrams/com.acme.one.puml"))
         );
     }
@@ -274,7 +274,7 @@ final class DiagramSpecsTest {
                 new MemberOptions(
                     new MemberSelection(MemberKind.FIELD, MemberKind.METHOD)
                 )
-            ).value().get(0).members(),
+            ).value().getFirst().members(),
             Matchers.is(
                 new MemberOptions(
                     new MemberSelection(
@@ -312,7 +312,7 @@ final class DiagramSpecsTest {
                         MemberKind.METHOD
                     )
                 )
-            ).value().get(0).members(),
+            ).value().getFirst().members(),
             Matchers.is(
                 new MemberOptions(
                     new MemberSelection(

@@ -59,6 +59,6 @@ public final class Spec implements Scalar<DiagramSpec> {
             new File("target/diagrams"),
             "ignored.puml",
             false
-        ).value().get(0);
+        ).value().getFirst();
     }
 }
