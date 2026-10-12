@@ -47,9 +47,8 @@ final class ArchitectureTest {
 
     /**
      * The classes to be checked.
-     *
-     * @checkstyle ProhibitFieldsInTestClassesCheck (4 lines)
      */
+    // @checkstyle ProhibitFieldsInTestClassesCheck (4 lines)
     private final JavaClasses classes = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
         .importPackages("com.github.roroche.classdiagram");

@@ -35,6 +35,7 @@ import com.github.roroche.classdiagram.spec.DiagramSpec;
 import com.github.roroche.classdiagram.spec.DiagramSpecs;
 import com.github.roroche.eorules.SuppressEoRule;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -157,9 +158,7 @@ public final class GenerateMojo extends AbstractMojo {
         // Empty constructor for Maven
     }
 
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     @Override
-    // @checkstyle IllegalCatchCheck (45 lines)
     public void execute() throws MojoExecutionException {
         try {
             final List<DiagramSpec> specs = new DiagramSpecs(
@@ -204,7 +203,9 @@ public final class GenerateMojo extends AbstractMojo {
             }
         } catch (final DependencyResolutionRequiredException err) {
             throw new MojoExecutionException("Cannot resolve project classpath", err);
-        } catch (final Exception err) {
+        } catch (
+            final IOException | IllegalArgumentException | IllegalStateException err
+        ) {
             throw new MojoExecutionException("Cannot generate class diagram", err);
         }
     }

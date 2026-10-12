@@ -148,20 +148,10 @@ public final class DiagramSpecs implements Scalar<List<DiagramSpec>> {
         this.members = members;
     }
 
-    @SuppressWarnings("PMD.ConfusingTernary")
     @Override
     public List<DiagramSpec> value() {
         final List<DiagramSpec> specs = new ArrayList<>(0);
-        if (!this.diagrams.isEmpty()) {
-            specs.addAll(
-                new ListOf<>(
-                    new Mapped<>(
-                        config -> new Named(this.directory, config, this.members).value(),
-                        this.diagrams
-                    )
-                )
-            );
-        } else if (this.perPackage) {
+        if (this.diagrams.isEmpty() && this.perPackage) {
             specs.addAll(
                 new ListOf<>(
                     new Mapped<>(
@@ -176,7 +166,7 @@ public final class DiagramSpecs implements Scalar<List<DiagramSpec>> {
                     )
                 )
             );
-        } else {
+        } else if (this.diagrams.isEmpty()) {
             specs.addAll(
                 new ListOf<>(
                     new DiagramSpec(
@@ -186,6 +176,15 @@ public final class DiagramSpecs implements Scalar<List<DiagramSpec>> {
                         this.excludedClasses,
                         this.directory.toPath().resolve(this.file),
                         this.members
+                    )
+                )
+            );
+        } else {
+            specs.addAll(
+                new ListOf<>(
+                    new Mapped<>(
+                        config -> new Named(this.directory, config, this.members).value(),
+                        this.diagrams
                     )
                 )
             );
