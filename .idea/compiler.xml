@@ -12,6 +12,9 @@
     </annotationProcessing>
   </component>
   <component name="MavenTasksManager">
+    <beforeCompile>
+      <MavenCompilerTask file="$PROJECT_DIR$/pom.xml" goal="test-compile" />
+    </beforeCompile>
     <afterCompile>
       <MavenCompilerTask file="$PROJECT_DIR$/pom.xml" goal="spotbugs:check" />
     </afterCompile>
