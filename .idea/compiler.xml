@@ -11,4 +11,9 @@
       </profile>
     </annotationProcessing>
   </component>
+  <component name="MavenTasksManager">
+    <afterCompile>
+      <MavenCompilerTask file="$PROJECT_DIR$/pom.xml" goal="spotbugs:check" />
+    </afterCompile>
+  </component>
 </project>
