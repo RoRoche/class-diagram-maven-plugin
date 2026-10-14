@@ -24,6 +24,7 @@
 package com.github.roroche.classdiagram.members;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import org.cactoos.Scalar;
 
 /**
@@ -34,9 +35,14 @@ import org.cactoos.Scalar;
 public final class VisibleMethod implements Scalar<Boolean> {
 
     /**
-     * Method.
+     * Method name.
      */
-    private final Method method;
+    private final String name;
+
+    /**
+     * Method modifiers.
+     */
+    private final int modifiers;
 
     /**
      * Public only.
@@ -49,14 +55,17 @@ public final class VisibleMethod implements Scalar<Boolean> {
      * @param method Method
      * @param pub Public only
      */
+    // Snapshot caller-owned state at construction.
+    // @checkstyle ConstructorsCodeFreeCheck (6 lines)
     public VisibleMethod(final Method method, final boolean pub) {
-        this.method = method;
+        this.name = method.getName();
+        this.modifiers = method.getModifiers();
         this.pub = pub;
     }
 
     @Override
     public Boolean value() {
-        return !this.method.getName().startsWith("$")
-            && new VisibleMember(this.method, this.pub).value();
+        return !this.name.startsWith("$")
+            && (!this.pub || Modifier.isPublic(this.modifiers));
     }
 }

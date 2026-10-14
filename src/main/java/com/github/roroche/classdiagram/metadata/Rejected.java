@@ -38,9 +38,9 @@ import org.cactoos.scalar.Unchecked;
 public final class Rejected implements Scalar<Boolean> {
 
     /**
-     * Class information.
+     * Class name.
      */
-    private final ClassInfo info;
+    private final String name;
 
     /**
      * Rejected name patterns.
@@ -53,19 +53,21 @@ public final class Rejected implements Scalar<Boolean> {
      * @param info Class information
      * @param patterns Rejected name patterns
      */
+    // Snapshot caller-owned state at construction.
+    // @checkstyle ConstructorsCodeFreeCheck (9 lines)
     public Rejected(
         final ClassInfo info,
         final List<ClassNamePattern> patterns
     ) {
-        this.info = info;
-        this.patterns = patterns;
+        this.name = info.getName();
+        this.patterns = List.copyOf(patterns);
     }
 
     @Override
     public Boolean value() {
         return new Unchecked<>(
             new Or(
-                (Func<ClassNamePattern, Boolean>) pattern -> pattern.test(this.info.getName()),
+                (Func<ClassNamePattern, Boolean>) pattern -> pattern.test(this.name),
                 this.patterns
             )
         ).value();

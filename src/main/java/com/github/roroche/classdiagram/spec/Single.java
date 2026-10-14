@@ -89,6 +89,8 @@ public final class Single implements Scalar<DiagramSpec> {
      * @param directory Output directory
      * @param members Member options
      */
+    // Snapshot caller-owned state at construction.
+    // @checkstyle ConstructorsCodeFreeCheck (15 lines)
     public Single(
         final String pkg,
         final List<String> excludedPackages,
@@ -97,8 +99,8 @@ public final class Single implements Scalar<DiagramSpec> {
         final MemberOptions members
     ) {
         this.pkg = pkg;
-        this.excludedPackages = excludedPackages;
-        this.excludedClasses = excludedClasses;
+        this.excludedPackages = List.copyOf(excludedPackages);
+        this.excludedClasses = List.copyOf(excludedClasses);
         this.directory = directory;
         this.members = members;
     }

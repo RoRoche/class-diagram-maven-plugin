@@ -24,6 +24,7 @@
 package com.github.roroche.classdiagram.configuration;
 
 import java.io.File;
+import java.util.Optional;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -90,29 +91,29 @@ final class DiagramConfigurationTest {
     }
 
     @Test
-    void returnsNullFieldsOptionByDefault() {
+    void returnsEmptyFieldsOptionByDefault() {
         MatcherAssert.assertThat(
-            "Default fields option should be null",
-            new DiagramConfiguration().isIncludeFields(),
-            Matchers.nullValue()
+            "Default fields option should be empty",
+            new DiagramConfiguration().getIncludeFields(),
+            Matchers.is(Optional.empty())
         );
     }
 
     @Test
-    void returnsNullConstructorsOptionByDefault() {
+    void returnsEmptyConstructorsOptionByDefault() {
         MatcherAssert.assertThat(
-            "Default constructors option should be null",
-            new DiagramConfiguration().isIncludeConstructors(),
-            Matchers.nullValue()
+            "Default constructors option should be empty",
+            new DiagramConfiguration().getIncludeConstructors(),
+            Matchers.is(Optional.empty())
         );
     }
 
     @Test
-    void returnsNullMethodsOptionByDefault() {
+    void returnsEmptyMethodsOptionByDefault() {
         MatcherAssert.assertThat(
-            "Default methods option should be null",
-            new DiagramConfiguration().isIncludeMethods(),
-            Matchers.nullValue()
+            "Default methods option should be empty",
+            new DiagramConfiguration().getIncludeMethods(),
+            Matchers.is(Optional.empty())
         );
     }
 
@@ -202,8 +203,8 @@ final class DiagramConfigurationTest {
             new DiagramConfigurationWithField(
                 "includeFields",
                 false
-            ).value().isIncludeFields(),
-            Matchers.is(false)
+            ).value().getIncludeFields(),
+            Matchers.is(Optional.of(false))
         );
     }
 
@@ -226,8 +227,8 @@ final class DiagramConfigurationTest {
             new DiagramConfigurationWithField(
                 "includeConstructors",
                 true
-            ).value().isIncludeConstructors(),
-            Matchers.is(true)
+            ).value().getIncludeConstructors(),
+            Matchers.is(Optional.of(true))
         );
     }
 
@@ -238,8 +239,8 @@ final class DiagramConfigurationTest {
             new DiagramConfigurationWithField(
                 "includeMethods",
                 false
-            ).value().isIncludeMethods(),
-            Matchers.is(false)
+            ).value().getIncludeMethods(),
+            Matchers.is(Optional.of(false))
         );
     }
 }

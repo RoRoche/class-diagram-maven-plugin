@@ -27,6 +27,7 @@ import com.github.roroche.eorules.SuppressEoRule;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Maven-facing configuration of one diagram.
@@ -152,27 +153,27 @@ public final class DiagramConfiguration {
     /**
      * Getter for field rendering.
      *
-     * @return Field rendering or null
+     * @return Field rendering override, or empty to inherit defaults
      */
-    public Boolean isIncludeFields() {
-        return this.includeFields;
+    public Optional<Boolean> getIncludeFields() {
+        return Optional.ofNullable(this.includeFields);
     }
 
     /**
      * Getter for constructor rendering.
      *
-     * @return Constructor rendering or null
+     * @return Constructor rendering override, or empty to inherit defaults
      */
-    public Boolean isIncludeConstructors() {
-        return this.includeConstructors;
+    public Optional<Boolean> getIncludeConstructors() {
+        return Optional.ofNullable(this.includeConstructors);
     }
 
     /**
      * Getter for method rendering.
      *
-     * @return Method rendering or null
+     * @return Method rendering override, or empty to inherit defaults
      */
-    public Boolean isIncludeMethods() {
-        return this.includeMethods;
+    public Optional<Boolean> getIncludeMethods() {
+        return Optional.ofNullable(this.includeMethods);
     }
 }

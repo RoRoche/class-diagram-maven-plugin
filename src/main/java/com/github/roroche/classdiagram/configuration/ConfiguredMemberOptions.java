@@ -60,9 +60,9 @@ public final class ConfiguredMemberOptions implements Scalar<MemberOptions> {
     public MemberOptions value() {
         return new MemberOptionsOverride(
             new ConfiguredMemberDefaults(this.defaults, this.config).value(),
-            this.config.isIncludeFields(),
-            this.config.isIncludeConstructors(),
-            this.config.isIncludeMethods()
+            this.config.getIncludeFields().orElse(null),
+            this.config.getIncludeConstructors().orElse(null),
+            this.config.getIncludeMethods().orElse(null)
         ).value();
     }
 }

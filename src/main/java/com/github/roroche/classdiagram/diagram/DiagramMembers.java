@@ -56,13 +56,15 @@ public final class DiagramMembers implements Scalar<String> {
      * @param classes Classes
      * @param options Options
      */
+    // Snapshot caller-owned state at construction.
+    // @checkstyle ConstructorsCodeFreeCheck (12 lines)
     public DiagramMembers(
         final String text,
         final List<Class<?>> classes,
         final MemberOptions options
     ) {
         this.text = text;
-        this.classes = classes;
+        this.classes = List.copyOf(classes);
         this.options = options;
     }
 

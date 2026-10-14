@@ -38,24 +38,34 @@ import org.cactoos.Scalar;
 public final class ClasspathElements implements Scalar<List<String>> {
 
     /**
-     * Maven project.
+     * Compile classpath.
      */
-    private final MavenProject project;
+    private final List<String> compile;
+
+    /**
+     * Runtime classpath.
+     */
+    private final List<String> runtime;
 
     /**
      * New classpath elements.
      *
      * @param project Maven project
+     * @throws DependencyResolutionRequiredException If classpath cannot be resolved
      */
-    public ClasspathElements(final MavenProject project) {
-        this.project = project;
+    // Snapshot caller-owned state at construction.
+    // @checkstyle ConstructorsCodeFreeCheck (6 lines)
+    public ClasspathElements(final MavenProject project)
+        throws DependencyResolutionRequiredException {
+        this.compile = List.copyOf(project.getCompileClasspathElements());
+        this.runtime = List.copyOf(project.getRuntimeClasspathElements());
     }
 
     @Override
-    public List<String> value() throws DependencyResolutionRequiredException {
+    public List<String> value() {
         final Set<String> elements = LinkedHashSet.newLinkedHashSet(0);
-        elements.addAll(this.project.getCompileClasspathElements());
-        elements.addAll(this.project.getRuntimeClasspathElements());
+        elements.addAll(this.compile);
+        elements.addAll(this.runtime);
         return List.copyOf(elements);
     }
 }
