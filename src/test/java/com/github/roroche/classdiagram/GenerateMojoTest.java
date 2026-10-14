@@ -68,7 +68,7 @@ final class GenerateMojoTest {
     }
 
     @Test
-    void rejectsEmptyPerPackageConfiguration(@TempDir final Path temp) throws Exception {
+    void rejectsEmptyPerPackageConfiguration(@TempDir final Path temp) {
         final GenerateMojo mojo = new GenerateMojoTest.Mojo(
             temp,
             new GenerateMojoTest.BrokenProject()
