@@ -31,6 +31,7 @@ import java.util.List;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -175,7 +176,7 @@ final class MemberLinesTest {
          *
          * @return Self
          */
-        T self() {
+        @Nullable T self() {
             return null;
         }
     }

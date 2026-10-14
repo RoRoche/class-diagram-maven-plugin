@@ -27,6 +27,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -82,20 +83,17 @@ final class TypeNameTest {
      * @param <T> Type
      * @since 0.0.4
      */
-    @SuppressWarnings({
-        "PMD.UnusedPrivateField",
-        "UnusedVariable"
-    })
+    @SuppressWarnings("UnusedVariable")
     private static final class Sample<T> {
 
         /**
          * Names.
          */
-        private List<String> names;
+        private @Nullable List<String> names;
 
         /**
          * Value.
          */
-        private T value;
+        private @Nullable T value;
     }
 }

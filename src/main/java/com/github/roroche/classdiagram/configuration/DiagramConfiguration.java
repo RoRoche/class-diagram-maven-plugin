@@ -28,6 +28,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Maven-facing configuration of one diagram.
@@ -51,7 +52,7 @@ import java.util.Optional;
 public final class DiagramConfiguration {
 
     /** Diagram name. */
-    private String name;
+    private @Nullable String name;
 
     /** Packages included in the diagram. */
     private final List<String> packages = new ArrayList<>(0);
@@ -63,22 +64,22 @@ public final class DiagramConfiguration {
     private final List<String> excludeClasses = new ArrayList<>(0);
 
     /** Optional output directory override. */
-    private File outputDirectory;
+    private @Nullable File outputDirectory;
 
     /** Optional output file name override. */
-    private String fileName;
+    private @Nullable String fileName;
 
     /** Optional description level override. */
-    private DescriptionLevel descriptionLevel;
+    private @Nullable DescriptionLevel descriptionLevel;
 
     /** Optional field rendering override. */
-    private Boolean includeFields;
+    private @Nullable Boolean includeFields;
 
     /** Optional constructor rendering override. */
-    private Boolean includeConstructors;
+    private @Nullable Boolean includeConstructors;
 
     /** Optional method rendering override. */
-    private Boolean includeMethods;
+    private @Nullable Boolean includeMethods;
 
     /**
      * Empty constructor for Maven.
@@ -92,7 +93,7 @@ public final class DiagramConfiguration {
      *
      * @return Diagram name
      */
-    public String getName() {
+    public @Nullable String getName() {
         return this.name;
     }
 
@@ -128,7 +129,7 @@ public final class DiagramConfiguration {
      *
      * @return Output directory
      */
-    public File getOutputDirectory() {
+    public @Nullable File getOutputDirectory() {
         return this.outputDirectory;
     }
 
@@ -137,7 +138,7 @@ public final class DiagramConfiguration {
      *
      * @return Output file name
      */
-    public String getFileName() {
+    public @Nullable String getFileName() {
         return this.fileName;
     }
 
@@ -146,7 +147,7 @@ public final class DiagramConfiguration {
      *
      * @return Description level or null
      */
-    public DescriptionLevel getDescriptionLevel() {
+    public @Nullable DescriptionLevel getDescriptionLevel() {
         return this.descriptionLevel;
     }
 

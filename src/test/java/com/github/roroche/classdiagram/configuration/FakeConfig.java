@@ -25,6 +25,7 @@ package com.github.roroche.classdiagram.configuration;
 
 import java.io.File;
 import org.cactoos.Scalar;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Fake diagram configuration.
@@ -36,17 +37,17 @@ public final class FakeConfig implements Scalar<DiagramConfiguration> {
     /**
      * Diagram name.
      */
-    private final String name;
+    private final @Nullable String name;
 
     /**
      * Diagram file.
      */
-    private final String file;
+    private final @Nullable String file;
 
     /**
      * Diagram output directory.
      */
-    private final File dir;
+    private final @Nullable File dir;
 
     /**
      * New fake diagram configuration.
@@ -55,7 +56,11 @@ public final class FakeConfig implements Scalar<DiagramConfiguration> {
      * @param file Diagram file
      * @param dir Diagram output directory
      */
-    public FakeConfig(final String name, final String file, final File dir) {
+    public FakeConfig(
+        final @Nullable String name,
+        final @Nullable String file,
+        final @Nullable File dir
+    ) {
         this.name = name;
         this.file = file;
         this.dir = dir;

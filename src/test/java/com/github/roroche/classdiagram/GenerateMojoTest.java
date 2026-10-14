@@ -32,6 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
@@ -412,7 +413,7 @@ final class GenerateMojoTest {
 
         @Override
         public void info(final Throwable error) {
-            this.info(error.getMessage());
+            this.info(Optional.ofNullable(error.getMessage()).orElse(error.toString()));
         }
 
         @Override

@@ -24,6 +24,7 @@
 package com.github.roroche.classdiagram.configuration;
 
 import org.cactoos.Scalar;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Member options represented by a description level.
@@ -35,14 +36,14 @@ public final class MemberOptionsOfLevel implements Scalar<MemberOptions> {
     /**
      * Description level.
      */
-    private final DescriptionLevel level;
+    private final @Nullable DescriptionLevel level;
 
     /**
      * New member options of level.
      *
      * @param level Description level
      */
-    public MemberOptionsOfLevel(final DescriptionLevel level) {
+    public MemberOptionsOfLevel(final @Nullable DescriptionLevel level) {
         this.level = level;
     }
 

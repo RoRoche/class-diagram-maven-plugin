@@ -25,6 +25,7 @@ package com.github.roroche.classdiagram.configuration;
 
 import java.lang.reflect.Field;
 import org.cactoos.scalar.ScalarEnvelope;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Diagram configuration with a field set to a value.
@@ -42,7 +43,7 @@ public final class DiagramConfigurationWithField extends ScalarEnvelope<DiagramC
      */
     public DiagramConfigurationWithField(
         final String name,
-        final Object value
+        final @Nullable Object value
     ) {
         this(new DiagramConfiguration(), name, value);
     }
@@ -57,7 +58,7 @@ public final class DiagramConfigurationWithField extends ScalarEnvelope<DiagramC
     public DiagramConfigurationWithField(
         final DiagramConfiguration cfg,
         final String name,
-        final Object value
+        final @Nullable Object value
     ) {
         super(() -> {
             final Field fld = DiagramConfiguration.class.getDeclaredField(name);

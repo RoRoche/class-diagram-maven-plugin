@@ -24,6 +24,7 @@
 package com.github.roroche.classdiagram.configuration;
 
 import org.cactoos.Scalar;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Member options with optional boolean overrides.
@@ -40,17 +41,17 @@ public final class MemberOptionsOverride implements Scalar<MemberOptions> {
     /**
      * Field override.
      */
-    private final Boolean fields;
+    private final @Nullable Boolean fields;
 
     /**
      * Constructor override.
      */
-    private final Boolean constructors;
+    private final @Nullable Boolean constructors;
 
     /**
      * Method override.
      */
-    private final Boolean methods;
+    private final @Nullable Boolean methods;
 
     /**
      * New member options override.
@@ -62,9 +63,9 @@ public final class MemberOptionsOverride implements Scalar<MemberOptions> {
      */
     public MemberOptionsOverride(
         final MemberOptions defaults,
-        final Boolean fields,
-        final Boolean constructors,
-        final Boolean methods
+        final @Nullable Boolean fields,
+        final @Nullable Boolean constructors,
+        final @Nullable Boolean methods
     ) {
         this.defaults = defaults;
         this.fields = fields;

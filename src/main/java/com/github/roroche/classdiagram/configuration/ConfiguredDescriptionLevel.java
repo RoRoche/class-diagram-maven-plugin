@@ -25,6 +25,7 @@ package com.github.roroche.classdiagram.configuration;
 
 import java.util.Optional;
 import org.cactoos.Scalar;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Description level with fallback.
@@ -36,7 +37,7 @@ public final class ConfiguredDescriptionLevel implements Scalar<DescriptionLevel
     /**
      * Configured level.
      */
-    private final DescriptionLevel configured;
+    private final @Nullable DescriptionLevel configured;
 
     /**
      * Fallback level.
@@ -50,7 +51,7 @@ public final class ConfiguredDescriptionLevel implements Scalar<DescriptionLevel
      * @param fallback Fallback level
      */
     public ConfiguredDescriptionLevel(
-        final DescriptionLevel configured,
+        final @Nullable DescriptionLevel configured,
         final DescriptionLevel fallback
     ) {
         this.configured = configured;

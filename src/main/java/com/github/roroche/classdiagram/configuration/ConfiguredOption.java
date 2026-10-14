@@ -25,6 +25,7 @@ package com.github.roroche.classdiagram.configuration;
 
 import java.util.Optional;
 import org.cactoos.Scalar;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Configured boolean option with fallback.
@@ -36,7 +37,7 @@ public final class ConfiguredOption implements Scalar<Boolean> {
     /**
      * Configured value.
      */
-    private final Boolean configured;
+    private final @Nullable Boolean configured;
 
     /**
      * Fallback value.
@@ -49,7 +50,7 @@ public final class ConfiguredOption implements Scalar<Boolean> {
      * @param configured Configured value
      * @param fallback Fallback value
      */
-    public ConfiguredOption(final Boolean configured, final boolean fallback) {
+    public ConfiguredOption(final @Nullable Boolean configured, final boolean fallback) {
         this.configured = configured;
         this.fallback = fallback;
     }

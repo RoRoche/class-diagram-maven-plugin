@@ -27,6 +27,7 @@ import java.util.List;
 import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -52,15 +53,12 @@ final class FieldLineTest {
      *
      * @since 0.0.4
      */
-    @SuppressWarnings({
-        "PMD.UnusedPrivateField",
-        "UnusedVariable"
-    })
+    @SuppressWarnings("UnusedVariable")
     private static final class Sample {
 
         /**
          * Names.
          */
-        private List<String> names;
+        private @Nullable List<String> names;
     }
 }

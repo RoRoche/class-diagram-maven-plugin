@@ -25,6 +25,7 @@ package com.github.roroche.classdiagram.members;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -62,6 +63,6 @@ final class FieldLinesTest {
         /**
          * First.
          */
-        private String first;
+        private @Nullable String first;
     }
 }
