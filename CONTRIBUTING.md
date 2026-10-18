@@ -39,7 +39,7 @@ mise run setup
 mise run versions
 ```
 
-Review `mise.toml` before trusting it. It defines exact versions of Temurin Java 21, Maven, Node.js and npm.
+Review `mise.toml` before trusting it. It defines exact versions of Temurin Java 25, Maven, Node.js and npm.
 It also pins Python, UV and `watchexec`. npm has its own version pin.
 Mise sets `JAVA_HOME` and selects the tools for each task.
 UV uses the configured Python version without downloading another interpreter.
