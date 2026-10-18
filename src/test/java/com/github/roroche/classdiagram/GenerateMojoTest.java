@@ -28,6 +28,7 @@ import com.github.roroche.classdiagram.matchers.MojoExecutionHasCause;
 import com.github.roroche.classdiagram.matchers.MojoExecutionHasMessage;
 import java.io.File;
 import java.lang.reflect.Field;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -196,6 +197,43 @@ final class GenerateMojoTest {
                 Matchers.containsString("PlantUmlDiagram("),
                 Matchers.not(Matchers.containsString("classes : Classes")),
                 Matchers.not(Matchers.containsString("value() : String"))
+            )
+        );
+    }
+
+    @Test
+    void rejectsPackageWithoutClasses(@TempDir final Path temp) throws Exception {
+        final GenerateMojo mojo = new GenerateMojoTest.Mojo(
+            temp,
+            new GenerateMojoTest.CompileProject()
+        ).value();
+        new GenerateMojoTest.FieldAsList<String>(mojo, "packages").add("absent.example");
+        new GenerateMojoTest.Set(mojo, "failOnEmpty", true).run();
+        MatcherAssert.assertThat(
+            "An empty scan should report a generation failure",
+            new GenerateMojoTest.Failure(mojo).value(),
+            Matchers.allOf(
+                new MojoExecutionHasMessage(Matchers.is("Cannot generate class diagram")),
+                new MojoExecutionHasCause(Matchers.instanceOf(IllegalStateException.class))
+            )
+        );
+    }
+
+    @Test
+    void reportsOutputDirectoryFailure(@TempDir final Path temp) throws Exception {
+        final GenerateMojo mojo = new GenerateMojoTest.Mojo(
+            Files.writeString(temp.resolve("blocked"), "Output directory is a file"),
+            new GenerateMojoTest.CompileProject()
+        ).value();
+        new GenerateMojoTest.FieldAsList<String>(mojo, "packages").add(
+            "com.github.roroche.classdiagram"
+        );
+        MatcherAssert.assertThat(
+            "A file blocking the output directory should preserve the filesystem failure",
+            new GenerateMojoTest.Failure(mojo).value(),
+            Matchers.allOf(
+                new MojoExecutionHasMessage(Matchers.is("Cannot generate class diagram")),
+                new MojoExecutionHasCause(Matchers.instanceOf(FileAlreadyExistsException.class))
             )
         );
     }
