@@ -29,7 +29,7 @@
     <url>https://github.com/RoRoche/class-diagram-maven-plugin</url>
   </scm>
   <properties>
-    <java.version>21</java.version>
+    <java.version>25</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <maven.compiler.plugin.version>3.16.0</maven.compiler.plugin.version>
@@ -168,8 +168,6 @@
           <fork>true</fork>
           <compilerArgs>
             <arg>-XDcompilePolicy=simple</arg>
-            <!-- Required to preserve type annotations for NullAway on JDK 21. -->
-            <arg>-XDaddTypeAnnotationsToSymbol=true</arg>
             <arg>--should-stop=ifError=FLOW</arg>
             <!-- Run only NullAway here; Qulice handles the built-in compiler checks. -->
             <arg>-Xplugin:ErrorProne -XepDisableAllChecks -Xep:NullAway:ERROR -XepOpt:NullAway:AnnotatedPackages=com.github.roroche</arg>
@@ -287,6 +285,10 @@
         <artifactId>qulice-maven-plugin</artifactId>
         <version>${qulice.version}</version>
         <configuration>
+          <excludes>
+            <!-- ClassGraph 6 modules include the same license resource. -->
+            <exclude>duplicatefinder:^LICENSE-ClassGraph\.txt$</exclude>
+          </excludes>
           <skip>false</skip>
         </configuration>
         <executions>

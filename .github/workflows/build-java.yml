@@ -1,5 +1,5 @@
 ---
-name: Java 21 CI (Maven)
+name: Java 25 CI (Maven)
 
 on:
   workflow_dispatch:
@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   build:
-    name: Build, test and check Java 21 code
+    name: Build, test and check Java 25 code
     runs-on: ubuntu-latest
 
     steps:
