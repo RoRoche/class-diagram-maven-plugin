@@ -50,6 +50,8 @@ to generate PlantUML class diagrams.
 
 ## 📥 Installation
 
+Run Maven with Java 25 or newer to use this plugin.
+
 Add the plugin to the `build` section of your `pom.xml`:
 
 ```xml

@@ -59,7 +59,8 @@ public final class FakeClasses extends ListEnvelope<Class<?>> {
                 ),
                 new ListOf<>(
                     System.getProperty("java.class.path").split(File.pathSeparator)
-                )
+                ),
+                Thread.currentThread().getContextClassLoader()
             ).value()
         );
     }
