@@ -47,26 +47,32 @@ public final class ClassGraphClasses implements Classes {
     /** Explicit classpath entries. */
     private final List<String> classpath;
 
+    /** Project class loader. */
+    private final ClassLoader loader;
+
     /**
      * New discovery.
      *
      * @param spec Diagram specification
      * @param classpath Classpath entries
+     * @param loader Project class loader
      */
     // @checkstyle ConstructorsCodeFreeCheck (8 lines)
     public ClassGraphClasses(
         final DiagramSpec spec,
-        final List<String> classpath
+        final List<String> classpath,
+        final ClassLoader loader
     ) {
         this.spec = spec;
         this.classpath = List.copyOf(classpath);
+        this.loader = loader;
     }
 
     @Override
     public List<Class<?>> value() {
         ClassGraph graph = new ClassGraph()
             .enableClassInfo()
-            .overrideClasspath(this.classpath)
+            .enableClasspathEntries(this.classpath)
             .acceptPackages(this.spec.packages().toArray(String[]::new));
         if (!this.spec.excludedPackages().isEmpty()) {
             graph = graph.rejectPackages(
@@ -80,7 +86,7 @@ public final class ClassGraphClasses implements Classes {
         try (ScanResult scan = graph.scan()) {
             classes = new ListOf<>(
                 new Mapped<>(
-                    ClassInfo::loadClass,
+                    info -> this.loader.loadClass(info.getName()),
                     new Sorted<>(
                         Comparator.comparing(ClassInfo::getName),
                         new Filtered<>(

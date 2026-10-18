@@ -36,6 +36,8 @@ import com.github.roroche.classdiagram.spec.DiagramSpecs;
 import com.github.roroche.eorules.SuppressEoRule;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.Func;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
 import org.cactoos.scalar.Or;
 import org.cactoos.scalar.Unchecked;
 
@@ -189,17 +193,29 @@ public final class GenerateMojo extends AbstractMojo {
                 );
             }
             final List<String> classpath = new Classpath(this.project);
-            for (final DiagramSpec spec : specs) {
-                final Path output = new GeneratedDiagram(
-                    new PlantUmlDiagram(
-                        spec.name(),
-                        new ClassGraphClasses(spec, classpath),
-                        this.failOnEmpty,
-                        spec.members()
-                    ),
-                    spec.output()
-                ).value();
-                this.getLog().info(String.format("Generated %s", output));
+            try (
+                URLClassLoader loader = new URLClassLoader(
+                    new ListOf<>(
+                        new Mapped<>(
+                            entry -> Path.of(entry).toUri().toURL(),
+                            classpath
+                        )
+                    ).toArray(URL[]::new),
+                    Thread.currentThread().getContextClassLoader()
+                )
+            ) {
+                for (final DiagramSpec spec : specs) {
+                    final Path output = new GeneratedDiagram(
+                        new PlantUmlDiagram(
+                            spec.name(),
+                            new ClassGraphClasses(spec, classpath, loader),
+                            this.failOnEmpty,
+                            spec.members()
+                        ),
+                        spec.output()
+                    ).value();
+                    this.getLog().info(String.format("Generated %s", output));
+                }
             }
         } catch (final DependencyResolutionRequiredException err) {
             throw new MojoExecutionException("Cannot resolve project classpath", err);
