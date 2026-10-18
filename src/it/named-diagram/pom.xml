@@ -7,7 +7,7 @@
   <artifactId>named-diagram-it</artifactId>
   <version>1.0-SNAPSHOT</version>
   <properties>
-    <maven.compiler.release>21</maven.compiler.release>
+    <maven.compiler.release>25</maven.compiler.release>
   </properties>
   <build>
     <plugins>
